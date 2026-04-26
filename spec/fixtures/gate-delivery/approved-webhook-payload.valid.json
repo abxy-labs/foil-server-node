@@ -1,5 +1,4 @@
 {
-  "event": "gate.session.approved",
   "service_id": "tripwire",
   "gate_session_id": "gate_0123456789abcdefghjkmnpqrs",
   "gate_account_id": "gacct_0123456789abcdefghjkmnpqrs",

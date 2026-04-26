@@ -35,6 +35,14 @@
     {
       "name": "Gate Webhooks",
       "description": "Outbound Gate webhook delivery contracts."
+    },
+    {
+      "name": "Webhooks",
+      "description": "Manage webhook endpoints, subscriptions, and outgoing event delivery."
+    },
+    {
+      "name": "Events",
+      "description": "Inspect organization events and their webhook delivery attempts."
     }
   ],
   "paths": {
@@ -371,12 +379,149 @@
                         "virtualization_suspected": true,
                         "privacy_hardening_suspected": true
                       },
-                      "native_runtime_integrity": null,
-                      "native_app": null,
-                      "native_carrier": null,
-                      "native_motion_print": null,
-                      "device_identity": null,
-                      "install_id": null,
+                      "native_runtime_integrity": {
+                        "platform": "ios",
+                        "jailbreak_or_root": {
+                          "detected": true,
+                          "signals": [
+                            "webdriver_detected"
+                          ],
+                          "present_paths": [
+                            "present_paths"
+                          ],
+                          "dyld_insert_libraries": [
+                            "dyld_insert_libraries"
+                          ],
+                          "verified_boot_state": "verified_boot_state",
+                          "magisk_mount_present": true,
+                          "su_on_path": true
+                        },
+                        "hooks": {
+                          "detected": true,
+                          "frida_ports": [
+                            1.5
+                          ],
+                          "frida_thread_names": [
+                            "Acme Workspace"
+                          ],
+                          "hooked_symbols": [
+                            "hooked_symbols"
+                          ],
+                          "self_hooked_symbols": [
+                            "self_hooked_symbols"
+                          ],
+                          "prologue_anomaly_count": 3,
+                          "unexpected_dyld_images": [
+                            "string"
+                          ],
+                          "xposed_packages": [
+                            "xposed_packages"
+                          ]
+                        },
+                        "debugger": {
+                          "attached": true,
+                          "tracer_pid": 1.5,
+                          "breakpoint_count": 3,
+                          "watchpoint_thread_count": 3
+                        },
+                        "code_signing": {
+                          "invalid": true,
+                          "code_sign_valid": true,
+                          "text_integrity_ok": true,
+                          "application_debuggable": true,
+                          "dyld_insert_libraries": [
+                            "dyld_insert_libraries"
+                          ]
+                        },
+                        "simulator_or_emulator": {
+                          "detected": true,
+                          "is_ios_app_on_mac": true,
+                          "qemu_files": [
+                            "qemu_files"
+                          ],
+                          "ro_hardware": "ro_hardware",
+                          "ro_product_model": "chrome",
+                          "simulator_env_keys": [
+                            "TRIPWIRE_SAMPLE_KEY"
+                          ]
+                        }
+                      },
+                      "native_app": {
+                        "bundle_id": "bundle_id",
+                        "app_version": "123.0.0.0",
+                        "app_build": "app_build",
+                        "install_time_epoch_ms": 1.5,
+                        "provisioning_team": "provisioning_team"
+                      },
+                      "native_carrier": {
+                        "platform": "ios",
+                        "carrier_name": "Acme Workspace",
+                        "country_iso": "United States",
+                        "mcc": "mcc",
+                        "mnc": "mnc",
+                        "phone_type": "phone_type",
+                        "network_type": "network_type",
+                        "radio_access": [
+                          "radio_access"
+                        ]
+                      },
+                      "native_motion_print": {
+                        "platform": "ios",
+                        "sample_count": 3,
+                        "gyro": {
+                          "bias": [
+                            1.5,
+                            2.5,
+                            3.5
+                          ],
+                          "noise": [
+                            1.5,
+                            2.5,
+                            3.5
+                          ]
+                        },
+                        "accel": {
+                          "bias": [
+                            1.5,
+                            2.5,
+                            3.5
+                          ],
+                          "noise": [
+                            1.5,
+                            2.5,
+                            3.5
+                          ]
+                        },
+                        "mag": {
+                          "bias": [
+                            1.5,
+                            2.5,
+                            3.5
+                          ],
+                          "noise": [
+                            1.5,
+                            2.5,
+                            3.5
+                          ]
+                        }
+                      },
+                      "device_identity": {
+                        "object": "device_identity",
+                        "id": "sid_87wfetm98myh9awj0dpt28a3kc",
+                        "confidence": 93,
+                        "source": "attested",
+                        "platform": "ios",
+                        "identified_at": "2026-03-24T20:00:05.000Z",
+                        "lifecycle": {
+                          "first_seen_at": "2026-03-01T18:22:11.000Z",
+                          "last_seen_at": "2026-03-24T20:00:05.000Z",
+                          "seen_count": 14
+                        },
+                        "matched_anchors": [
+                          "matched_anchors"
+                        ]
+                      },
+                      "install_id": "install_id",
                       "visitor_fingerprint": {
                         "object": "visitor_fingerprint",
                         "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m",
@@ -2725,6 +2870,1249 @@
         "description": "Requires the `api_keys:manage` secret-key scope."
       }
     },
+    "/v1/organizations/{organizationId}/webhooks/endpoints": {
+      "get": {
+        "tags": [
+          "Webhooks"
+        ],
+        "operationId": "listWebhookEndpoints",
+        "summary": "List webhook endpoints",
+        "description": "Requires Authorization: Bearer sk_* with the webhooks:read scope.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/OrganizationId",
+              "example": "org_f6m39y94nh6fs513q03skj929c"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Webhook endpoint list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookEndpointListResponse",
+                  "example": {
+                    "data": [
+                      {
+                        "object": "webhook_endpoint",
+                        "id": "we_0123456789abcdef0123456789abcdef",
+                        "name": "Acme Growth Workspace",
+                        "url": "https://app.acme.co/signup",
+                        "status": "active",
+                        "event_types": [
+                          "session.fingerprint.calculated"
+                        ],
+                        "signing_secret": "whsec_0123456789abcdef0123456789abcdef",
+                        "created_at": "2026-03-24T20:00:00.000Z",
+                        "updated_at": "2026-03-24T20:00:05.000Z"
+                      }
+                    ],
+                    "pagination": {
+                      "limit": 50,
+                      "has_more": false,
+                      "next_cursor": "eyJ2IjoxLCJzY29yZWRBdCI6IjIwMjYtMDQtMTBUMDY6NDI6NDIuNTE0WiIsInJvd0lkIjoiMTc3In0"
+                    },
+                    "meta": {
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope",
+                  "example": {
+                    "error": {
+                      "code": "request.validation_failed",
+                      "message": "Observation payload failed validation.",
+                      "status": 1,
+                      "retryable": true,
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1",
+                      "docs_url": "https://app.acme.co/signup",
+                      "details": {
+                        "fields": [
+                          {
+                            "name": "Acme Growth Workspace",
+                            "issue": "required",
+                            "expected": "string",
+                            "received": "any_of"
+                          }
+                        ],
+                        "allowed_values": [
+                          "verified"
+                        ],
+                        "header_name": "x-forwarded-for",
+                        "parameter_set": "browser_fingerprint",
+                        "next_action": "retry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Organization access denied or insufficient scope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope",
+                  "example": {
+                    "error": {
+                      "code": "request.validation_failed",
+                      "message": "Observation payload failed validation.",
+                      "status": 1,
+                      "retryable": true,
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1",
+                      "docs_url": "https://app.acme.co/signup",
+                      "details": {
+                        "fields": [
+                          {
+                            "name": "Acme Growth Workspace",
+                            "issue": "required",
+                            "expected": "string",
+                            "received": "any_of"
+                          }
+                        ],
+                        "allowed_values": [
+                          "verified"
+                        ],
+                        "header_name": "x-forwarded-for",
+                        "parameter_set": "browser_fingerprint",
+                        "next_action": "retry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Webhooks"
+        ],
+        "operationId": "createWebhookEndpoint",
+        "summary": "Create a webhook endpoint",
+        "description": "Requires Authorization: Bearer sk_* with the webhooks:manage scope. The signing_secret is returned only in this response and rotation responses.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/OrganizationId",
+              "example": "org_f6m39y94nh6fs513q03skj929c"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWebhookEndpointRequest",
+                "example": {
+                  "name": "Acme Growth Workspace",
+                  "url": "https://app.acme.co/signup",
+                  "event_types": [
+                    "session.fingerprint.calculated"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Webhook endpoint created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookEndpointResponse",
+                  "example": {
+                    "data": {
+                      "object": "webhook_endpoint",
+                      "id": "we_0123456789abcdef0123456789abcdef",
+                      "name": "Acme Growth Workspace",
+                      "url": "https://app.acme.co/signup",
+                      "status": "active",
+                      "event_types": [
+                        "session.fingerprint.calculated"
+                      ],
+                      "signing_secret": "whsec_0123456789abcdef0123456789abcdef",
+                      "created_at": "2026-03-24T20:00:00.000Z",
+                      "updated_at": "2026-03-24T20:00:05.000Z"
+                    },
+                    "meta": {
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope",
+                  "example": {
+                    "error": {
+                      "code": "request.validation_failed",
+                      "message": "Observation payload failed validation.",
+                      "status": 1,
+                      "retryable": true,
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1",
+                      "docs_url": "https://app.acme.co/signup",
+                      "details": {
+                        "fields": [
+                          {
+                            "name": "Acme Growth Workspace",
+                            "issue": "required",
+                            "expected": "string",
+                            "received": "any_of"
+                          }
+                        ],
+                        "allowed_values": [
+                          "verified"
+                        ],
+                        "header_name": "x-forwarded-for",
+                        "parameter_set": "browser_fingerprint",
+                        "next_action": "retry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Organization access denied or insufficient scope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope",
+                  "example": {
+                    "error": {
+                      "code": "request.validation_failed",
+                      "message": "Observation payload failed validation.",
+                      "status": 1,
+                      "retryable": true,
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1",
+                      "docs_url": "https://app.acme.co/signup",
+                      "details": {
+                        "fields": [
+                          {
+                            "name": "Acme Growth Workspace",
+                            "issue": "required",
+                            "expected": "string",
+                            "received": "any_of"
+                          }
+                        ],
+                        "allowed_values": [
+                          "verified"
+                        ],
+                        "header_name": "x-forwarded-for",
+                        "parameter_set": "browser_fingerprint",
+                        "next_action": "retry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid webhook endpoint payload.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope",
+                  "example": {
+                    "error": {
+                      "code": "request.validation_failed",
+                      "message": "Observation payload failed validation.",
+                      "status": 1,
+                      "retryable": true,
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1",
+                      "docs_url": "https://app.acme.co/signup",
+                      "details": {
+                        "fields": [
+                          {
+                            "name": "Acme Growth Workspace",
+                            "issue": "required",
+                            "expected": "string",
+                            "received": "any_of"
+                          }
+                        ],
+                        "allowed_values": [
+                          "verified"
+                        ],
+                        "header_name": "x-forwarded-for",
+                        "parameter_set": "browser_fingerprint",
+                        "next_action": "retry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/webhooks/endpoints/{endpointId}": {
+      "patch": {
+        "tags": [
+          "Webhooks"
+        ],
+        "operationId": "updateWebhookEndpoint",
+        "summary": "Update a webhook endpoint",
+        "description": "Requires Authorization: Bearer sk_* with the webhooks:manage scope. Updating event_types replaces the endpoint subscriptions.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/OrganizationId",
+              "example": "org_f6m39y94nh6fs513q03skj929c"
+            }
+          },
+          {
+            "name": "endpointId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/WebhookEndpointId",
+              "example": "we_0123456789abcdef0123456789abcdef"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWebhookEndpointRequest",
+                "example": {
+                  "name": "Acme Growth Workspace",
+                  "url": "https://app.acme.co/signup",
+                  "status": "active",
+                  "event_types": [
+                    "session.fingerprint.calculated"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook endpoint updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookEndpointResponse",
+                  "example": {
+                    "data": {
+                      "object": "webhook_endpoint",
+                      "id": "we_0123456789abcdef0123456789abcdef",
+                      "name": "Acme Growth Workspace",
+                      "url": "https://app.acme.co/signup",
+                      "status": "active",
+                      "event_types": [
+                        "session.fingerprint.calculated"
+                      ],
+                      "signing_secret": "whsec_0123456789abcdef0123456789abcdef",
+                      "created_at": "2026-03-24T20:00:00.000Z",
+                      "updated_at": "2026-03-24T20:00:05.000Z"
+                    },
+                    "meta": {
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope",
+                  "example": {
+                    "error": {
+                      "code": "request.validation_failed",
+                      "message": "Observation payload failed validation.",
+                      "status": 1,
+                      "retryable": true,
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1",
+                      "docs_url": "https://app.acme.co/signup",
+                      "details": {
+                        "fields": [
+                          {
+                            "name": "Acme Growth Workspace",
+                            "issue": "required",
+                            "expected": "string",
+                            "received": "any_of"
+                          }
+                        ],
+                        "allowed_values": [
+                          "verified"
+                        ],
+                        "header_name": "x-forwarded-for",
+                        "parameter_set": "browser_fingerprint",
+                        "next_action": "retry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Organization access denied or insufficient scope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope",
+                  "example": {
+                    "error": {
+                      "code": "request.validation_failed",
+                      "message": "Observation payload failed validation.",
+                      "status": 1,
+                      "retryable": true,
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1",
+                      "docs_url": "https://app.acme.co/signup",
+                      "details": {
+                        "fields": [
+                          {
+                            "name": "Acme Growth Workspace",
+                            "issue": "required",
+                            "expected": "string",
+                            "received": "any_of"
+                          }
+                        ],
+                        "allowed_values": [
+                          "verified"
+                        ],
+                        "header_name": "x-forwarded-for",
+                        "parameter_set": "browser_fingerprint",
+                        "next_action": "retry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Webhook endpoint not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope",
+                  "example": {
+                    "error": {
+                      "code": "request.validation_failed",
+                      "message": "Observation payload failed validation.",
+                      "status": 1,
+                      "retryable": true,
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1",
+                      "docs_url": "https://app.acme.co/signup",
+                      "details": {
+                        "fields": [
+                          {
+                            "name": "Acme Growth Workspace",
+                            "issue": "required",
+                            "expected": "string",
+                            "received": "any_of"
+                          }
+                        ],
+                        "allowed_values": [
+                          "verified"
+                        ],
+                        "header_name": "x-forwarded-for",
+                        "parameter_set": "browser_fingerprint",
+                        "next_action": "retry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid webhook endpoint payload.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope",
+                  "example": {
+                    "error": {
+                      "code": "request.validation_failed",
+                      "message": "Observation payload failed validation.",
+                      "status": 1,
+                      "retryable": true,
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1",
+                      "docs_url": "https://app.acme.co/signup",
+                      "details": {
+                        "fields": [
+                          {
+                            "name": "Acme Growth Workspace",
+                            "issue": "required",
+                            "expected": "string",
+                            "received": "any_of"
+                          }
+                        ],
+                        "allowed_values": [
+                          "verified"
+                        ],
+                        "header_name": "x-forwarded-for",
+                        "parameter_set": "browser_fingerprint",
+                        "next_action": "retry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Webhooks"
+        ],
+        "operationId": "disableWebhookEndpoint",
+        "summary": "Disable a webhook endpoint",
+        "description": "Requires Authorization: Bearer sk_* with the webhooks:manage scope.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/OrganizationId",
+              "example": "org_f6m39y94nh6fs513q03skj929c"
+            }
+          },
+          {
+            "name": "endpointId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/WebhookEndpointId",
+              "example": "we_0123456789abcdef0123456789abcdef"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Webhook endpoint disabled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookEndpointResponse",
+                  "example": {
+                    "data": {
+                      "object": "webhook_endpoint",
+                      "id": "we_0123456789abcdef0123456789abcdef",
+                      "name": "Acme Growth Workspace",
+                      "url": "https://app.acme.co/signup",
+                      "status": "active",
+                      "event_types": [
+                        "session.fingerprint.calculated"
+                      ],
+                      "signing_secret": "whsec_0123456789abcdef0123456789abcdef",
+                      "created_at": "2026-03-24T20:00:00.000Z",
+                      "updated_at": "2026-03-24T20:00:05.000Z"
+                    },
+                    "meta": {
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope",
+                  "example": {
+                    "error": {
+                      "code": "request.validation_failed",
+                      "message": "Observation payload failed validation.",
+                      "status": 1,
+                      "retryable": true,
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1",
+                      "docs_url": "https://app.acme.co/signup",
+                      "details": {
+                        "fields": [
+                          {
+                            "name": "Acme Growth Workspace",
+                            "issue": "required",
+                            "expected": "string",
+                            "received": "any_of"
+                          }
+                        ],
+                        "allowed_values": [
+                          "verified"
+                        ],
+                        "header_name": "x-forwarded-for",
+                        "parameter_set": "browser_fingerprint",
+                        "next_action": "retry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Organization access denied or insufficient scope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope",
+                  "example": {
+                    "error": {
+                      "code": "request.validation_failed",
+                      "message": "Observation payload failed validation.",
+                      "status": 1,
+                      "retryable": true,
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1",
+                      "docs_url": "https://app.acme.co/signup",
+                      "details": {
+                        "fields": [
+                          {
+                            "name": "Acme Growth Workspace",
+                            "issue": "required",
+                            "expected": "string",
+                            "received": "any_of"
+                          }
+                        ],
+                        "allowed_values": [
+                          "verified"
+                        ],
+                        "header_name": "x-forwarded-for",
+                        "parameter_set": "browser_fingerprint",
+                        "next_action": "retry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Webhook endpoint not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope",
+                  "example": {
+                    "error": {
+                      "code": "request.validation_failed",
+                      "message": "Observation payload failed validation.",
+                      "status": 1,
+                      "retryable": true,
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1",
+                      "docs_url": "https://app.acme.co/signup",
+                      "details": {
+                        "fields": [
+                          {
+                            "name": "Acme Growth Workspace",
+                            "issue": "required",
+                            "expected": "string",
+                            "received": "any_of"
+                          }
+                        ],
+                        "allowed_values": [
+                          "verified"
+                        ],
+                        "header_name": "x-forwarded-for",
+                        "parameter_set": "browser_fingerprint",
+                        "next_action": "retry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/webhooks/endpoints/{endpointId}/rotations": {
+      "post": {
+        "tags": [
+          "Webhooks"
+        ],
+        "operationId": "rotateWebhookEndpointSecret",
+        "summary": "Rotate a webhook signing secret",
+        "description": "Requires Authorization: Bearer sk_* with the webhooks:manage scope. The new signing_secret is returned only in this response.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/OrganizationId",
+              "example": "org_f6m39y94nh6fs513q03skj929c"
+            }
+          },
+          {
+            "name": "endpointId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/WebhookEndpointId",
+              "example": "we_0123456789abcdef0123456789abcdef"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Webhook endpoint secret rotated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookEndpointResponse",
+                  "example": {
+                    "data": {
+                      "object": "webhook_endpoint",
+                      "id": "we_0123456789abcdef0123456789abcdef",
+                      "name": "Acme Growth Workspace",
+                      "url": "https://app.acme.co/signup",
+                      "status": "active",
+                      "event_types": [
+                        "session.fingerprint.calculated"
+                      ],
+                      "signing_secret": "whsec_0123456789abcdef0123456789abcdef",
+                      "created_at": "2026-03-24T20:00:00.000Z",
+                      "updated_at": "2026-03-24T20:00:05.000Z"
+                    },
+                    "meta": {
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope",
+                  "example": {
+                    "error": {
+                      "code": "request.validation_failed",
+                      "message": "Observation payload failed validation.",
+                      "status": 1,
+                      "retryable": true,
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1",
+                      "docs_url": "https://app.acme.co/signup",
+                      "details": {
+                        "fields": [
+                          {
+                            "name": "Acme Growth Workspace",
+                            "issue": "required",
+                            "expected": "string",
+                            "received": "any_of"
+                          }
+                        ],
+                        "allowed_values": [
+                          "verified"
+                        ],
+                        "header_name": "x-forwarded-for",
+                        "parameter_set": "browser_fingerprint",
+                        "next_action": "retry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Organization access denied or insufficient scope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope",
+                  "example": {
+                    "error": {
+                      "code": "request.validation_failed",
+                      "message": "Observation payload failed validation.",
+                      "status": 1,
+                      "retryable": true,
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1",
+                      "docs_url": "https://app.acme.co/signup",
+                      "details": {
+                        "fields": [
+                          {
+                            "name": "Acme Growth Workspace",
+                            "issue": "required",
+                            "expected": "string",
+                            "received": "any_of"
+                          }
+                        ],
+                        "allowed_values": [
+                          "verified"
+                        ],
+                        "header_name": "x-forwarded-for",
+                        "parameter_set": "browser_fingerprint",
+                        "next_action": "retry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Webhook endpoint not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope",
+                  "example": {
+                    "error": {
+                      "code": "request.validation_failed",
+                      "message": "Observation payload failed validation.",
+                      "status": 1,
+                      "retryable": true,
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1",
+                      "docs_url": "https://app.acme.co/signup",
+                      "details": {
+                        "fields": [
+                          {
+                            "name": "Acme Growth Workspace",
+                            "issue": "required",
+                            "expected": "string",
+                            "received": "any_of"
+                          }
+                        ],
+                        "allowed_values": [
+                          "verified"
+                        ],
+                        "header_name": "x-forwarded-for",
+                        "parameter_set": "browser_fingerprint",
+                        "next_action": "retry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/webhooks/endpoints/{endpointId}/test": {
+      "post": {
+        "tags": [
+          "Webhooks"
+        ],
+        "operationId": "sendTestWebhook",
+        "summary": "Send a test webhook",
+        "description": "Requires Authorization: Bearer sk_* with the webhooks:manage scope. Enqueues a webhook.test delivery for the selected endpoint.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/OrganizationId",
+              "example": "org_f6m39y94nh6fs513q03skj929c"
+            }
+          },
+          {
+            "name": "endpointId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/WebhookEndpointId",
+              "example": "we_0123456789abcdef0123456789abcdef"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Test webhook delivery enqueued.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookTestResponse",
+                  "example": {
+                    "data": {
+                      "object": "webhook_test",
+                      "event_id": "webhook_event_id",
+                      "delivery_ids": [
+                        "webhook_delivery_id"
+                      ],
+                      "latest_delivery": {
+                        "object": "webhook_delivery",
+                        "id": "webhook_delivery_id",
+                        "event_id": "webhook_event_id",
+                        "endpoint_id": "we_0123456789abcdef0123456789abcdef",
+                        "event_type": "session.fingerprint.calculated",
+                        "status": "pending",
+                        "attempts": 1,
+                        "response_status": 1,
+                        "response_body": "response_body",
+                        "error": "error",
+                        "created_at": "2026-03-24T20:00:00.000Z",
+                        "updated_at": "2026-03-24T20:00:05.000Z"
+                      }
+                    },
+                    "meta": {
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope",
+                  "example": {
+                    "error": {
+                      "code": "request.validation_failed",
+                      "message": "Observation payload failed validation.",
+                      "status": 1,
+                      "retryable": true,
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1",
+                      "docs_url": "https://app.acme.co/signup",
+                      "details": {
+                        "fields": [
+                          {
+                            "name": "Acme Growth Workspace",
+                            "issue": "required",
+                            "expected": "string",
+                            "received": "any_of"
+                          }
+                        ],
+                        "allowed_values": [
+                          "verified"
+                        ],
+                        "header_name": "x-forwarded-for",
+                        "parameter_set": "browser_fingerprint",
+                        "next_action": "retry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Organization access denied or insufficient scope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope",
+                  "example": {
+                    "error": {
+                      "code": "request.validation_failed",
+                      "message": "Observation payload failed validation.",
+                      "status": 1,
+                      "retryable": true,
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1",
+                      "docs_url": "https://app.acme.co/signup",
+                      "details": {
+                        "fields": [
+                          {
+                            "name": "Acme Growth Workspace",
+                            "issue": "required",
+                            "expected": "string",
+                            "received": "any_of"
+                          }
+                        ],
+                        "allowed_values": [
+                          "verified"
+                        ],
+                        "header_name": "x-forwarded-for",
+                        "parameter_set": "browser_fingerprint",
+                        "next_action": "retry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Webhook endpoint not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope",
+                  "example": {
+                    "error": {
+                      "code": "request.validation_failed",
+                      "message": "Observation payload failed validation.",
+                      "status": 1,
+                      "retryable": true,
+                      "request_id": "req_cf147349a4134208aebb8c70e25fb7e1",
+                      "docs_url": "https://app.acme.co/signup",
+                      "details": {
+                        "fields": [
+                          {
+                            "name": "Acme Growth Workspace",
+                            "issue": "required",
+                            "expected": "string",
+                            "received": "any_of"
+                          }
+                        ],
+                        "allowed_values": [
+                          "verified"
+                        ],
+                        "header_name": "x-forwarded-for",
+                        "parameter_set": "browser_fingerprint",
+                        "next_action": "retry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/events": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "operationId": "listEvents",
+        "summary": "List events",
+        "description": "List organization events. Requires Authorization: Bearer sk_* with the webhooks:read scope.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/OrganizationId",
+              "example": "org_f6m39y94nh6fs513q03skj929c"
+            }
+          },
+          {
+            "name": "endpoint_id",
+            "in": "query",
+            "required": false,
+            "description": "Only return events that produced a delivery for this webhook endpoint.",
+            "schema": {
+              "$ref": "#/components/schemas/WebhookEndpointId",
+              "example": "we_0123456789abcdef0123456789abcdef"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Only return events of this type.",
+            "schema": {
+              "$ref": "#/components/schemas/WebhookDeliveryEventType",
+              "example": "session.fingerprint.calculated"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 50,
+              "example": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Events.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Organization access denied or insufficient scope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid event list query.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/events/{eventId}": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "operationId": "retrieveEvent",
+        "summary": "Retrieve an event",
+        "description": "Retrieve one organization event and its webhook delivery attempts. Requires Authorization: Bearer sk_* with the webhooks:read scope.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/OrganizationId",
+              "example": "org_f6m39y94nh6fs513q03skj929c"
+            }
+          },
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/WebhookEventId",
+              "example": "wevt_0123456789abcdef0123456789abcdef"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Event.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Organization access denied or insufficient scope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/gate/registry": {
       "get": {
         "tags": [
@@ -2927,7 +4315,6 @@
                         "description": "203.0.113.10",
                         "website": "https://app.acme.co/signup",
                         "dashboard_login_url": "https://app.acme.co/signup",
-                        "webhook_url": "https://app.acme.co/signup",
                         "env_vars": [
                           {
                             "name": "Acme Growth Workspace",
@@ -2955,7 +4342,8 @@
                           "privacy_url": "https://app.acme.co/signup"
                         },
                         "created_at": "2026-03-24T20:00:00.000Z",
-                        "updated_at": "2026-03-24T20:00:05.000Z"
+                        "updated_at": "2026-03-24T20:00:05.000Z",
+                        "webhook_endpoint_id": "we_0123456789abcdef0123456789abcdef"
                       }
                     ],
                     "meta": {
@@ -3065,8 +4453,6 @@
                   "description": "203.0.113.10",
                   "website": "https://app.acme.co/signup",
                   "dashboard_login_url": "https://app.acme.co/signup",
-                  "webhook_url": "https://app.acme.co/signup",
-                  "webhook_secret": "whsec_0123456789abcdef0123456789abcdef",
                   "env_vars": [
                     {
                       "name": "Acme Growth Workspace",
@@ -3092,7 +4478,8 @@
                   "consent": {
                     "terms_url": "https://app.acme.co/signup",
                     "privacy_url": "https://app.acme.co/signup"
-                  }
+                  },
+                  "webhook_endpoint_id": "we_0123456789abcdef0123456789abcdef"
                 }
               }
             }
@@ -3115,7 +4502,6 @@
                       "description": "203.0.113.10",
                       "website": "https://app.acme.co/signup",
                       "dashboard_login_url": "https://app.acme.co/signup",
-                      "webhook_url": "https://app.acme.co/signup",
                       "env_vars": [
                         {
                           "name": "Acme Growth Workspace",
@@ -3143,7 +4529,8 @@
                         "privacy_url": "https://app.acme.co/signup"
                       },
                       "created_at": "2026-03-24T20:00:00.000Z",
-                      "updated_at": "2026-03-24T20:00:05.000Z"
+                      "updated_at": "2026-03-24T20:00:05.000Z",
+                      "webhook_endpoint_id": "we_0123456789abcdef0123456789abcdef"
                     },
                     "meta": {
                       "request_id": "req_cf147349a4134208aebb8c70e25fb7e1"
@@ -3341,7 +4728,6 @@
                       "description": "203.0.113.10",
                       "website": "https://app.acme.co/signup",
                       "dashboard_login_url": "https://app.acme.co/signup",
-                      "webhook_url": "https://app.acme.co/signup",
                       "env_vars": [
                         {
                           "name": "Acme Growth Workspace",
@@ -3369,7 +4755,8 @@
                         "privacy_url": "https://app.acme.co/signup"
                       },
                       "created_at": "2026-03-24T20:00:00.000Z",
-                      "updated_at": "2026-03-24T20:00:05.000Z"
+                      "updated_at": "2026-03-24T20:00:05.000Z",
+                      "webhook_endpoint_id": "we_0123456789abcdef0123456789abcdef"
                     },
                     "meta": {
                       "request_id": "req_cf147349a4134208aebb8c70e25fb7e1"
@@ -3524,8 +4911,6 @@
                   "description": "203.0.113.10",
                   "website": "https://app.acme.co/signup",
                   "dashboard_login_url": "https://app.acme.co/signup",
-                  "webhook_url": "https://app.acme.co/signup",
-                  "webhook_secret": "whsec_0123456789abcdef0123456789abcdef",
                   "env_vars": [
                     {
                       "name": "Acme Growth Workspace",
@@ -3551,7 +4936,8 @@
                   "consent": {
                     "terms_url": "https://app.acme.co/signup",
                     "privacy_url": "https://app.acme.co/signup"
-                  }
+                  },
+                  "webhook_endpoint_id": "we_0123456789abcdef0123456789abcdef"
                 }
               }
             }
@@ -3574,7 +4960,6 @@
                       "description": "203.0.113.10",
                       "website": "https://app.acme.co/signup",
                       "dashboard_login_url": "https://app.acme.co/signup",
-                      "webhook_url": "https://app.acme.co/signup",
                       "env_vars": [
                         {
                           "name": "Acme Growth Workspace",
@@ -3602,7 +4987,8 @@
                         "privacy_url": "https://app.acme.co/signup"
                       },
                       "created_at": "2026-03-24T20:00:00.000Z",
-                      "updated_at": "2026-03-24T20:00:05.000Z"
+                      "updated_at": "2026-03-24T20:00:05.000Z",
+                      "webhook_endpoint_id": "we_0123456789abcdef0123456789abcdef"
                     },
                     "meta": {
                       "request_id": "req_cf147349a4134208aebb8c70e25fb7e1"
@@ -3798,7 +5184,6 @@
                       "description": "203.0.113.10",
                       "website": "https://app.acme.co/signup",
                       "dashboard_login_url": "https://app.acme.co/signup",
-                      "webhook_url": "https://app.acme.co/signup",
                       "env_vars": [
                         {
                           "name": "Acme Growth Workspace",
@@ -3826,7 +5211,8 @@
                         "privacy_url": "https://app.acme.co/signup"
                       },
                       "created_at": "2026-03-24T20:00:00.000Z",
-                      "updated_at": "2026-03-24T20:00:05.000Z"
+                      "updated_at": "2026-03-24T20:00:05.000Z",
+                      "webhook_endpoint_id": "we_0123456789abcdef0123456789abcdef"
                     },
                     "meta": {
                       "request_id": "req_cf147349a4134208aebb8c70e25fb7e1"
@@ -3970,7 +5356,7 @@
                     "version": 1,
                     "algorithm": "x25519-hkdf-sha256/aes-256-gcm",
                     "key_id": "key_6cw04zdmetw8t5rsdppadhper0",
-                    "public_key": "pk_live_[example_publishable_key]"
+                    "public_key": "pk_live_dZO3Bl6MqLn2VJYy18bjGkbPRCkubdgK"
                   }
                 }
               }
@@ -5635,7 +7021,9 @@
                     "gate:agent_tokens:revoke",
                     "gate:login_sessions:consume",
                     "gate:services:read",
-                    "gate:services:manage"
+                    "gate:services:manage",
+                    "webhooks:read",
+                    "webhooks:manage"
                   ]
                 },
                 "example": [
@@ -6014,7 +7402,9 @@
                 "gate:agent_tokens:revoke",
                 "gate:login_sessions:consume",
                 "gate:services:read",
-                "gate:services:manage"
+                "gate:services:manage",
+                "webhooks:read",
+                "webhooks:manage"
               ]
             },
             "example": [
@@ -6056,7 +7446,7 @@
           "name",
           "description",
           "website",
-          "webhook_url"
+          "webhook_endpoint_id"
         ],
         "properties": {
           "id": {
@@ -6084,17 +7474,6 @@
             "type": "string",
             "format": "uri",
             "example": "https://app.acme.co/signup"
-          },
-          "webhook_url": {
-            "type": "string",
-            "format": "uri",
-            "example": "https://app.acme.co/signup"
-          },
-          "webhook_secret": {
-            "type": "string",
-            "minLength": 32,
-            "description": "If provided, must be at least 32 characters. Omit on create to let Gate generate one.",
-            "example": "whsec_0123456789abcdef0123456789abcdef"
           },
           "env_vars": {
             "type": "array",
@@ -6153,6 +7532,10 @@
               "terms_url": "https://app.acme.co/signup",
               "privacy_url": "https://app.acme.co/signup"
             }
+          },
+          "webhook_endpoint_id": {
+            "$ref": "#/components/schemas/WebhookEndpointId",
+            "example": "we_0123456789abcdef0123456789abcdef"
           }
         },
         "example": {
@@ -6162,8 +7545,6 @@
           "description": "203.0.113.10",
           "website": "https://app.acme.co/signup",
           "dashboard_login_url": "https://app.acme.co/signup",
-          "webhook_url": "https://app.acme.co/signup",
-          "webhook_secret": "whsec_0123456789abcdef0123456789abcdef",
           "env_vars": [
             {
               "name": "Acme Growth Workspace",
@@ -6189,7 +7570,8 @@
           "consent": {
             "terms_url": "https://app.acme.co/signup",
             "privacy_url": "https://app.acme.co/signup"
-          }
+          },
+          "webhook_endpoint_id": "we_0123456789abcdef0123456789abcdef"
         }
       },
       "CreateGateSessionRequest": {
@@ -6221,7 +7603,7 @@
               "version": 1,
               "algorithm": "x25519-hkdf-sha256/aes-256-gcm",
               "key_id": "key_6cw04zdmetw8t5rsdppadhper0",
-              "public_key": "pk_live_[example_publishable_key]"
+              "public_key": "pk_live_dZO3Bl6MqLn2VJYy18bjGkbPRCkubdgK"
             }
           }
         },
@@ -6235,7 +7617,7 @@
             "version": 1,
             "algorithm": "x25519-hkdf-sha256/aes-256-gcm",
             "key_id": "key_6cw04zdmetw8t5rsdppadhper0",
-            "public_key": "pk_live_[example_publishable_key]"
+            "public_key": "pk_live_dZO3Bl6MqLn2VJYy18bjGkbPRCkubdgK"
           }
         }
       },
@@ -6260,6 +7642,45 @@
         "example": {
           "name": "Acme Growth Workspace",
           "slug": "acme-growth"
+        }
+      },
+      "CreateWebhookEndpointRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "url",
+          "event_types"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Acme Growth Workspace"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://app.acme.co/signup"
+          },
+          "event_types": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/WebhookEventType",
+              "example": "session.fingerprint.calculated"
+            },
+            "example": [
+              "session.fingerprint.calculated"
+            ]
+          }
+        },
+        "example": {
+          "name": "Acme Growth Workspace",
+          "url": "https://app.acme.co/signup",
+          "event_types": [
+            "session.fingerprint.calculated"
+          ]
         }
       },
       "CursorPagination": {
@@ -6371,10 +7792,136 @@
           "evaluated_at": "2026-03-24T20:00:05.000Z"
         }
       },
+      "Event": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "object",
+          "id",
+          "type",
+          "subject",
+          "data",
+          "webhook_deliveries",
+          "created_at"
+        ],
+        "properties": {
+          "object": {
+            "type": "string",
+            "const": "event",
+            "example": "event"
+          },
+          "id": {
+            "$ref": "#/components/schemas/WebhookEventId",
+            "example": "wevt_0123456789abcdef0123456789abcdef"
+          },
+          "type": {
+            "$ref": "#/components/schemas/WebhookDeliveryEventType",
+            "example": "session.result.persisted"
+          },
+          "subject": {
+            "$ref": "#/components/schemas/EventSubject"
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": true,
+            "example": {
+              "session_id": "sid_87wfetm98myh9awj0dpt28a3kc",
+              "verdict": "human"
+            }
+          },
+          "webhook_deliveries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WebhookDelivery"
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-24T20:00:00.000Z"
+          }
+        },
+        "example": {
+          "object": "event",
+          "id": "wevt_0123456789abcdef0123456789abcdef",
+          "type": "session.result.persisted",
+          "subject": {
+            "type": "session",
+            "id": "sid_87wfetm98myh9awj0dpt28a3kc"
+          },
+          "data": {
+            "session_id": "sid_87wfetm98myh9awj0dpt28a3kc",
+            "verdict": "human"
+          },
+          "webhook_deliveries": [],
+          "created_at": "2026-03-24T20:00:00.000Z"
+        }
+      },
       "EventId": {
         "type": "string",
         "pattern": "^evt_[0123456789abcdefghjkmnpqrstvwxyz]{26}$",
         "example": "evt_srwqc0yqhz4bxvtrdtf69q7vkr"
+      },
+      "EventListResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "pagination",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Event"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/CursorPagination"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          }
+        }
+      },
+      "EventResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Event"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta"
+          }
+        }
+      },
+      "EventSubject": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "id"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "session"
+          },
+          "id": {
+            "type": "string",
+            "example": "sid_87wfetm98myh9awj0dpt28a3kc"
+          }
+        },
+        "example": {
+          "type": "session",
+          "id": "sid_87wfetm98myh9awj0dpt28a3kc"
+        }
       },
       "FingerprintId": {
         "type": "string",
@@ -6384,7 +7931,6 @@
       "GateApprovedWebhookPayload": {
         "type": "object",
         "required": [
-          "event",
           "service_id",
           "gate_session_id",
           "gate_account_id",
@@ -6394,11 +7940,6 @@
           "delivery"
         ],
         "properties": {
-          "event": {
-            "type": "string",
-            "const": "gate.session.approved",
-            "example": "gate.session.approved"
-          },
           "service_id": {
             "$ref": "#/components/schemas/GateServiceId",
             "example": "gsvc_0123456789abcdefghjkmnpqrs"
@@ -6460,12 +8001,11 @@
               "version": 1,
               "algorithm": "x25519-hkdf-sha256/aes-256-gcm",
               "key_id": "key_6cw04zdmetw8t5rsdppadhper0",
-              "public_key": "pk_live_[example_publishable_key]"
+              "public_key": "pk_live_dZO3Bl6MqLn2VJYy18bjGkbPRCkubdgK"
             }
           }
         },
         "example": {
-          "event": "gate.session.approved",
           "service_id": "gsvc_0123456789abcdefghjkmnpqrs",
           "gate_session_id": "gate_0123456789abcdefghjkmnpqrs",
           "gate_account_id": "gacct_0123456789abcdefghjkmnpqrs",
@@ -6481,7 +8021,7 @@
             "version": 1,
             "algorithm": "x25519-hkdf-sha256/aes-256-gcm",
             "key_id": "key_6cw04zdmetw8t5rsdppadhper0",
-            "public_key": "pk_live_[example_publishable_key]"
+            "public_key": "pk_live_dZO3Bl6MqLn2VJYy18bjGkbPRCkubdgK"
           }
         }
       },
@@ -6780,14 +8320,14 @@
           },
           "public_key": {
             "type": "string",
-            "example": "pk_live_[example_publishable_key]"
+            "example": "pk_live_dZO3Bl6MqLn2VJYy18bjGkbPRCkubdgK"
           }
         },
         "example": {
           "version": 1,
           "algorithm": "x25519-hkdf-sha256/aes-256-gcm",
           "key_id": "key_6cw04zdmetw8t5rsdppadhper0",
-          "public_key": "pk_live_[example_publishable_key]"
+          "public_key": "pk_live_dZO3Bl6MqLn2VJYy18bjGkbPRCkubdgK"
         }
       },
       "GateEnvVar": {
@@ -6913,7 +8453,7 @@
           "name",
           "description",
           "website",
-          "webhook_url",
+          "webhook_endpoint_id",
           "env_vars",
           "docs_url",
           "sdks",
@@ -6954,11 +8494,6 @@
             "example": "https://app.acme.co/signup"
           },
           "dashboard_login_url": {
-            "type": "string",
-            "format": "uri",
-            "example": "https://app.acme.co/signup"
-          },
-          "webhook_url": {
             "type": "string",
             "format": "uri",
             "example": "https://app.acme.co/signup"
@@ -7030,6 +8565,17 @@
             "type": "string",
             "format": "date-time",
             "example": "2026-03-24T20:00:05.000Z"
+          },
+          "webhook_endpoint_id": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WebhookEndpointId"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "example": "we_0123456789abcdef0123456789abcdef"
           }
         },
         "example": {
@@ -7041,7 +8587,6 @@
           "description": "203.0.113.10",
           "website": "https://app.acme.co/signup",
           "dashboard_login_url": "https://app.acme.co/signup",
-          "webhook_url": "https://app.acme.co/signup",
           "env_vars": [
             {
               "name": "Acme Growth Workspace",
@@ -7069,7 +8614,8 @@
             "privacy_url": "https://app.acme.co/signup"
           },
           "created_at": "2026-03-24T20:00:00.000Z",
-          "updated_at": "2026-03-24T20:00:05.000Z"
+          "updated_at": "2026-03-24T20:00:05.000Z",
+          "webhook_endpoint_id": "we_0123456789abcdef0123456789abcdef"
         }
       },
       "GateManagedServiceListResponse": {
@@ -7092,7 +8638,6 @@
                 "description": "203.0.113.10",
                 "website": "https://app.acme.co/signup",
                 "dashboard_login_url": "https://app.acme.co/signup",
-                "webhook_url": "https://app.acme.co/signup",
                 "env_vars": [
                   {
                     "name": "Acme Growth Workspace",
@@ -7120,7 +8665,8 @@
                   "privacy_url": "https://app.acme.co/signup"
                 },
                 "created_at": "2026-03-24T20:00:00.000Z",
-                "updated_at": "2026-03-24T20:00:05.000Z"
+                "updated_at": "2026-03-24T20:00:05.000Z",
+                "webhook_endpoint_id": "we_0123456789abcdef0123456789abcdef"
               }
             },
             "example": [
@@ -7133,7 +8679,6 @@
                 "description": "203.0.113.10",
                 "website": "https://app.acme.co/signup",
                 "dashboard_login_url": "https://app.acme.co/signup",
-                "webhook_url": "https://app.acme.co/signup",
                 "env_vars": [
                   {
                     "name": "Acme Growth Workspace",
@@ -7161,7 +8706,8 @@
                   "privacy_url": "https://app.acme.co/signup"
                 },
                 "created_at": "2026-03-24T20:00:00.000Z",
-                "updated_at": "2026-03-24T20:00:05.000Z"
+                "updated_at": "2026-03-24T20:00:05.000Z",
+                "webhook_endpoint_id": "we_0123456789abcdef0123456789abcdef"
               }
             ]
           },
@@ -7183,7 +8729,6 @@
               "description": "203.0.113.10",
               "website": "https://app.acme.co/signup",
               "dashboard_login_url": "https://app.acme.co/signup",
-              "webhook_url": "https://app.acme.co/signup",
               "env_vars": [
                 {
                   "name": "Acme Growth Workspace",
@@ -7211,7 +8756,8 @@
                 "privacy_url": "https://app.acme.co/signup"
               },
               "created_at": "2026-03-24T20:00:00.000Z",
-              "updated_at": "2026-03-24T20:00:05.000Z"
+              "updated_at": "2026-03-24T20:00:05.000Z",
+              "webhook_endpoint_id": "we_0123456789abcdef0123456789abcdef"
             }
           ],
           "meta": {
@@ -7237,7 +8783,6 @@
               "description": "203.0.113.10",
               "website": "https://app.acme.co/signup",
               "dashboard_login_url": "https://app.acme.co/signup",
-              "webhook_url": "https://app.acme.co/signup",
               "env_vars": [
                 {
                   "name": "Acme Growth Workspace",
@@ -7265,7 +8810,8 @@
                 "privacy_url": "https://app.acme.co/signup"
               },
               "created_at": "2026-03-24T20:00:00.000Z",
-              "updated_at": "2026-03-24T20:00:05.000Z"
+              "updated_at": "2026-03-24T20:00:05.000Z",
+              "webhook_endpoint_id": "we_0123456789abcdef0123456789abcdef"
             }
           },
           "meta": {
@@ -7285,7 +8831,6 @@
             "description": "203.0.113.10",
             "website": "https://app.acme.co/signup",
             "dashboard_login_url": "https://app.acme.co/signup",
-            "webhook_url": "https://app.acme.co/signup",
             "env_vars": [
               {
                 "name": "Acme Growth Workspace",
@@ -7313,7 +8858,8 @@
               "privacy_url": "https://app.acme.co/signup"
             },
             "created_at": "2026-03-24T20:00:00.000Z",
-            "updated_at": "2026-03-24T20:00:05.000Z"
+            "updated_at": "2026-03-24T20:00:05.000Z",
+            "webhook_endpoint_id": "we_0123456789abcdef0123456789abcdef"
           },
           "meta": {
             "request_id": "req_cf147349a4134208aebb8c70e25fb7e1"
@@ -7736,6 +9282,99 @@
           "disabled"
         ],
         "example": "active"
+      },
+      "GateSessionApprovedWebhookEvent": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/WebhookEventEnvelope",
+            "example": {
+              "id": "webhook_event_id",
+              "object": "webhook_event",
+              "type": "session.fingerprint.calculated",
+              "created": "2026-03-24T20:00:00.000Z",
+              "data": {
+                "object": "session_fingerprint",
+                "session": {
+                  "id": "sid_87wfetm98myh9awj0dpt28a3kc"
+                },
+                "visitor_fingerprint": {
+                  "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m",
+                  "confidence": 93,
+                  "identified_at": "2026-03-24T20:00:05.000Z"
+                },
+                "request": {
+                  "url": "https://app.acme.co/signup",
+                  "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+                  "ip_address": "203.0.113.10",
+                  "screen_size": "1440x900",
+                  "is_touch_capable": true,
+                  "platform": "macOS",
+                  "first_seen": "2026-03-01T18:22:11.000Z",
+                  "risk_time": "2026-03-24T20:00:05.000Z"
+                },
+                "calculated_at": "2026-03-24T20:00:05.000Z"
+              }
+            }
+          }
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "gate.session.approved",
+            "example": "gate.session.approved"
+          },
+          "data": {
+            "$ref": "#/components/schemas/GateApprovedWebhookPayload",
+            "example": {
+              "service_id": "gsvc_0123456789abcdefghjkmnpqrs",
+              "gate_session_id": "gate_0123456789abcdefghjkmnpqrs",
+              "gate_account_id": "gacct_0123456789abcdefghjkmnpqrs",
+              "account_name": "Acme Growth Workspace",
+              "metadata": {
+                "source": "signup_form"
+              },
+              "tripwire": {
+                "verdict": "human",
+                "score": 0.08
+              },
+              "delivery": {
+                "version": 1,
+                "algorithm": "x25519-hkdf-sha256/aes-256-gcm",
+                "key_id": "key_6cw04zdmetw8t5rsdppadhper0",
+                "public_key": "pk_live_dZO3Bl6MqLn2VJYy18bjGkbPRCkubdgK"
+              }
+            }
+          }
+        },
+        "example": {
+          "id": "webhook_event_id",
+          "object": "webhook_event",
+          "type": "session.fingerprint.calculated",
+          "created": "2026-03-24T20:00:00.000Z",
+          "data": {
+            "object": "session_fingerprint",
+            "session": {
+              "id": "sid_87wfetm98myh9awj0dpt28a3kc"
+            },
+            "visitor_fingerprint": {
+              "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m",
+              "confidence": 93,
+              "identified_at": "2026-03-24T20:00:05.000Z"
+            },
+            "request": {
+              "url": "https://app.acme.co/signup",
+              "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+              "ip_address": "203.0.113.10",
+              "screen_size": "1440x900",
+              "is_touch_capable": true,
+              "platform": "macOS",
+              "first_seen": "2026-03-01T18:22:11.000Z",
+              "risk_time": "2026-03-24T20:00:05.000Z"
+            },
+            "calculated_at": "2026-03-24T20:00:05.000Z"
+          }
+        }
       },
       "GateSessionCreate": {
         "type": "object",
@@ -8174,7 +9813,9 @@
                     "gate:agent_tokens:revoke",
                     "gate:login_sessions:consume",
                     "gate:services:read",
-                    "gate:services:manage"
+                    "gate:services:manage",
+                    "webhooks:read",
+                    "webhooks:manage"
                   ]
                 },
                 "example": [
@@ -9710,64 +11351,348 @@
           "native_runtime_integrity": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/SessionNativeRuntimeIntegrity"
+                "$ref": "#/components/schemas/SessionNativeRuntimeIntegrity",
+                "example": {
+                  "platform": "ios",
+                  "jailbreak_or_root": {
+                    "detected": true,
+                    "signals": [
+                      "webdriver_detected"
+                    ],
+                    "present_paths": [
+                      "present_paths"
+                    ],
+                    "dyld_insert_libraries": [
+                      "dyld_insert_libraries"
+                    ],
+                    "verified_boot_state": "verified_boot_state",
+                    "magisk_mount_present": true,
+                    "su_on_path": true
+                  },
+                  "hooks": {
+                    "detected": true,
+                    "frida_ports": [
+                      1.5
+                    ],
+                    "frida_thread_names": [
+                      "Acme Workspace"
+                    ],
+                    "hooked_symbols": [
+                      "hooked_symbols"
+                    ],
+                    "self_hooked_symbols": [
+                      "self_hooked_symbols"
+                    ],
+                    "prologue_anomaly_count": 3,
+                    "unexpected_dyld_images": [
+                      "string"
+                    ],
+                    "xposed_packages": [
+                      "xposed_packages"
+                    ]
+                  },
+                  "debugger": {
+                    "attached": true,
+                    "tracer_pid": 1.5,
+                    "breakpoint_count": 3,
+                    "watchpoint_thread_count": 3
+                  },
+                  "code_signing": {
+                    "invalid": true,
+                    "code_sign_valid": true,
+                    "text_integrity_ok": true,
+                    "application_debuggable": true,
+                    "dyld_insert_libraries": [
+                      "dyld_insert_libraries"
+                    ]
+                  },
+                  "simulator_or_emulator": {
+                    "detected": true,
+                    "is_ios_app_on_mac": true,
+                    "qemu_files": [
+                      "qemu_files"
+                    ],
+                    "ro_hardware": "ro_hardware",
+                    "ro_product_model": "chrome",
+                    "simulator_env_keys": [
+                      "TRIPWIRE_SAMPLE_KEY"
+                    ]
+                  }
+                }
               },
               {
-                "type": "null"
+                "type": "null",
+                "example": null
               }
             ],
-            "example": null
+            "example": {
+              "platform": "ios",
+              "jailbreak_or_root": {
+                "detected": true,
+                "signals": [
+                  "webdriver_detected"
+                ],
+                "present_paths": [
+                  "present_paths"
+                ],
+                "dyld_insert_libraries": [
+                  "dyld_insert_libraries"
+                ],
+                "verified_boot_state": "verified_boot_state",
+                "magisk_mount_present": true,
+                "su_on_path": true
+              },
+              "hooks": {
+                "detected": true,
+                "frida_ports": [
+                  1.5
+                ],
+                "frida_thread_names": [
+                  "Acme Workspace"
+                ],
+                "hooked_symbols": [
+                  "hooked_symbols"
+                ],
+                "self_hooked_symbols": [
+                  "self_hooked_symbols"
+                ],
+                "prologue_anomaly_count": 3,
+                "unexpected_dyld_images": [
+                  "string"
+                ],
+                "xposed_packages": [
+                  "xposed_packages"
+                ]
+              },
+              "debugger": {
+                "attached": true,
+                "tracer_pid": 1.5,
+                "breakpoint_count": 3,
+                "watchpoint_thread_count": 3
+              },
+              "code_signing": {
+                "invalid": true,
+                "code_sign_valid": true,
+                "text_integrity_ok": true,
+                "application_debuggable": true,
+                "dyld_insert_libraries": [
+                  "dyld_insert_libraries"
+                ]
+              },
+              "simulator_or_emulator": {
+                "detected": true,
+                "is_ios_app_on_mac": true,
+                "qemu_files": [
+                  "qemu_files"
+                ],
+                "ro_hardware": "ro_hardware",
+                "ro_product_model": "chrome",
+                "simulator_env_keys": [
+                  "TRIPWIRE_SAMPLE_KEY"
+                ]
+              }
+            }
           },
           "native_app": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/SessionNativeApp"
+                "$ref": "#/components/schemas/SessionNativeApp",
+                "example": {
+                  "bundle_id": "bundle_id",
+                  "app_version": "123.0.0.0",
+                  "app_build": "app_build",
+                  "install_time_epoch_ms": 1.5,
+                  "provisioning_team": "provisioning_team"
+                }
               },
               {
-                "type": "null"
+                "type": "null",
+                "example": null
               }
             ],
-            "example": null
+            "example": {
+              "bundle_id": "bundle_id",
+              "app_version": "123.0.0.0",
+              "app_build": "app_build",
+              "install_time_epoch_ms": 1.5,
+              "provisioning_team": "provisioning_team"
+            }
           },
           "native_carrier": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/SessionNativeCarrier"
+                "$ref": "#/components/schemas/SessionNativeCarrier",
+                "example": {
+                  "platform": "ios",
+                  "carrier_name": "Acme Workspace",
+                  "country_iso": "United States",
+                  "mcc": "mcc",
+                  "mnc": "mnc",
+                  "phone_type": "phone_type",
+                  "network_type": "network_type",
+                  "radio_access": [
+                    "radio_access"
+                  ]
+                }
               },
               {
-                "type": "null"
+                "type": "null",
+                "example": null
               }
             ],
-            "example": null
+            "example": {
+              "platform": "ios",
+              "carrier_name": "Acme Workspace",
+              "country_iso": "United States",
+              "mcc": "mcc",
+              "mnc": "mnc",
+              "phone_type": "phone_type",
+              "network_type": "network_type",
+              "radio_access": [
+                "radio_access"
+              ]
+            }
           },
           "native_motion_print": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/SessionNativeMotionPrint"
+                "$ref": "#/components/schemas/SessionNativeMotionPrint",
+                "example": {
+                  "platform": "ios",
+                  "sample_count": 3,
+                  "gyro": {
+                    "bias": [
+                      1.5,
+                      2.5,
+                      3.5
+                    ],
+                    "noise": [
+                      1.5,
+                      2.5,
+                      3.5
+                    ]
+                  },
+                  "accel": {
+                    "bias": [
+                      1.5,
+                      2.5,
+                      3.5
+                    ],
+                    "noise": [
+                      1.5,
+                      2.5,
+                      3.5
+                    ]
+                  },
+                  "mag": {
+                    "bias": [
+                      1.5,
+                      2.5,
+                      3.5
+                    ],
+                    "noise": [
+                      1.5,
+                      2.5,
+                      3.5
+                    ]
+                  }
+                }
               },
               {
-                "type": "null"
+                "type": "null",
+                "example": null
               }
             ],
-            "example": null
+            "example": {
+              "platform": "ios",
+              "sample_count": 3,
+              "gyro": {
+                "bias": [
+                  1.5,
+                  2.5,
+                  3.5
+                ],
+                "noise": [
+                  1.5,
+                  2.5,
+                  3.5
+                ]
+              },
+              "accel": {
+                "bias": [
+                  1.5,
+                  2.5,
+                  3.5
+                ],
+                "noise": [
+                  1.5,
+                  2.5,
+                  3.5
+                ]
+              },
+              "mag": {
+                "bias": [
+                  1.5,
+                  2.5,
+                  3.5
+                ],
+                "noise": [
+                  1.5,
+                  2.5,
+                  3.5
+                ]
+              }
+            }
           },
           "device_identity": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/SessionDetailDeviceIdentity"
+                "$ref": "#/components/schemas/SessionDetailDeviceIdentity",
+                "example": {
+                  "object": "device_identity",
+                  "id": "sid_87wfetm98myh9awj0dpt28a3kc",
+                  "confidence": 93,
+                  "source": "attested",
+                  "platform": "ios",
+                  "identified_at": "2026-03-24T20:00:05.000Z",
+                  "lifecycle": {
+                    "first_seen_at": "2026-03-01T18:22:11.000Z",
+                    "last_seen_at": "2026-03-24T20:00:05.000Z",
+                    "seen_count": 14
+                  },
+                  "matched_anchors": [
+                    "matched_anchors"
+                  ]
+                }
               },
               {
-                "type": "null"
+                "type": "null",
+                "example": null
               }
             ],
-            "example": null
+            "example": {
+              "object": "device_identity",
+              "id": "sid_87wfetm98myh9awj0dpt28a3kc",
+              "confidence": 93,
+              "source": "attested",
+              "platform": "ios",
+              "identified_at": "2026-03-24T20:00:05.000Z",
+              "lifecycle": {
+                "first_seen_at": "2026-03-01T18:22:11.000Z",
+                "last_seen_at": "2026-03-24T20:00:05.000Z",
+                "seen_count": 14
+              },
+              "matched_anchors": [
+                "matched_anchors"
+              ]
+            }
           },
           "install_id": {
             "type": [
               "string",
               "null"
             ],
-            "example": null
+            "example": "install_id"
           },
           "visitor_fingerprint": {
             "anyOf": [
@@ -10156,12 +12081,149 @@
             "virtualization_suspected": true,
             "privacy_hardening_suspected": true
           },
-          "native_runtime_integrity": null,
-          "native_app": null,
-          "native_carrier": null,
-          "native_motion_print": null,
-          "device_identity": null,
-          "install_id": null,
+          "native_runtime_integrity": {
+            "platform": "ios",
+            "jailbreak_or_root": {
+              "detected": true,
+              "signals": [
+                "webdriver_detected"
+              ],
+              "present_paths": [
+                "present_paths"
+              ],
+              "dyld_insert_libraries": [
+                "dyld_insert_libraries"
+              ],
+              "verified_boot_state": "verified_boot_state",
+              "magisk_mount_present": true,
+              "su_on_path": true
+            },
+            "hooks": {
+              "detected": true,
+              "frida_ports": [
+                1.5
+              ],
+              "frida_thread_names": [
+                "Acme Workspace"
+              ],
+              "hooked_symbols": [
+                "hooked_symbols"
+              ],
+              "self_hooked_symbols": [
+                "self_hooked_symbols"
+              ],
+              "prologue_anomaly_count": 3,
+              "unexpected_dyld_images": [
+                "string"
+              ],
+              "xposed_packages": [
+                "xposed_packages"
+              ]
+            },
+            "debugger": {
+              "attached": true,
+              "tracer_pid": 1.5,
+              "breakpoint_count": 3,
+              "watchpoint_thread_count": 3
+            },
+            "code_signing": {
+              "invalid": true,
+              "code_sign_valid": true,
+              "text_integrity_ok": true,
+              "application_debuggable": true,
+              "dyld_insert_libraries": [
+                "dyld_insert_libraries"
+              ]
+            },
+            "simulator_or_emulator": {
+              "detected": true,
+              "is_ios_app_on_mac": true,
+              "qemu_files": [
+                "qemu_files"
+              ],
+              "ro_hardware": "ro_hardware",
+              "ro_product_model": "chrome",
+              "simulator_env_keys": [
+                "TRIPWIRE_SAMPLE_KEY"
+              ]
+            }
+          },
+          "native_app": {
+            "bundle_id": "bundle_id",
+            "app_version": "123.0.0.0",
+            "app_build": "app_build",
+            "install_time_epoch_ms": 1.5,
+            "provisioning_team": "provisioning_team"
+          },
+          "native_carrier": {
+            "platform": "ios",
+            "carrier_name": "Acme Workspace",
+            "country_iso": "United States",
+            "mcc": "mcc",
+            "mnc": "mnc",
+            "phone_type": "phone_type",
+            "network_type": "network_type",
+            "radio_access": [
+              "radio_access"
+            ]
+          },
+          "native_motion_print": {
+            "platform": "ios",
+            "sample_count": 3,
+            "gyro": {
+              "bias": [
+                1.5,
+                2.5,
+                3.5
+              ],
+              "noise": [
+                1.5,
+                2.5,
+                3.5
+              ]
+            },
+            "accel": {
+              "bias": [
+                1.5,
+                2.5,
+                3.5
+              ],
+              "noise": [
+                1.5,
+                2.5,
+                3.5
+              ]
+            },
+            "mag": {
+              "bias": [
+                1.5,
+                2.5,
+                3.5
+              ],
+              "noise": [
+                1.5,
+                2.5,
+                3.5
+              ]
+            }
+          },
+          "device_identity": {
+            "object": "device_identity",
+            "id": "sid_87wfetm98myh9awj0dpt28a3kc",
+            "confidence": 93,
+            "source": "attested",
+            "platform": "ios",
+            "identified_at": "2026-03-24T20:00:05.000Z",
+            "lifecycle": {
+              "first_seen_at": "2026-03-01T18:22:11.000Z",
+              "last_seen_at": "2026-03-24T20:00:05.000Z",
+              "seen_count": 14
+            },
+            "matched_anchors": [
+              "matched_anchors"
+            ]
+          },
+          "install_id": "install_id",
           "visitor_fingerprint": {
             "object": "visitor_fingerprint",
             "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m",
@@ -10461,13 +12523,16 @@
         ],
         "properties": {
           "object": {
-            "const": "device_identity"
+            "const": "device_identity",
+            "example": "device_identity"
           },
           "id": {
-            "type": "string"
+            "type": "string",
+            "example": "sid_87wfetm98myh9awj0dpt28a3kc"
           },
           "confidence": {
-            "type": "number"
+            "type": "number",
+            "example": 93
           },
           "source": {
             "type": "string",
@@ -10476,18 +12541,21 @@
               "anchored",
               "inferred",
               "new"
-            ]
+            ],
+            "example": "attested"
           },
           "platform": {
             "type": "string",
             "enum": [
               "ios",
               "android"
-            ]
+            ],
+            "example": "ios"
           },
           "identified_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2026-03-24T20:00:05.000Z"
           },
           "lifecycle": {
             "type": "object",
@@ -10500,23 +12568,51 @@
             "properties": {
               "first_seen_at": {
                 "type": "string",
-                "format": "date-time"
+                "format": "date-time",
+                "example": "2026-03-01T18:22:11.000Z"
               },
               "last_seen_at": {
                 "type": "string",
-                "format": "date-time"
+                "format": "date-time",
+                "example": "2026-03-24T20:00:05.000Z"
               },
               "seen_count": {
-                "type": "number"
+                "type": "number",
+                "example": 14
               }
+            },
+            "example": {
+              "first_seen_at": "2026-03-01T18:22:11.000Z",
+              "last_seen_at": "2026-03-24T20:00:05.000Z",
+              "seen_count": 14
             }
           },
           "matched_anchors": {
             "type": "array",
             "items": {
-              "type": "string"
-            }
+              "type": "string",
+              "example": "matched_anchors"
+            },
+            "example": [
+              "matched_anchors"
+            ]
           }
+        },
+        "example": {
+          "object": "device_identity",
+          "id": "sid_87wfetm98myh9awj0dpt28a3kc",
+          "confidence": 93,
+          "source": "attested",
+          "platform": "ios",
+          "identified_at": "2026-03-24T20:00:05.000Z",
+          "lifecycle": {
+            "first_seen_at": "2026-03-01T18:22:11.000Z",
+            "last_seen_at": "2026-03-24T20:00:05.000Z",
+            "seen_count": 14
+          },
+          "matched_anchors": [
+            "matched_anchors"
+          ]
         }
       },
       "SessionDetailRequest": {
@@ -10665,12 +12761,149 @@
                 "virtualization_suspected": true,
                 "privacy_hardening_suspected": true
               },
-              "native_runtime_integrity": null,
-              "native_app": null,
-              "native_carrier": null,
-              "native_motion_print": null,
-              "device_identity": null,
-              "install_id": null,
+              "native_runtime_integrity": {
+                "platform": "ios",
+                "jailbreak_or_root": {
+                  "detected": true,
+                  "signals": [
+                    "webdriver_detected"
+                  ],
+                  "present_paths": [
+                    "present_paths"
+                  ],
+                  "dyld_insert_libraries": [
+                    "dyld_insert_libraries"
+                  ],
+                  "verified_boot_state": "verified_boot_state",
+                  "magisk_mount_present": true,
+                  "su_on_path": true
+                },
+                "hooks": {
+                  "detected": true,
+                  "frida_ports": [
+                    1.5
+                  ],
+                  "frida_thread_names": [
+                    "Acme Workspace"
+                  ],
+                  "hooked_symbols": [
+                    "hooked_symbols"
+                  ],
+                  "self_hooked_symbols": [
+                    "self_hooked_symbols"
+                  ],
+                  "prologue_anomaly_count": 3,
+                  "unexpected_dyld_images": [
+                    "string"
+                  ],
+                  "xposed_packages": [
+                    "xposed_packages"
+                  ]
+                },
+                "debugger": {
+                  "attached": true,
+                  "tracer_pid": 1.5,
+                  "breakpoint_count": 3,
+                  "watchpoint_thread_count": 3
+                },
+                "code_signing": {
+                  "invalid": true,
+                  "code_sign_valid": true,
+                  "text_integrity_ok": true,
+                  "application_debuggable": true,
+                  "dyld_insert_libraries": [
+                    "dyld_insert_libraries"
+                  ]
+                },
+                "simulator_or_emulator": {
+                  "detected": true,
+                  "is_ios_app_on_mac": true,
+                  "qemu_files": [
+                    "qemu_files"
+                  ],
+                  "ro_hardware": "ro_hardware",
+                  "ro_product_model": "chrome",
+                  "simulator_env_keys": [
+                    "TRIPWIRE_SAMPLE_KEY"
+                  ]
+                }
+              },
+              "native_app": {
+                "bundle_id": "bundle_id",
+                "app_version": "123.0.0.0",
+                "app_build": "app_build",
+                "install_time_epoch_ms": 1.5,
+                "provisioning_team": "provisioning_team"
+              },
+              "native_carrier": {
+                "platform": "ios",
+                "carrier_name": "Acme Workspace",
+                "country_iso": "United States",
+                "mcc": "mcc",
+                "mnc": "mnc",
+                "phone_type": "phone_type",
+                "network_type": "network_type",
+                "radio_access": [
+                  "radio_access"
+                ]
+              },
+              "native_motion_print": {
+                "platform": "ios",
+                "sample_count": 3,
+                "gyro": {
+                  "bias": [
+                    1.5,
+                    2.5,
+                    3.5
+                  ],
+                  "noise": [
+                    1.5,
+                    2.5,
+                    3.5
+                  ]
+                },
+                "accel": {
+                  "bias": [
+                    1.5,
+                    2.5,
+                    3.5
+                  ],
+                  "noise": [
+                    1.5,
+                    2.5,
+                    3.5
+                  ]
+                },
+                "mag": {
+                  "bias": [
+                    1.5,
+                    2.5,
+                    3.5
+                  ],
+                  "noise": [
+                    1.5,
+                    2.5,
+                    3.5
+                  ]
+                }
+              },
+              "device_identity": {
+                "object": "device_identity",
+                "id": "sid_87wfetm98myh9awj0dpt28a3kc",
+                "confidence": 93,
+                "source": "attested",
+                "platform": "ios",
+                "identified_at": "2026-03-24T20:00:05.000Z",
+                "lifecycle": {
+                  "first_seen_at": "2026-03-01T18:22:11.000Z",
+                  "last_seen_at": "2026-03-24T20:00:05.000Z",
+                  "seen_count": 14
+                },
+                "matched_anchors": [
+                  "matched_anchors"
+                ]
+              },
+              "install_id": "install_id",
               "visitor_fingerprint": {
                 "object": "visitor_fingerprint",
                 "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m",
@@ -11000,12 +13233,149 @@
               "virtualization_suspected": true,
               "privacy_hardening_suspected": true
             },
-            "native_runtime_integrity": null,
-            "native_app": null,
-            "native_carrier": null,
-            "native_motion_print": null,
-            "device_identity": null,
-            "install_id": null,
+            "native_runtime_integrity": {
+              "platform": "ios",
+              "jailbreak_or_root": {
+                "detected": true,
+                "signals": [
+                  "webdriver_detected"
+                ],
+                "present_paths": [
+                  "present_paths"
+                ],
+                "dyld_insert_libraries": [
+                  "dyld_insert_libraries"
+                ],
+                "verified_boot_state": "verified_boot_state",
+                "magisk_mount_present": true,
+                "su_on_path": true
+              },
+              "hooks": {
+                "detected": true,
+                "frida_ports": [
+                  1.5
+                ],
+                "frida_thread_names": [
+                  "Acme Workspace"
+                ],
+                "hooked_symbols": [
+                  "hooked_symbols"
+                ],
+                "self_hooked_symbols": [
+                  "self_hooked_symbols"
+                ],
+                "prologue_anomaly_count": 3,
+                "unexpected_dyld_images": [
+                  "string"
+                ],
+                "xposed_packages": [
+                  "xposed_packages"
+                ]
+              },
+              "debugger": {
+                "attached": true,
+                "tracer_pid": 1.5,
+                "breakpoint_count": 3,
+                "watchpoint_thread_count": 3
+              },
+              "code_signing": {
+                "invalid": true,
+                "code_sign_valid": true,
+                "text_integrity_ok": true,
+                "application_debuggable": true,
+                "dyld_insert_libraries": [
+                  "dyld_insert_libraries"
+                ]
+              },
+              "simulator_or_emulator": {
+                "detected": true,
+                "is_ios_app_on_mac": true,
+                "qemu_files": [
+                  "qemu_files"
+                ],
+                "ro_hardware": "ro_hardware",
+                "ro_product_model": "chrome",
+                "simulator_env_keys": [
+                  "TRIPWIRE_SAMPLE_KEY"
+                ]
+              }
+            },
+            "native_app": {
+              "bundle_id": "bundle_id",
+              "app_version": "123.0.0.0",
+              "app_build": "app_build",
+              "install_time_epoch_ms": 1.5,
+              "provisioning_team": "provisioning_team"
+            },
+            "native_carrier": {
+              "platform": "ios",
+              "carrier_name": "Acme Workspace",
+              "country_iso": "United States",
+              "mcc": "mcc",
+              "mnc": "mnc",
+              "phone_type": "phone_type",
+              "network_type": "network_type",
+              "radio_access": [
+                "radio_access"
+              ]
+            },
+            "native_motion_print": {
+              "platform": "ios",
+              "sample_count": 3,
+              "gyro": {
+                "bias": [
+                  1.5,
+                  2.5,
+                  3.5
+                ],
+                "noise": [
+                  1.5,
+                  2.5,
+                  3.5
+                ]
+              },
+              "accel": {
+                "bias": [
+                  1.5,
+                  2.5,
+                  3.5
+                ],
+                "noise": [
+                  1.5,
+                  2.5,
+                  3.5
+                ]
+              },
+              "mag": {
+                "bias": [
+                  1.5,
+                  2.5,
+                  3.5
+                ],
+                "noise": [
+                  1.5,
+                  2.5,
+                  3.5
+                ]
+              }
+            },
+            "device_identity": {
+              "object": "device_identity",
+              "id": "sid_87wfetm98myh9awj0dpt28a3kc",
+              "confidence": 93,
+              "source": "attested",
+              "platform": "ios",
+              "identified_at": "2026-03-24T20:00:05.000Z",
+              "lifecycle": {
+                "first_seen_at": "2026-03-01T18:22:11.000Z",
+                "last_seen_at": "2026-03-24T20:00:05.000Z",
+                "seen_count": 14
+              },
+              "matched_anchors": [
+                "matched_anchors"
+              ]
+            },
+            "install_id": "install_id",
             "visitor_fingerprint": {
               "object": "visitor_fingerprint",
               "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m",
@@ -11753,6 +14123,210 @@
           }
         }
       },
+      "SessionFingerprintCalculatedPayload": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "object",
+          "session",
+          "visitor_fingerprint",
+          "request",
+          "calculated_at"
+        ],
+        "properties": {
+          "object": {
+            "type": "string",
+            "const": "session_fingerprint",
+            "example": "session_fingerprint"
+          },
+          "session": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/SessionId",
+                "example": "sid_87wfetm98myh9awj0dpt28a3kc"
+              }
+            },
+            "example": {
+              "id": "sid_87wfetm98myh9awj0dpt28a3kc"
+            }
+          },
+          "visitor_fingerprint": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "confidence",
+              "identified_at"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/FingerprintId",
+                "example": "vid_7cyvmdfjs3rzznf8m65v3bv51m"
+              },
+              "confidence": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 100,
+                "example": 93
+              },
+              "identified_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-03-24T20:00:05.000Z"
+              }
+            },
+            "example": {
+              "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m",
+              "confidence": 93,
+              "identified_at": "2026-03-24T20:00:05.000Z"
+            }
+          },
+          "request": {
+            "$ref": "#/components/schemas/WebhookRequestSummary",
+            "example": {
+              "url": "https://app.acme.co/signup",
+              "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+              "ip_address": "203.0.113.10",
+              "screen_size": "1440x900",
+              "is_touch_capable": true,
+              "platform": "macOS",
+              "first_seen": "2026-03-01T18:22:11.000Z",
+              "risk_time": "2026-03-24T20:00:05.000Z"
+            }
+          },
+          "calculated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-24T20:00:05.000Z"
+          }
+        },
+        "example": {
+          "object": "session_fingerprint",
+          "session": {
+            "id": "sid_87wfetm98myh9awj0dpt28a3kc"
+          },
+          "visitor_fingerprint": {
+            "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m",
+            "confidence": 93,
+            "identified_at": "2026-03-24T20:00:05.000Z"
+          },
+          "request": {
+            "url": "https://app.acme.co/signup",
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+            "ip_address": "203.0.113.10",
+            "screen_size": "1440x900",
+            "is_touch_capable": true,
+            "platform": "macOS",
+            "first_seen": "2026-03-01T18:22:11.000Z",
+            "risk_time": "2026-03-24T20:00:05.000Z"
+          },
+          "calculated_at": "2026-03-24T20:00:05.000Z"
+        }
+      },
+      "SessionFingerprintCalculatedWebhookEvent": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/WebhookEventEnvelope",
+            "example": {
+              "id": "webhook_event_id",
+              "object": "webhook_event",
+              "type": "session.fingerprint.calculated",
+              "created": "2026-03-24T20:00:00.000Z",
+              "data": {
+                "object": "session_fingerprint",
+                "session": {
+                  "id": "sid_87wfetm98myh9awj0dpt28a3kc"
+                },
+                "visitor_fingerprint": {
+                  "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m",
+                  "confidence": 93,
+                  "identified_at": "2026-03-24T20:00:05.000Z"
+                },
+                "request": {
+                  "url": "https://app.acme.co/signup",
+                  "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+                  "ip_address": "203.0.113.10",
+                  "screen_size": "1440x900",
+                  "is_touch_capable": true,
+                  "platform": "macOS",
+                  "first_seen": "2026-03-01T18:22:11.000Z",
+                  "risk_time": "2026-03-24T20:00:05.000Z"
+                },
+                "calculated_at": "2026-03-24T20:00:05.000Z"
+              }
+            }
+          }
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "session.fingerprint.calculated",
+            "example": "session.fingerprint.calculated"
+          },
+          "data": {
+            "$ref": "#/components/schemas/SessionFingerprintCalculatedPayload",
+            "example": {
+              "object": "session_fingerprint",
+              "session": {
+                "id": "sid_87wfetm98myh9awj0dpt28a3kc"
+              },
+              "visitor_fingerprint": {
+                "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m",
+                "confidence": 93,
+                "identified_at": "2026-03-24T20:00:05.000Z"
+              },
+              "request": {
+                "url": "https://app.acme.co/signup",
+                "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+                "ip_address": "203.0.113.10",
+                "screen_size": "1440x900",
+                "is_touch_capable": true,
+                "platform": "macOS",
+                "first_seen": "2026-03-01T18:22:11.000Z",
+                "risk_time": "2026-03-24T20:00:05.000Z"
+              },
+              "calculated_at": "2026-03-24T20:00:05.000Z"
+            }
+          }
+        },
+        "example": {
+          "id": "webhook_event_id",
+          "object": "webhook_event",
+          "type": "session.fingerprint.calculated",
+          "created": "2026-03-24T20:00:00.000Z",
+          "data": {
+            "object": "session_fingerprint",
+            "session": {
+              "id": "sid_87wfetm98myh9awj0dpt28a3kc"
+            },
+            "visitor_fingerprint": {
+              "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m",
+              "confidence": 93,
+              "identified_at": "2026-03-24T20:00:05.000Z"
+            },
+            "request": {
+              "url": "https://app.acme.co/signup",
+              "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+              "ip_address": "203.0.113.10",
+              "screen_size": "1440x900",
+              "is_touch_capable": true,
+              "platform": "macOS",
+              "first_seen": "2026-03-01T18:22:11.000Z",
+              "risk_time": "2026-03-24T20:00:05.000Z"
+            },
+            "calculated_at": "2026-03-24T20:00:05.000Z"
+          }
+        }
+      },
       "SessionHighlight": {
         "type": "object",
         "additionalProperties": false,
@@ -11979,32 +14553,44 @@
         ],
         "properties": {
           "bundle_id": {
-            "type": "string"
+            "type": "string",
+            "example": "bundle_id"
           },
           "app_version": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "example": "123.0.0.0"
           },
           "app_build": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "example": "app_build"
           },
           "install_time_epoch_ms": {
             "type": [
               "number",
               "null"
-            ]
+            ],
+            "example": 1.5
           },
           "provisioning_team": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "example": "provisioning_team"
           }
+        },
+        "example": {
+          "bundle_id": "bundle_id",
+          "app_version": "123.0.0.0",
+          "app_build": "app_build",
+          "install_time_epoch_ms": 1.5,
+          "provisioning_team": "provisioning_team"
         }
       },
       "SessionNativeCarrier": {
@@ -12026,50 +14612,73 @@
             "enum": [
               "ios",
               "android"
-            ]
+            ],
+            "example": "ios"
           },
           "carrier_name": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "example": "Acme Workspace"
           },
           "country_iso": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "example": "United States"
           },
           "mcc": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "example": "mcc"
           },
           "mnc": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "example": "mnc"
           },
           "phone_type": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "example": "phone_type"
           },
           "network_type": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "example": "network_type"
           },
           "radio_access": {
             "type": "array",
             "items": {
-              "type": "string"
-            }
+              "type": "string",
+              "example": "radio_access"
+            },
+            "example": [
+              "radio_access"
+            ]
           }
+        },
+        "example": {
+          "platform": "ios",
+          "carrier_name": "Acme Workspace",
+          "country_iso": "United States",
+          "mcc": "mcc",
+          "mnc": "mnc",
+          "phone_type": "phone_type",
+          "network_type": "network_type",
+          "radio_access": [
+            "radio_access"
+          ]
         }
       },
       "SessionNativeCodeSigning": {
@@ -12080,23 +14689,40 @@
         ],
         "properties": {
           "invalid": {
-            "type": "boolean"
+            "type": "boolean",
+            "example": true
           },
           "code_sign_valid": {
-            "type": "boolean"
+            "type": "boolean",
+            "example": true
           },
           "text_integrity_ok": {
-            "type": "boolean"
+            "type": "boolean",
+            "example": true
           },
           "application_debuggable": {
-            "type": "boolean"
+            "type": "boolean",
+            "example": true
           },
           "dyld_insert_libraries": {
             "type": "array",
             "items": {
-              "type": "string"
-            }
+              "type": "string",
+              "example": "dyld_insert_libraries"
+            },
+            "example": [
+              "dyld_insert_libraries"
+            ]
           }
+        },
+        "example": {
+          "invalid": true,
+          "code_sign_valid": true,
+          "text_integrity_ok": true,
+          "application_debuggable": true,
+          "dyld_insert_libraries": [
+            "dyld_insert_libraries"
+          ]
         }
       },
       "SessionNativeDebugger": {
@@ -12107,17 +14733,27 @@
         ],
         "properties": {
           "attached": {
-            "type": "boolean"
+            "type": "boolean",
+            "example": true
           },
           "tracer_pid": {
-            "type": "number"
+            "type": "number",
+            "example": 1.5
           },
           "breakpoint_count": {
-            "type": "number"
+            "type": "number",
+            "example": 3
           },
           "watchpoint_thread_count": {
-            "type": "number"
+            "type": "number",
+            "example": 3
           }
+        },
+        "example": {
+          "attached": true,
+          "tracer_pid": 1.5,
+          "breakpoint_count": 3,
+          "watchpoint_thread_count": 3
         }
       },
       "SessionNativeHooks": {
@@ -12128,47 +14764,95 @@
         ],
         "properties": {
           "detected": {
-            "type": "boolean"
+            "type": "boolean",
+            "example": true
           },
           "frida_ports": {
             "type": "array",
             "items": {
-              "type": "number"
-            }
+              "type": "number",
+              "example": 1.5
+            },
+            "example": [
+              1.5
+            ]
           },
           "frida_thread_names": {
             "type": "array",
             "items": {
-              "type": "string"
-            }
+              "type": "string",
+              "example": "Acme Workspace"
+            },
+            "example": [
+              "Acme Workspace"
+            ]
           },
           "hooked_symbols": {
             "type": "array",
             "items": {
-              "type": "string"
-            }
+              "type": "string",
+              "example": "hooked_symbols"
+            },
+            "example": [
+              "hooked_symbols"
+            ]
           },
           "self_hooked_symbols": {
             "type": "array",
             "items": {
-              "type": "string"
-            }
+              "type": "string",
+              "example": "self_hooked_symbols"
+            },
+            "example": [
+              "self_hooked_symbols"
+            ]
           },
           "prologue_anomaly_count": {
-            "type": "number"
+            "type": "number",
+            "example": 3
           },
           "unexpected_dyld_images": {
             "type": "array",
             "items": {
-              "type": "string"
-            }
+              "type": "string",
+              "example": "string"
+            },
+            "example": [
+              "string"
+            ]
           },
           "xposed_packages": {
             "type": "array",
             "items": {
-              "type": "string"
-            }
+              "type": "string",
+              "example": "xposed_packages"
+            },
+            "example": [
+              "xposed_packages"
+            ]
           }
+        },
+        "example": {
+          "detected": true,
+          "frida_ports": [
+            1.5
+          ],
+          "frida_thread_names": [
+            "Acme Workspace"
+          ],
+          "hooked_symbols": [
+            "hooked_symbols"
+          ],
+          "self_hooked_symbols": [
+            "self_hooked_symbols"
+          ],
+          "prologue_anomaly_count": 3,
+          "unexpected_dyld_images": [
+            "string"
+          ],
+          "xposed_packages": [
+            "xposed_packages"
+          ]
         }
       },
       "SessionNativeJailbreakOrRoot": {
@@ -12180,35 +14864,66 @@
         ],
         "properties": {
           "detected": {
-            "type": "boolean"
+            "type": "boolean",
+            "example": true
           },
           "signals": {
             "type": "array",
             "items": {
-              "type": "string"
-            }
+              "type": "string",
+              "example": "webdriver_detected"
+            },
+            "example": [
+              "webdriver_detected"
+            ]
           },
           "present_paths": {
             "type": "array",
             "items": {
-              "type": "string"
-            }
+              "type": "string",
+              "example": "present_paths"
+            },
+            "example": [
+              "present_paths"
+            ]
           },
           "dyld_insert_libraries": {
             "type": "array",
             "items": {
-              "type": "string"
-            }
+              "type": "string",
+              "example": "dyld_insert_libraries"
+            },
+            "example": [
+              "dyld_insert_libraries"
+            ]
           },
           "verified_boot_state": {
-            "type": "string"
+            "type": "string",
+            "example": "verified_boot_state"
           },
           "magisk_mount_present": {
-            "type": "boolean"
+            "type": "boolean",
+            "example": true
           },
           "su_on_path": {
-            "type": "boolean"
+            "type": "boolean",
+            "example": true
           }
+        },
+        "example": {
+          "detected": true,
+          "signals": [
+            "webdriver_detected"
+          ],
+          "present_paths": [
+            "present_paths"
+          ],
+          "dyld_insert_libraries": [
+            "dyld_insert_libraries"
+          ],
+          "verified_boot_state": "verified_boot_state",
+          "magisk_mount_present": true,
+          "su_on_path": true
         }
       },
       "SessionNativeMotionAxes": {
@@ -12222,19 +14937,43 @@
           "bias": {
             "type": "array",
             "items": {
-              "type": "number"
+              "type": "number",
+              "example": 1.5
             },
             "minItems": 3,
-            "maxItems": 3
+            "maxItems": 3,
+            "example": [
+              1.5,
+              2.5,
+              3.5
+            ]
           },
           "noise": {
             "type": "array",
             "items": {
-              "type": "number"
+              "type": "number",
+              "example": 1.5
             },
             "minItems": 3,
-            "maxItems": 3
+            "maxItems": 3,
+            "example": [
+              1.5,
+              2.5,
+              3.5
+            ]
           }
+        },
+        "example": {
+          "bias": [
+            1.5,
+            2.5,
+            3.5
+          ],
+          "noise": [
+            1.5,
+            2.5,
+            3.5
+          ]
         }
       },
       "SessionNativeMotionPrint": {
@@ -12253,25 +14992,116 @@
             "enum": [
               "ios",
               "android"
-            ]
+            ],
+            "example": "ios"
           },
           "sample_count": {
-            "type": "number"
+            "type": "number",
+            "example": 3
           },
           "gyro": {
-            "$ref": "#/components/schemas/SessionNativeMotionAxes"
+            "$ref": "#/components/schemas/SessionNativeMotionAxes",
+            "example": {
+              "bias": [
+                1.5,
+                2.5,
+                3.5
+              ],
+              "noise": [
+                1.5,
+                2.5,
+                3.5
+              ]
+            }
           },
           "accel": {
-            "$ref": "#/components/schemas/SessionNativeMotionAxes"
+            "$ref": "#/components/schemas/SessionNativeMotionAxes",
+            "example": {
+              "bias": [
+                1.5,
+                2.5,
+                3.5
+              ],
+              "noise": [
+                1.5,
+                2.5,
+                3.5
+              ]
+            }
           },
           "mag": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/SessionNativeMotionAxes"
+                "$ref": "#/components/schemas/SessionNativeMotionAxes",
+                "example": {
+                  "bias": [
+                    1.5,
+                    2.5,
+                    3.5
+                  ],
+                  "noise": [
+                    1.5,
+                    2.5,
+                    3.5
+                  ]
+                }
               },
               {
-                "type": "null"
+                "type": "null",
+                "example": null
               }
+            ],
+            "example": {
+              "bias": [
+                1.5,
+                2.5,
+                3.5
+              ],
+              "noise": [
+                1.5,
+                2.5,
+                3.5
+              ]
+            }
+          }
+        },
+        "example": {
+          "platform": "ios",
+          "sample_count": 3,
+          "gyro": {
+            "bias": [
+              1.5,
+              2.5,
+              3.5
+            ],
+            "noise": [
+              1.5,
+              2.5,
+              3.5
+            ]
+          },
+          "accel": {
+            "bias": [
+              1.5,
+              2.5,
+              3.5
+            ],
+            "noise": [
+              1.5,
+              2.5,
+              3.5
+            ]
+          },
+          "mag": {
+            "bias": [
+              1.5,
+              2.5,
+              3.5
+            ],
+            "noise": [
+              1.5,
+              2.5,
+              3.5
             ]
           }
         }
@@ -12297,40 +15127,150 @@
             "example": "ios"
           },
           "jailbreak_or_root": {
-            "$ref": "#/components/schemas/SessionNativeJailbreakOrRoot"
+            "$ref": "#/components/schemas/SessionNativeJailbreakOrRoot",
+            "example": {
+              "detected": true,
+              "signals": [
+                "webdriver_detected"
+              ],
+              "present_paths": [
+                "present_paths"
+              ],
+              "dyld_insert_libraries": [
+                "dyld_insert_libraries"
+              ],
+              "verified_boot_state": "verified_boot_state",
+              "magisk_mount_present": true,
+              "su_on_path": true
+            }
           },
           "hooks": {
-            "$ref": "#/components/schemas/SessionNativeHooks"
+            "$ref": "#/components/schemas/SessionNativeHooks",
+            "example": {
+              "detected": true,
+              "frida_ports": [
+                1.5
+              ],
+              "frida_thread_names": [
+                "Acme Workspace"
+              ],
+              "hooked_symbols": [
+                "hooked_symbols"
+              ],
+              "self_hooked_symbols": [
+                "self_hooked_symbols"
+              ],
+              "prologue_anomaly_count": 3,
+              "unexpected_dyld_images": [
+                "string"
+              ],
+              "xposed_packages": [
+                "xposed_packages"
+              ]
+            }
           },
           "debugger": {
-            "$ref": "#/components/schemas/SessionNativeDebugger"
+            "$ref": "#/components/schemas/SessionNativeDebugger",
+            "example": {
+              "attached": true,
+              "tracer_pid": 1.5,
+              "breakpoint_count": 3,
+              "watchpoint_thread_count": 3
+            }
           },
           "code_signing": {
-            "$ref": "#/components/schemas/SessionNativeCodeSigning"
+            "$ref": "#/components/schemas/SessionNativeCodeSigning",
+            "example": {
+              "invalid": true,
+              "code_sign_valid": true,
+              "text_integrity_ok": true,
+              "application_debuggable": true,
+              "dyld_insert_libraries": [
+                "dyld_insert_libraries"
+              ]
+            }
           },
           "simulator_or_emulator": {
-            "$ref": "#/components/schemas/SessionNativeSimulatorOrEmulator"
+            "$ref": "#/components/schemas/SessionNativeSimulatorOrEmulator",
+            "example": {
+              "detected": true,
+              "is_ios_app_on_mac": true,
+              "qemu_files": [
+                "qemu_files"
+              ],
+              "ro_hardware": "ro_hardware",
+              "ro_product_model": "chrome",
+              "simulator_env_keys": [
+                "TRIPWIRE_SAMPLE_KEY"
+              ]
+            }
           }
         },
         "example": {
           "platform": "ios",
           "jailbreak_or_root": {
-            "detected": false,
-            "signals": []
+            "detected": true,
+            "signals": [
+              "webdriver_detected"
+            ],
+            "present_paths": [
+              "present_paths"
+            ],
+            "dyld_insert_libraries": [
+              "dyld_insert_libraries"
+            ],
+            "verified_boot_state": "verified_boot_state",
+            "magisk_mount_present": true,
+            "su_on_path": true
           },
           "hooks": {
-            "detected": false
+            "detected": true,
+            "frida_ports": [
+              1.5
+            ],
+            "frida_thread_names": [
+              "Acme Workspace"
+            ],
+            "hooked_symbols": [
+              "hooked_symbols"
+            ],
+            "self_hooked_symbols": [
+              "self_hooked_symbols"
+            ],
+            "prologue_anomaly_count": 3,
+            "unexpected_dyld_images": [
+              "string"
+            ],
+            "xposed_packages": [
+              "xposed_packages"
+            ]
           },
           "debugger": {
-            "attached": false
+            "attached": true,
+            "tracer_pid": 1.5,
+            "breakpoint_count": 3,
+            "watchpoint_thread_count": 3
           },
           "code_signing": {
-            "invalid": false,
+            "invalid": true,
             "code_sign_valid": true,
-            "text_integrity_ok": true
+            "text_integrity_ok": true,
+            "application_debuggable": true,
+            "dyld_insert_libraries": [
+              "dyld_insert_libraries"
+            ]
           },
           "simulator_or_emulator": {
-            "detected": false
+            "detected": true,
+            "is_ios_app_on_mac": true,
+            "qemu_files": [
+              "qemu_files"
+            ],
+            "ro_hardware": "ro_hardware",
+            "ro_product_model": "chrome",
+            "simulator_env_keys": [
+              "TRIPWIRE_SAMPLE_KEY"
+            ]
           }
         }
       },
@@ -12342,29 +15282,53 @@
         ],
         "properties": {
           "detected": {
-            "type": "boolean"
+            "type": "boolean",
+            "example": true
           },
           "is_ios_app_on_mac": {
-            "type": "boolean"
+            "type": "boolean",
+            "example": true
           },
           "qemu_files": {
             "type": "array",
             "items": {
-              "type": "string"
-            }
+              "type": "string",
+              "example": "qemu_files"
+            },
+            "example": [
+              "qemu_files"
+            ]
           },
           "ro_hardware": {
-            "type": "string"
+            "type": "string",
+            "example": "ro_hardware"
           },
           "ro_product_model": {
-            "type": "string"
+            "type": "string",
+            "example": "chrome"
           },
           "simulator_env_keys": {
             "type": "array",
             "items": {
-              "type": "string"
-            }
+              "type": "string",
+              "example": "TRIPWIRE_SAMPLE_KEY"
+            },
+            "example": [
+              "TRIPWIRE_SAMPLE_KEY"
+            ]
           }
+        },
+        "example": {
+          "detected": true,
+          "is_ios_app_on_mac": true,
+          "qemu_files": [
+            "qemu_files"
+          ],
+          "ro_hardware": "ro_hardware",
+          "ro_product_model": "chrome",
+          "simulator_env_keys": [
+            "TRIPWIRE_SAMPLE_KEY"
+          ]
         }
       },
       "SessionNetwork": {
@@ -13440,6 +16404,456 @@
           "window_name": true
         }
       },
+      "SessionResultPersistedPayload": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "object",
+          "session",
+          "event",
+          "decision",
+          "visitor_fingerprint",
+          "request",
+          "score_breakdown",
+          "signals",
+          "attribution"
+        ],
+        "properties": {
+          "object": {
+            "type": "string",
+            "const": "session_result",
+            "example": "session_result"
+          },
+          "session": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/SessionId",
+                "example": "sid_87wfetm98myh9awj0dpt28a3kc"
+              }
+            },
+            "example": {
+              "id": "sid_87wfetm98myh9awj0dpt28a3kc"
+            }
+          },
+          "event": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "scoring_event_id",
+              "phase",
+              "is_provisional",
+              "persisted_at"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/EventId",
+                "example": "evt_srwqc0yqhz4bxvtrdtf69q7vkr"
+              },
+              "scoring_event_id": {
+                "type": "string",
+                "example": "scoring_event_id"
+              },
+              "phase": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "example": "phase"
+              },
+              "is_provisional": {
+                "type": [
+                  "boolean",
+                  "null"
+                ],
+                "example": false
+              },
+              "persisted_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-03-24T20:00:05.000Z"
+              }
+            },
+            "example": {
+              "id": "evt_srwqc0yqhz4bxvtrdtf69q7vkr",
+              "scoring_event_id": "scoring_event_id",
+              "phase": "phase",
+              "is_provisional": false,
+              "persisted_at": "2026-03-24T20:00:05.000Z"
+            }
+          },
+          "decision": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "verdict",
+              "risk_score",
+              "score",
+              "manipulation"
+            ],
+            "properties": {
+              "verdict": {
+                "$ref": "#/components/schemas/Verdict",
+                "example": "human"
+              },
+              "risk_score": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100,
+                "example": 94
+              },
+              "score": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "example": 0.08
+              },
+              "manipulation": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/ManipulationSummary",
+                    "example": {
+                      "score": 1,
+                      "verdict": "none"
+                    }
+                  },
+                  {
+                    "type": "null",
+                    "example": null
+                  }
+                ],
+                "example": {
+                  "score": 1,
+                  "verdict": "none"
+                }
+              }
+            },
+            "example": {
+              "verdict": "human",
+              "risk_score": 94,
+              "score": 0.08,
+              "manipulation": {
+                "score": 1,
+                "verdict": "none"
+              }
+            }
+          },
+          "visitor_fingerprint": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "$ref": "#/components/schemas/FingerprintId",
+                    "example": "vid_7cyvmdfjs3rzznf8m65v3bv51m"
+                  }
+                },
+                "example": {
+                  "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m"
+                }
+              },
+              {
+                "type": "null",
+                "example": null
+              }
+            ],
+            "example": {
+              "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m"
+            }
+          },
+          "request": {
+            "$ref": "#/components/schemas/WebhookRequestSummary",
+            "example": {
+              "url": "https://app.acme.co/signup",
+              "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+              "ip_address": "203.0.113.10",
+              "screen_size": "1440x900",
+              "is_touch_capable": true,
+              "platform": "macOS",
+              "first_seen": "2026-03-01T18:22:11.000Z",
+              "risk_time": "2026-03-24T20:00:05.000Z"
+            }
+          },
+          "score_breakdown": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+              "categories"
+            ],
+            "properties": {
+              "categories": {
+                "type": "object",
+                "additionalProperties": true,
+                "example": {
+                  "source": "signup_form"
+                }
+              }
+            },
+            "example": {
+              "categories": {
+                "source": "signup_form"
+              }
+            }
+          },
+          "signals": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "sid_87wfetm98myh9awj0dpt28a3kc"
+                },
+                "category": {
+                  "type": "string",
+                  "example": "environment"
+                },
+                "confidence": {
+                  "type": "string",
+                  "example": "exact"
+                },
+                "score": {
+                  "type": "number",
+                  "example": 0.08
+                },
+                "role": {
+                  "type": "string",
+                  "example": "owner"
+                }
+              },
+              "example": {
+                "id": "sid_87wfetm98myh9awj0dpt28a3kc",
+                "category": "environment",
+                "confidence": "exact",
+                "score": 0.08,
+                "role": "owner"
+              }
+            },
+            "example": [
+              {
+                "id": "sid_87wfetm98myh9awj0dpt28a3kc",
+                "category": "environment",
+                "confidence": "exact",
+                "score": 0.08,
+                "role": "owner"
+              }
+            ]
+          },
+          "attribution": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "bot": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "additionalProperties": true,
+                "example": {
+                  "source": "signup_form"
+                }
+              }
+            },
+            "example": {
+              "bot": {
+                "source": "signup_form"
+              }
+            }
+          }
+        },
+        "example": {
+          "object": "session_result",
+          "session": {
+            "id": "sid_87wfetm98myh9awj0dpt28a3kc"
+          },
+          "event": {
+            "id": "evt_srwqc0yqhz4bxvtrdtf69q7vkr",
+            "scoring_event_id": "scoring_event_id",
+            "phase": "phase",
+            "is_provisional": false,
+            "persisted_at": "2026-03-24T20:00:05.000Z"
+          },
+          "decision": {
+            "verdict": "human",
+            "risk_score": 94,
+            "score": 0.08,
+            "manipulation": {
+              "score": 1,
+              "verdict": "none"
+            }
+          },
+          "visitor_fingerprint": {
+            "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m"
+          },
+          "request": {
+            "url": "https://app.acme.co/signup",
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+            "ip_address": "203.0.113.10",
+            "screen_size": "1440x900",
+            "is_touch_capable": true,
+            "platform": "macOS",
+            "first_seen": "2026-03-01T18:22:11.000Z",
+            "risk_time": "2026-03-24T20:00:05.000Z"
+          },
+          "score_breakdown": {
+            "categories": {
+              "source": "signup_form"
+            }
+          },
+          "signals": [
+            {
+              "id": "sid_87wfetm98myh9awj0dpt28a3kc",
+              "category": "environment",
+              "confidence": "exact",
+              "score": 0.08,
+              "role": "owner"
+            }
+          ],
+          "attribution": {
+            "bot": {
+              "source": "signup_form"
+            }
+          }
+        }
+      },
+      "SessionResultPersistedWebhookEvent": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/WebhookEventEnvelope",
+            "example": {
+              "id": "webhook_event_id",
+              "object": "webhook_event",
+              "type": "session.fingerprint.calculated",
+              "created": "2026-03-24T20:00:00.000Z",
+              "data": {
+                "object": "session_fingerprint",
+                "session": {
+                  "id": "sid_87wfetm98myh9awj0dpt28a3kc"
+                },
+                "visitor_fingerprint": {
+                  "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m",
+                  "confidence": 93,
+                  "identified_at": "2026-03-24T20:00:05.000Z"
+                },
+                "request": {
+                  "url": "https://app.acme.co/signup",
+                  "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+                  "ip_address": "203.0.113.10",
+                  "screen_size": "1440x900",
+                  "is_touch_capable": true,
+                  "platform": "macOS",
+                  "first_seen": "2026-03-01T18:22:11.000Z",
+                  "risk_time": "2026-03-24T20:00:05.000Z"
+                },
+                "calculated_at": "2026-03-24T20:00:05.000Z"
+              }
+            }
+          }
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "session.result.persisted",
+            "example": "session.result.persisted"
+          },
+          "data": {
+            "$ref": "#/components/schemas/SessionResultPersistedPayload",
+            "example": {
+              "object": "session_result",
+              "session": {
+                "id": "sid_87wfetm98myh9awj0dpt28a3kc"
+              },
+              "event": {
+                "id": "evt_srwqc0yqhz4bxvtrdtf69q7vkr",
+                "scoring_event_id": "scoring_event_id",
+                "phase": "phase",
+                "is_provisional": false,
+                "persisted_at": "2026-03-24T20:00:05.000Z"
+              },
+              "decision": {
+                "verdict": "human",
+                "risk_score": 94,
+                "score": 0.08,
+                "manipulation": {
+                  "score": 1,
+                  "verdict": "none"
+                }
+              },
+              "visitor_fingerprint": {
+                "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m"
+              },
+              "request": {
+                "url": "https://app.acme.co/signup",
+                "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+                "ip_address": "203.0.113.10",
+                "screen_size": "1440x900",
+                "is_touch_capable": true,
+                "platform": "macOS",
+                "first_seen": "2026-03-01T18:22:11.000Z",
+                "risk_time": "2026-03-24T20:00:05.000Z"
+              },
+              "score_breakdown": {
+                "categories": {
+                  "source": "signup_form"
+                }
+              },
+              "signals": [
+                {
+                  "id": "sid_87wfetm98myh9awj0dpt28a3kc",
+                  "category": "environment",
+                  "confidence": "exact",
+                  "score": 0.08,
+                  "role": "owner"
+                }
+              ],
+              "attribution": {
+                "bot": {
+                  "source": "signup_form"
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "id": "webhook_event_id",
+          "object": "webhook_event",
+          "type": "session.fingerprint.calculated",
+          "created": "2026-03-24T20:00:00.000Z",
+          "data": {
+            "object": "session_fingerprint",
+            "session": {
+              "id": "sid_87wfetm98myh9awj0dpt28a3kc"
+            },
+            "visitor_fingerprint": {
+              "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m",
+              "confidence": 93,
+              "identified_at": "2026-03-24T20:00:05.000Z"
+            },
+            "request": {
+              "url": "https://app.acme.co/signup",
+              "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+              "ip_address": "203.0.113.10",
+              "screen_size": "1440x900",
+              "is_touch_capable": true,
+              "platform": "macOS",
+              "first_seen": "2026-03-01T18:22:11.000Z",
+              "risk_time": "2026-03-24T20:00:05.000Z"
+            },
+            "calculated_at": "2026-03-24T20:00:05.000Z"
+          }
+        }
+      },
       "SessionRuntimeIntegrity": {
         "type": "object",
         "additionalProperties": false,
@@ -13687,7 +17101,9 @@
                 "gate:agent_tokens:revoke",
                 "gate:login_sessions:consume",
                 "gate:services:read",
-                "gate:services:manage"
+                "gate:services:manage",
+                "webhooks:read",
+                "webhooks:manage"
               ],
               "example": "sessions:list"
             },
@@ -13734,17 +17150,6 @@
             ],
             "format": "uri",
             "example": "https://app.acme.co/signup"
-          },
-          "webhook_url": {
-            "type": "string",
-            "format": "uri",
-            "example": "https://app.acme.co/signup"
-          },
-          "webhook_secret": {
-            "type": "string",
-            "minLength": 32,
-            "description": "If provided, must be at least 32 characters. Omit on create to let Gate generate one.",
-            "example": "whsec_0123456789abcdef0123456789abcdef"
           },
           "env_vars": {
             "type": "array",
@@ -13803,6 +17208,10 @@
               "terms_url": "https://app.acme.co/signup",
               "privacy_url": "https://app.acme.co/signup"
             }
+          },
+          "webhook_endpoint_id": {
+            "$ref": "#/components/schemas/WebhookEndpointId",
+            "example": "we_0123456789abcdef0123456789abcdef"
           }
         },
         "example": {
@@ -13811,8 +17220,6 @@
           "description": "203.0.113.10",
           "website": "https://app.acme.co/signup",
           "dashboard_login_url": "https://app.acme.co/signup",
-          "webhook_url": "https://app.acme.co/signup",
-          "webhook_secret": "whsec_0123456789abcdef0123456789abcdef",
           "env_vars": [
             {
               "name": "Acme Growth Workspace",
@@ -13838,7 +17245,8 @@
           "consent": {
             "terms_url": "https://app.acme.co/signup",
             "privacy_url": "https://app.acme.co/signup"
-          }
+          },
+          "webhook_endpoint_id": "we_0123456789abcdef0123456789abcdef"
         }
       },
       "UpdateOrganizationRequest": {
@@ -13859,6 +17267,46 @@
         "example": {
           "name": "Acme Growth Workspace",
           "status": "active"
+        }
+      },
+      "UpdateWebhookEndpointRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Partial webhook endpoint update. Updating event_types replaces the endpoint subscriptions.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Acme Growth Workspace"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://app.acme.co/signup"
+          },
+          "status": {
+            "$ref": "#/components/schemas/WebhookEndpointStatus",
+            "example": "active"
+          },
+          "event_types": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/WebhookEventType",
+              "example": "session.fingerprint.calculated"
+            },
+            "example": [
+              "session.fingerprint.calculated"
+            ]
+          }
+        },
+        "example": {
+          "name": "Acme Growth Workspace",
+          "url": "https://app.acme.co/signup",
+          "status": "active",
+          "event_types": [
+            "session.fingerprint.calculated"
+          ]
         }
       },
       "Verdict": {
@@ -14796,6 +18244,828 @@
             "audio_hash": "1234567890"
           }
         }
+      },
+      "WebhookDelivery": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "object",
+          "id",
+          "event_id",
+          "endpoint_id",
+          "event_type",
+          "status",
+          "attempts",
+          "response_status",
+          "response_body",
+          "error",
+          "created_at",
+          "updated_at"
+        ],
+        "properties": {
+          "object": {
+            "type": "string",
+            "const": "webhook_delivery",
+            "example": "webhook_delivery"
+          },
+          "id": {
+            "$ref": "#/components/schemas/WebhookDeliveryId",
+            "example": "webhook_delivery_id"
+          },
+          "event_id": {
+            "$ref": "#/components/schemas/WebhookEventId",
+            "example": "webhook_event_id"
+          },
+          "endpoint_id": {
+            "$ref": "#/components/schemas/WebhookEndpointId",
+            "example": "we_0123456789abcdef0123456789abcdef"
+          },
+          "event_type": {
+            "$ref": "#/components/schemas/WebhookDeliveryEventType",
+            "example": "session.fingerprint.calculated"
+          },
+          "status": {
+            "$ref": "#/components/schemas/WebhookDeliveryStatus",
+            "example": "pending"
+          },
+          "attempts": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 1
+          },
+          "response_status": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "example": 1
+          },
+          "response_body": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "response_body"
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "error"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-24T20:00:00.000Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-24T20:00:05.000Z"
+          }
+        },
+        "example": {
+          "object": "webhook_delivery",
+          "id": "webhook_delivery_id",
+          "event_id": "webhook_event_id",
+          "endpoint_id": "we_0123456789abcdef0123456789abcdef",
+          "event_type": "session.fingerprint.calculated",
+          "status": "pending",
+          "attempts": 1,
+          "response_status": 1,
+          "response_body": "response_body",
+          "error": "error",
+          "created_at": "2026-03-24T20:00:00.000Z",
+          "updated_at": "2026-03-24T20:00:05.000Z"
+        }
+      },
+      "WebhookDeliveryEventType": {
+        "type": "string",
+        "enum": [
+          "session.fingerprint.calculated",
+          "session.result.persisted",
+          "gate.session.approved",
+          "webhook.test"
+        ],
+        "example": "session.fingerprint.calculated"
+      },
+      "WebhookDeliveryId": {
+        "type": "string",
+        "pattern": "^wdlv_[0-9a-f]{32}$",
+        "example": "webhook_delivery_id"
+      },
+      "WebhookDeliveryStatus": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "delivering",
+          "succeeded",
+          "failed",
+          "skipped"
+        ],
+        "example": "pending"
+      },
+      "WebhookEndpoint": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "object",
+          "id",
+          "name",
+          "url",
+          "status",
+          "event_types",
+          "created_at",
+          "updated_at"
+        ],
+        "properties": {
+          "object": {
+            "type": "string",
+            "const": "webhook_endpoint",
+            "example": "webhook_endpoint"
+          },
+          "id": {
+            "$ref": "#/components/schemas/WebhookEndpointId",
+            "example": "we_0123456789abcdef0123456789abcdef"
+          },
+          "name": {
+            "type": "string",
+            "example": "Acme Growth Workspace"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://app.acme.co/signup"
+          },
+          "status": {
+            "$ref": "#/components/schemas/WebhookEndpointStatus",
+            "example": "active"
+          },
+          "event_types": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WebhookEventType",
+              "example": "session.fingerprint.calculated"
+            },
+            "example": [
+              "session.fingerprint.calculated"
+            ]
+          },
+          "signing_secret": {
+            "type": "string",
+            "description": "Returned only when the endpoint is created or its secret is rotated.",
+            "example": "whsec_0123456789abcdef0123456789abcdef"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-24T20:00:00.000Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-24T20:00:05.000Z"
+          }
+        },
+        "example": {
+          "object": "webhook_endpoint",
+          "id": "we_0123456789abcdef0123456789abcdef",
+          "name": "Acme Growth Workspace",
+          "url": "https://app.acme.co/signup",
+          "status": "active",
+          "event_types": [
+            "session.fingerprint.calculated"
+          ],
+          "signing_secret": "whsec_0123456789abcdef0123456789abcdef",
+          "created_at": "2026-03-24T20:00:00.000Z",
+          "updated_at": "2026-03-24T20:00:05.000Z"
+        }
+      },
+      "WebhookEndpointId": {
+        "type": "string",
+        "pattern": "^we_[0-9a-f]{32}$",
+        "example": "we_0123456789abcdef0123456789abcdef"
+      },
+      "WebhookEndpointListResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "pagination",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WebhookEndpoint",
+              "example": {
+                "object": "webhook_endpoint",
+                "id": "we_0123456789abcdef0123456789abcdef",
+                "name": "Acme Growth Workspace",
+                "url": "https://app.acme.co/signup",
+                "status": "active",
+                "event_types": [
+                  "session.fingerprint.calculated"
+                ],
+                "signing_secret": "whsec_0123456789abcdef0123456789abcdef",
+                "created_at": "2026-03-24T20:00:00.000Z",
+                "updated_at": "2026-03-24T20:00:05.000Z"
+              }
+            },
+            "example": [
+              {
+                "object": "webhook_endpoint",
+                "id": "we_0123456789abcdef0123456789abcdef",
+                "name": "Acme Growth Workspace",
+                "url": "https://app.acme.co/signup",
+                "status": "active",
+                "event_types": [
+                  "session.fingerprint.calculated"
+                ],
+                "signing_secret": "whsec_0123456789abcdef0123456789abcdef",
+                "created_at": "2026-03-24T20:00:00.000Z",
+                "updated_at": "2026-03-24T20:00:05.000Z"
+              }
+            ]
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/CursorPagination",
+            "example": {
+              "limit": 50,
+              "has_more": false,
+              "next_cursor": "eyJ2IjoxLCJzY29yZWRBdCI6IjIwMjYtMDQtMTBUMDY6NDI6NDIuNTE0WiIsInJvd0lkIjoiMTc3In0"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta",
+            "example": {
+              "request_id": "req_cf147349a4134208aebb8c70e25fb7e1"
+            }
+          }
+        },
+        "example": {
+          "data": [
+            {
+              "object": "webhook_endpoint",
+              "id": "we_0123456789abcdef0123456789abcdef",
+              "name": "Acme Growth Workspace",
+              "url": "https://app.acme.co/signup",
+              "status": "active",
+              "event_types": [
+                "session.fingerprint.calculated"
+              ],
+              "signing_secret": "whsec_0123456789abcdef0123456789abcdef",
+              "created_at": "2026-03-24T20:00:00.000Z",
+              "updated_at": "2026-03-24T20:00:05.000Z"
+            }
+          ],
+          "pagination": {
+            "limit": 50,
+            "has_more": false,
+            "next_cursor": "eyJ2IjoxLCJzY29yZWRBdCI6IjIwMjYtMDQtMTBUMDY6NDI6NDIuNTE0WiIsInJvd0lkIjoiMTc3In0"
+          },
+          "meta": {
+            "request_id": "req_cf147349a4134208aebb8c70e25fb7e1"
+          }
+        }
+      },
+      "WebhookEndpointResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/WebhookEndpoint",
+            "example": {
+              "object": "webhook_endpoint",
+              "id": "we_0123456789abcdef0123456789abcdef",
+              "name": "Acme Growth Workspace",
+              "url": "https://app.acme.co/signup",
+              "status": "active",
+              "event_types": [
+                "session.fingerprint.calculated"
+              ],
+              "signing_secret": "whsec_0123456789abcdef0123456789abcdef",
+              "created_at": "2026-03-24T20:00:00.000Z",
+              "updated_at": "2026-03-24T20:00:05.000Z"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta",
+            "example": {
+              "request_id": "req_cf147349a4134208aebb8c70e25fb7e1"
+            }
+          }
+        },
+        "example": {
+          "data": {
+            "object": "webhook_endpoint",
+            "id": "we_0123456789abcdef0123456789abcdef",
+            "name": "Acme Growth Workspace",
+            "url": "https://app.acme.co/signup",
+            "status": "active",
+            "event_types": [
+              "session.fingerprint.calculated"
+            ],
+            "signing_secret": "whsec_0123456789abcdef0123456789abcdef",
+            "created_at": "2026-03-24T20:00:00.000Z",
+            "updated_at": "2026-03-24T20:00:05.000Z"
+          },
+          "meta": {
+            "request_id": "req_cf147349a4134208aebb8c70e25fb7e1"
+          }
+        }
+      },
+      "WebhookEndpointStatus": {
+        "type": "string",
+        "enum": [
+          "active",
+          "disabled"
+        ],
+        "example": "active"
+      },
+      "WebhookEventEnvelope": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "object",
+          "type",
+          "created",
+          "data"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/WebhookEventId",
+            "example": "webhook_event_id"
+          },
+          "object": {
+            "type": "string",
+            "const": "webhook_event",
+            "example": "webhook_event"
+          },
+          "type": {
+            "$ref": "#/components/schemas/WebhookDeliveryEventType",
+            "example": "session.fingerprint.calculated"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-24T20:00:00.000Z"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SessionFingerprintCalculatedPayload",
+                "example": {
+                  "object": "session_fingerprint",
+                  "session": {
+                    "id": "sid_87wfetm98myh9awj0dpt28a3kc"
+                  },
+                  "visitor_fingerprint": {
+                    "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m",
+                    "confidence": 93,
+                    "identified_at": "2026-03-24T20:00:05.000Z"
+                  },
+                  "request": {
+                    "url": "https://app.acme.co/signup",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+                    "ip_address": "203.0.113.10",
+                    "screen_size": "1440x900",
+                    "is_touch_capable": true,
+                    "platform": "macOS",
+                    "first_seen": "2026-03-01T18:22:11.000Z",
+                    "risk_time": "2026-03-24T20:00:05.000Z"
+                  },
+                  "calculated_at": "2026-03-24T20:00:05.000Z"
+                }
+              },
+              {
+                "$ref": "#/components/schemas/SessionResultPersistedPayload",
+                "example": {
+                  "object": "session_result",
+                  "session": {
+                    "id": "sid_87wfetm98myh9awj0dpt28a3kc"
+                  },
+                  "event": {
+                    "id": "evt_srwqc0yqhz4bxvtrdtf69q7vkr",
+                    "scoring_event_id": "scoring_event_id",
+                    "phase": "phase",
+                    "is_provisional": false,
+                    "persisted_at": "2026-03-24T20:00:05.000Z"
+                  },
+                  "decision": {
+                    "verdict": "human",
+                    "risk_score": 94,
+                    "score": 0.08,
+                    "manipulation": {
+                      "score": 1,
+                      "verdict": "none"
+                    }
+                  },
+                  "visitor_fingerprint": {
+                    "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m"
+                  },
+                  "request": {
+                    "url": "https://app.acme.co/signup",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+                    "ip_address": "203.0.113.10",
+                    "screen_size": "1440x900",
+                    "is_touch_capable": true,
+                    "platform": "macOS",
+                    "first_seen": "2026-03-01T18:22:11.000Z",
+                    "risk_time": "2026-03-24T20:00:05.000Z"
+                  },
+                  "score_breakdown": {
+                    "categories": {
+                      "source": "signup_form"
+                    }
+                  },
+                  "signals": [
+                    {
+                      "id": "sid_87wfetm98myh9awj0dpt28a3kc",
+                      "category": "environment",
+                      "confidence": "exact",
+                      "score": 0.08,
+                      "role": "owner"
+                    }
+                  ],
+                  "attribution": {
+                    "bot": {
+                      "source": "signup_form"
+                    }
+                  }
+                }
+              },
+              {
+                "$ref": "#/components/schemas/GateApprovedWebhookPayload",
+                "example": {
+                  "service_id": "gsvc_0123456789abcdefghjkmnpqrs",
+                  "gate_session_id": "gate_0123456789abcdefghjkmnpqrs",
+                  "gate_account_id": "gacct_0123456789abcdefghjkmnpqrs",
+                  "account_name": "Acme Growth Workspace",
+                  "metadata": {
+                    "source": "signup_form"
+                  },
+                  "tripwire": {
+                    "verdict": "human",
+                    "score": 0.08
+                  },
+                  "delivery": {
+                    "version": 1,
+                    "algorithm": "x25519-hkdf-sha256/aes-256-gcm",
+                    "key_id": "key_6cw04zdmetw8t5rsdppadhper0",
+                    "public_key": "pk_live_dZO3Bl6MqLn2VJYy18bjGkbPRCkubdgK"
+                  }
+                }
+              },
+              {
+                "$ref": "#/components/schemas/WebhookTestEventPayload",
+                "example": {
+                  "object": "webhook_test",
+                  "endpoint": {
+                    "id": "we_0123456789abcdef0123456789abcdef"
+                  }
+                }
+              }
+            ],
+            "example": {
+              "object": "session_fingerprint",
+              "session": {
+                "id": "sid_87wfetm98myh9awj0dpt28a3kc"
+              },
+              "visitor_fingerprint": {
+                "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m",
+                "confidence": 93,
+                "identified_at": "2026-03-24T20:00:05.000Z"
+              },
+              "request": {
+                "url": "https://app.acme.co/signup",
+                "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+                "ip_address": "203.0.113.10",
+                "screen_size": "1440x900",
+                "is_touch_capable": true,
+                "platform": "macOS",
+                "first_seen": "2026-03-01T18:22:11.000Z",
+                "risk_time": "2026-03-24T20:00:05.000Z"
+              },
+              "calculated_at": "2026-03-24T20:00:05.000Z"
+            }
+          }
+        },
+        "example": {
+          "id": "webhook_event_id",
+          "object": "webhook_event",
+          "type": "session.fingerprint.calculated",
+          "created": "2026-03-24T20:00:00.000Z",
+          "data": {
+            "object": "session_fingerprint",
+            "session": {
+              "id": "sid_87wfetm98myh9awj0dpt28a3kc"
+            },
+            "visitor_fingerprint": {
+              "id": "vid_7cyvmdfjs3rzznf8m65v3bv51m",
+              "confidence": 93,
+              "identified_at": "2026-03-24T20:00:05.000Z"
+            },
+            "request": {
+              "url": "https://app.acme.co/signup",
+              "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+              "ip_address": "203.0.113.10",
+              "screen_size": "1440x900",
+              "is_touch_capable": true,
+              "platform": "macOS",
+              "first_seen": "2026-03-01T18:22:11.000Z",
+              "risk_time": "2026-03-24T20:00:05.000Z"
+            },
+            "calculated_at": "2026-03-24T20:00:05.000Z"
+          }
+        }
+      },
+      "WebhookEventId": {
+        "type": "string",
+        "pattern": "^wevt_[0-9a-f]{32}$",
+        "example": "webhook_event_id"
+      },
+      "WebhookEventType": {
+        "type": "string",
+        "enum": [
+          "session.fingerprint.calculated",
+          "session.result.persisted",
+          "gate.session.approved"
+        ],
+        "example": "session.fingerprint.calculated"
+      },
+      "WebhookRequestSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "https://app.acme.co/signup"
+          },
+          "user_agent": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+          },
+          "ip_address": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "203.0.113.10"
+          },
+          "screen_size": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "1440x900"
+          },
+          "is_touch_capable": {
+            "type": "boolean",
+            "example": true
+          },
+          "platform": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "macOS"
+          },
+          "first_seen": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "example": "2026-03-01T18:22:11.000Z"
+          },
+          "risk_time": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "example": "2026-03-24T20:00:05.000Z"
+          }
+        },
+        "example": {
+          "url": "https://app.acme.co/signup",
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+          "ip_address": "203.0.113.10",
+          "screen_size": "1440x900",
+          "is_touch_capable": true,
+          "platform": "macOS",
+          "first_seen": "2026-03-01T18:22:11.000Z",
+          "risk_time": "2026-03-24T20:00:05.000Z"
+        }
+      },
+      "WebhookTest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "object",
+          "event_id",
+          "delivery_ids",
+          "latest_delivery"
+        ],
+        "properties": {
+          "object": {
+            "type": "string",
+            "const": "webhook_test",
+            "example": "webhook_test"
+          },
+          "event_id": {
+            "$ref": "#/components/schemas/WebhookEventId",
+            "example": "webhook_event_id"
+          },
+          "delivery_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WebhookDeliveryId",
+              "example": "webhook_delivery_id"
+            },
+            "example": [
+              "webhook_delivery_id"
+            ]
+          },
+          "latest_delivery": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WebhookDelivery",
+                "example": {
+                  "object": "webhook_delivery",
+                  "id": "webhook_delivery_id",
+                  "event_id": "webhook_event_id",
+                  "endpoint_id": "we_0123456789abcdef0123456789abcdef",
+                  "event_type": "session.fingerprint.calculated",
+                  "status": "pending",
+                  "attempts": 1,
+                  "response_status": 1,
+                  "response_body": "response_body",
+                  "error": "error",
+                  "created_at": "2026-03-24T20:00:00.000Z",
+                  "updated_at": "2026-03-24T20:00:05.000Z"
+                }
+              },
+              {
+                "type": "null",
+                "example": null
+              }
+            ],
+            "example": {
+              "object": "webhook_delivery",
+              "id": "webhook_delivery_id",
+              "event_id": "webhook_event_id",
+              "endpoint_id": "we_0123456789abcdef0123456789abcdef",
+              "event_type": "session.fingerprint.calculated",
+              "status": "pending",
+              "attempts": 1,
+              "response_status": 1,
+              "response_body": "response_body",
+              "error": "error",
+              "created_at": "2026-03-24T20:00:00.000Z",
+              "updated_at": "2026-03-24T20:00:05.000Z"
+            }
+          }
+        },
+        "example": {
+          "object": "webhook_test",
+          "event_id": "webhook_event_id",
+          "delivery_ids": [
+            "webhook_delivery_id"
+          ],
+          "latest_delivery": {
+            "object": "webhook_delivery",
+            "id": "webhook_delivery_id",
+            "event_id": "webhook_event_id",
+            "endpoint_id": "we_0123456789abcdef0123456789abcdef",
+            "event_type": "session.fingerprint.calculated",
+            "status": "pending",
+            "attempts": 1,
+            "response_status": 1,
+            "response_body": "response_body",
+            "error": "error",
+            "created_at": "2026-03-24T20:00:00.000Z",
+            "updated_at": "2026-03-24T20:00:05.000Z"
+          }
+        }
+      },
+      "WebhookTestEventPayload": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "object",
+          "endpoint"
+        ],
+        "properties": {
+          "object": {
+            "type": "string",
+            "const": "webhook_test",
+            "example": "webhook_test"
+          },
+          "endpoint": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/WebhookEndpointId",
+                "example": "we_0123456789abcdef0123456789abcdef"
+              }
+            },
+            "example": {
+              "id": "we_0123456789abcdef0123456789abcdef"
+            }
+          }
+        },
+        "example": {
+          "object": "webhook_test",
+          "endpoint": {
+            "id": "we_0123456789abcdef0123456789abcdef"
+          }
+        }
+      },
+      "WebhookTestResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/WebhookTest",
+            "example": {
+              "object": "webhook_test",
+              "event_id": "webhook_event_id",
+              "delivery_ids": [
+                "webhook_delivery_id"
+              ],
+              "latest_delivery": {
+                "object": "webhook_delivery",
+                "id": "webhook_delivery_id",
+                "event_id": "webhook_event_id",
+                "endpoint_id": "we_0123456789abcdef0123456789abcdef",
+                "event_type": "session.fingerprint.calculated",
+                "status": "pending",
+                "attempts": 1,
+                "response_status": 1,
+                "response_body": "response_body",
+                "error": "error",
+                "created_at": "2026-03-24T20:00:00.000Z",
+                "updated_at": "2026-03-24T20:00:05.000Z"
+              }
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResponseMeta",
+            "example": {
+              "request_id": "req_cf147349a4134208aebb8c70e25fb7e1"
+            }
+          }
+        },
+        "example": {
+          "data": {
+            "object": "webhook_test",
+            "event_id": "webhook_event_id",
+            "delivery_ids": [
+              "webhook_delivery_id"
+            ],
+            "latest_delivery": {
+              "object": "webhook_delivery",
+              "id": "webhook_delivery_id",
+              "event_id": "webhook_event_id",
+              "endpoint_id": "we_0123456789abcdef0123456789abcdef",
+              "event_type": "session.fingerprint.calculated",
+              "status": "pending",
+              "attempts": 1,
+              "response_status": 1,
+              "response_body": "response_body",
+              "error": "error",
+              "created_at": "2026-03-24T20:00:00.000Z",
+              "updated_at": "2026-03-24T20:00:05.000Z"
+            }
+          },
+          "meta": {
+            "request_id": "req_cf147349a4134208aebb8c70e25fb7e1"
+          }
+        }
       }
     },
     "securitySchemes": {
@@ -14810,11 +19080,11 @@
     "gate.session.approved": {
       "post": {
         "tags": [
-          "Gate Webhooks"
+          "Webhooks"
         ],
         "operationId": "gateSessionApprovedWebhook",
         "summary": "Gate approved-session webhook",
-        "description": "Tripwire sends this webhook to the integrator when a signup session is approved. Verify X-Tripwire-Timestamp and X-Tripwire-Signature against the raw request body.",
+        "description": "Tripwire sends a signed unified webhook envelope. Verify X-Tripwire-Timestamp and X-Tripwire-Signature against the raw request body using the endpoint signing secret.",
         "parameters": [
           {
             "name": "X-Tripwire-Timestamp",
@@ -14840,7 +19110,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/GateApprovedWebhookPayload"
+                "$ref": "#/components/schemas/GateSessionApprovedWebhookEvent"
               }
             }
           }
@@ -14867,6 +19137,114 @@
           },
           "429": {
             "description": "Rate limited. Respect Retry-After before retrying the webhook."
+          },
+          "500": {
+            "description": "Internal error."
+          }
+        }
+      }
+    },
+    "session.fingerprint.calculated": {
+      "post": {
+        "tags": [
+          "Webhooks"
+        ],
+        "operationId": "sessionFingerprintCalculatedWebhook",
+        "summary": "Session fingerprint calculated webhook",
+        "description": "Tripwire sends a signed unified webhook envelope. Verify X-Tripwire-Timestamp and X-Tripwire-Signature against the raw request body using the endpoint signing secret.",
+        "parameters": [
+          {
+            "name": "X-Tripwire-Timestamp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Unix timestamp used in the webhook signature base string."
+          },
+          {
+            "name": "X-Tripwire-Signature",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "HMAC-SHA256 signature computed over `${timestamp}.${rawBody}`."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionFingerprintCalculatedWebhookEvent"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook accepted."
+          },
+          "400": {
+            "description": "Invalid payload."
+          },
+          "401": {
+            "description": "Invalid signature."
+          },
+          "500": {
+            "description": "Internal error."
+          }
+        }
+      }
+    },
+    "session.result.persisted": {
+      "post": {
+        "tags": [
+          "Webhooks"
+        ],
+        "operationId": "sessionResultPersistedWebhook",
+        "summary": "Session result persisted webhook",
+        "description": "Tripwire sends a signed unified webhook envelope. Verify X-Tripwire-Timestamp and X-Tripwire-Signature against the raw request body using the endpoint signing secret.",
+        "parameters": [
+          {
+            "name": "X-Tripwire-Timestamp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Unix timestamp used in the webhook signature base string."
+          },
+          {
+            "name": "X-Tripwire-Signature",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "HMAC-SHA256 signature computed over `${timestamp}.${rawBody}`."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionResultPersistedWebhookEvent"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook accepted."
+          },
+          "400": {
+            "description": "Invalid payload."
+          },
+          "401": {
+            "description": "Invalid signature."
           },
           "500": {
             "description": "Internal error."
