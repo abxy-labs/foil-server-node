@@ -10,6 +10,7 @@ import type {
   CreateGateServiceRequest,
   CreateGateSessionRequest,
   CreateTeamRequest,
+  CreateWebhookEndpointRequest,
   FingerprintListParams,
   GateDashboardLogin,
   GateLoginSession,
@@ -33,9 +34,14 @@ import type {
   TripwireOptions,
   UpdateGateServiceRequest,
   UpdateTeamRequest,
+  UpdateWebhookEndpointRequest,
   VerifyGateAgentTokenRequest,
   VisitorFingerprintDetail,
   VisitorFingerprintSummary,
+  WebhookDelivery,
+  WebhookDeliveryListParams,
+  WebhookEndpoint,
+  WebhookTest,
 } from './types';
 
 const DEFAULT_BASE_URL = 'https://api.tripwirejs.com';
@@ -304,6 +310,16 @@ export class Tripwire {
     };
   };
 
+  readonly webhooks: {
+    listEndpoints: (organizationId: string, options?: RequestOptions) => Promise<ListResult<WebhookEndpoint>>;
+    createEndpoint: (organizationId: string, body: CreateWebhookEndpointRequest) => Promise<WebhookEndpoint>;
+    updateEndpoint: (organizationId: string, endpointId: string, body: UpdateWebhookEndpointRequest) => Promise<WebhookEndpoint>;
+    disableEndpoint: (organizationId: string, endpointId: string, options?: RequestOptions) => Promise<WebhookEndpoint>;
+    rotateSecret: (organizationId: string, endpointId: string, options?: RequestOptions) => Promise<WebhookEndpoint>;
+    sendTest: (organizationId: string, endpointId: string, options?: RequestOptions) => Promise<WebhookTest>;
+    listDeliveries: (organizationId: string, params?: WebhookDeliveryListParams) => Promise<ListResult<WebhookDelivery>>;
+  };
+
   constructor(options: TripwireOptions = {}) {
     this.http = new HttpClient(resolveOptions(options));
 
@@ -558,6 +574,69 @@ export class Tripwire {
             signal,
           });
         },
+      },
+    };
+
+    this.webhooks = {
+      listEndpoints: async (organizationId, options = {}) => {
+        const response = await this.http.request<ResourceListEnvelope<WebhookEndpoint>>({
+          path: `/v1/organizations/${encodeURIComponent(organizationId)}/webhooks/endpoints`,
+          signal: options.signal,
+        });
+        return normalizeListEnvelope(response);
+      },
+      createEndpoint: async (organizationId, body) => {
+        const { signal, ...payload } = body;
+        const response = await this.http.request<ResourceEnvelope<WebhookEndpoint>>({
+          path: `/v1/organizations/${encodeURIComponent(organizationId)}/webhooks/endpoints`,
+          method: 'POST',
+          body: payload,
+          signal,
+        });
+        return response.data;
+      },
+      updateEndpoint: async (organizationId, endpointId, body) => {
+        const { signal, ...payload } = body;
+        const response = await this.http.request<ResourceEnvelope<WebhookEndpoint>>({
+          path: `/v1/organizations/${encodeURIComponent(organizationId)}/webhooks/endpoints/${encodeURIComponent(endpointId)}`,
+          method: 'PATCH',
+          body: payload,
+          signal,
+        });
+        return response.data;
+      },
+      disableEndpoint: async (organizationId, endpointId, options = {}) => {
+        const response = await this.http.request<ResourceEnvelope<WebhookEndpoint>>({
+          path: `/v1/organizations/${encodeURIComponent(organizationId)}/webhooks/endpoints/${encodeURIComponent(endpointId)}`,
+          method: 'DELETE',
+          signal: options.signal,
+        });
+        return response.data;
+      },
+      rotateSecret: async (organizationId, endpointId, options = {}) => {
+        const response = await this.http.request<ResourceEnvelope<WebhookEndpoint>>({
+          path: `/v1/organizations/${encodeURIComponent(organizationId)}/webhooks/endpoints/${encodeURIComponent(endpointId)}/rotations`,
+          method: 'POST',
+          signal: options.signal,
+        });
+        return response.data;
+      },
+      sendTest: async (organizationId, endpointId, options = {}) => {
+        const response = await this.http.request<ResourceEnvelope<WebhookTest>>({
+          path: `/v1/organizations/${encodeURIComponent(organizationId)}/webhooks/endpoints/${encodeURIComponent(endpointId)}/test`,
+          method: 'POST',
+          signal: options.signal,
+        });
+        return response.data;
+      },
+      listDeliveries: async (organizationId, params = {}) => {
+        const { signal, ...query } = params;
+        const response = await this.http.request<ResourceListEnvelope<WebhookDelivery>>({
+          path: `/v1/organizations/${encodeURIComponent(organizationId)}/webhooks/deliveries`,
+          query,
+          signal,
+        });
+        return normalizeListEnvelope(response);
       },
     };
   }

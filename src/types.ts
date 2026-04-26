@@ -517,7 +517,7 @@ export interface GateRegistryEntry {
 
 export interface GateManagedService extends GateRegistryEntry {
   object: 'gate_service';
-  webhook_url: string;
+  webhook_endpoint_id: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -636,8 +636,7 @@ export interface CreateGateServiceRequest extends RequestOptions {
   description: string;
   website: string;
   dashboard_login_url?: string;
-  webhook_url: string;
-  webhook_secret?: string;
+  webhook_endpoint_id: string;
   env_vars?: GateServiceEnvVar[];
   docs_url?: string;
   sdks?: GateServiceSdkInstall[];
@@ -651,13 +650,117 @@ export interface UpdateGateServiceRequest extends RequestOptions {
   description?: string;
   website?: string;
   dashboard_login_url?: string | null;
-  webhook_url?: string;
-  webhook_secret?: string;
+  webhook_endpoint_id?: string;
   env_vars?: GateServiceEnvVar[];
   docs_url?: string;
   sdks?: GateServiceSdkInstall[];
   branding?: GateServiceBrandingInput;
   consent?: GateServiceConsent;
+}
+
+export type WebhookEventType =
+  | 'session.fingerprint.calculated'
+  | 'session.result.persisted'
+  | 'gate.session.approved';
+
+export type WebhookDeliveryEventType = WebhookEventType | 'webhook.test';
+export type WebhookEndpointStatus = 'active' | 'disabled';
+export type WebhookDeliveryStatus = 'pending' | 'delivering' | 'succeeded' | 'failed' | 'skipped';
+
+export interface WebhookEndpoint {
+  object: 'webhook_endpoint';
+  id: string;
+  name: string;
+  url: string;
+  status: WebhookEndpointStatus;
+  event_types: WebhookEventType[];
+  signing_secret?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WebhookDelivery {
+  object: 'webhook_delivery';
+  id: string;
+  event_id: string;
+  endpoint_id: string;
+  event_type: WebhookDeliveryEventType;
+  status: WebhookDeliveryStatus;
+  attempts: number;
+  response_status: number | null;
+  response_body: string | null;
+  error: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WebhookTest {
+  object: 'webhook_test';
+  event_id: string;
+  delivery_ids: string[];
+  latest_delivery: WebhookDelivery | null;
+}
+
+export interface CreateWebhookEndpointRequest extends RequestOptions {
+  name: string;
+  url: string;
+  event_types: WebhookEventType[];
+}
+
+export interface UpdateWebhookEndpointRequest extends RequestOptions {
+  name?: string;
+  url?: string;
+  status?: WebhookEndpointStatus;
+  event_types?: WebhookEventType[];
+}
+
+export interface WebhookDeliveryListParams extends RequestOptions {
+  endpoint_id?: string;
+  limit?: number;
+}
+
+export interface SessionFingerprintCalculatedPayload {
+  object: 'session_fingerprint';
+  session: { id: string };
+  visitor_fingerprint: { id: string; confidence: number | null; identified_at: string | null };
+  request: Record<string, unknown>;
+  calculated_at: string;
+}
+
+export interface SessionResultPersistedPayload {
+  object: 'session_result';
+  session: { id: string };
+  event: Record<string, unknown>;
+  decision: Record<string, unknown>;
+  visitor_fingerprint: { id: string } | null;
+  request: Record<string, unknown>;
+  score_breakdown: Record<string, unknown>;
+  signals: Array<Record<string, unknown>>;
+  attribution: Record<string, unknown>;
+}
+
+export interface GateSessionApprovedPayload {
+  service_id: string;
+  gate_session_id: string;
+  gate_account_id: string;
+  account_name: string;
+  metadata: Record<string, unknown> | null;
+  tripwire: { verdict: 'bot' | 'human' | 'inconclusive'; score: number | null };
+  delivery: GateDeliveryRequest;
+}
+
+export type WebhookEventPayload =
+  | SessionFingerprintCalculatedPayload
+  | SessionResultPersistedPayload
+  | GateSessionApprovedPayload
+  | Record<string, unknown>;
+
+export interface WebhookEventEnvelope<TData = WebhookEventPayload> {
+  id: string;
+  object: 'webhook_event';
+  type: WebhookDeliveryEventType;
+  created: string;
+  data: TData;
 }
 
 export interface CreateGateSessionRequest extends RequestOptions {

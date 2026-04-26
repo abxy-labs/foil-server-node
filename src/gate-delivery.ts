@@ -12,7 +12,7 @@ import {
   timingSafeEqual,
   type KeyObject,
 } from 'node:crypto';
-import type { GateDeliveryEnvelope, GateDeliveryRequest } from './types';
+import type { GateDeliveryEnvelope, GateDeliveryRequest, WebhookEventEnvelope } from './types';
 
 export const GATE_DELIVERY_VERSION = 1 as const;
 export const GATE_DELIVERY_ALGORITHM = 'x25519-hkdf-sha256/aes-256-gcm' as const;
@@ -77,7 +77,6 @@ export interface GateDeliveryHelperInput {
 }
 
 export interface GateApprovedWebhookPayload {
-  event: 'gate.session.approved';
   service_id: string;
   gate_session_id: string;
   gate_account_id: string;
@@ -98,6 +97,8 @@ export interface VerifyGateWebhookSignatureInput {
   maxAgeSeconds?: number;
   nowSeconds?: number;
 }
+
+export interface VerifyAndParseWebhookEventInput extends VerifyGateWebhookSignatureInput {}
 
 function toBase64Url(value: Buffer | Uint8Array | string): string {
   return Buffer.from(value).toString('base64url');
@@ -257,8 +258,8 @@ export function validateGateApprovedWebhookPayload(value: unknown): GateApproved
   if (!isPlainObject(value)) {
     throw new Error('webhook payload must be an object');
   }
-  if (value.event !== 'gate.session.approved') {
-    throw new Error('event must be gate.session.approved');
+  if ('event' in value) {
+    throw new Error('webhook payload must not include event; use the webhook event envelope type');
   }
   if (typeof value.service_id !== 'string' || value.service_id.length === 0) {
     throw new Error('service_id is required');
@@ -285,7 +286,6 @@ export function validateGateApprovedWebhookPayload(value: unknown): GateApproved
     throw new Error('tripwire.score must be a number or null');
   }
   return {
-    event: 'gate.session.approved',
     service_id: value.service_id,
     gate_session_id: value.gate_session_id,
     gate_account_id: value.gate_account_id,
@@ -318,6 +318,47 @@ export function verifyGateWebhookSignature(input: VerifyGateWebhookSignatureInpu
     return false;
   }
   return timingSafeEqual(expectedBuffer, receivedBuffer);
+}
+
+export function parseWebhookEvent(rawBody: string | Buffer | Uint8Array | unknown): WebhookEventEnvelope {
+  const value = typeof rawBody === 'string' || rawBody instanceof Uint8Array
+    ? JSON.parse(Buffer.from(rawBody).toString('utf8')) as unknown
+    : rawBody;
+  if (!isPlainObject(value)) {
+    throw new Error('webhook event envelope must be an object');
+  }
+  if (typeof value.id !== 'string' || value.id.length === 0) {
+    throw new Error('webhook event id is required');
+  }
+  if (value.object !== 'webhook_event') {
+    throw new Error('webhook event object must be webhook_event');
+  }
+  if (typeof value.type !== 'string' || value.type.length === 0) {
+    throw new Error('webhook event type is required');
+  }
+  if (typeof value.created !== 'string' || value.created.length === 0) {
+    throw new Error('webhook event created timestamp is required');
+  }
+  if (!isPlainObject(value.data)) {
+    throw new Error('webhook event data must be an object');
+  }
+  const data = value.type === 'gate.session.approved'
+    ? validateGateApprovedWebhookPayload(value.data)
+    : value.data;
+  return {
+    id: value.id,
+    object: 'webhook_event',
+    type: value.type as WebhookEventEnvelope['type'],
+    created: value.created,
+    data,
+  };
+}
+
+export function verifyAndParseWebhookEvent(input: VerifyAndParseWebhookEventInput): WebhookEventEnvelope {
+  if (!verifyGateWebhookSignature(input)) {
+    throw new Error('Invalid Tripwire webhook signature');
+  }
+  return parseWebhookEvent(input.rawBody);
 }
 
 export function encryptGateDeliveryPayload(
