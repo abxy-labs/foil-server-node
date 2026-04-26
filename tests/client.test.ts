@@ -3,13 +3,14 @@ import { Tripwire } from '../src/client';
 import { TripwireApiError, TripwireConfigurationError } from '../src/errors';
 import type {
   ApiKey,
-  IssuedApiKey,
   ApiErrorEnvelope,
+  Event,
+  IssuedApiKey,
+  Organization,
   ResourceEnvelope,
   ResourceListEnvelope,
   SessionDetail,
   SessionSummary,
-  Team,
   VisitorFingerprintDetail,
   VisitorFingerprintSummary,
 } from '../src/types';
@@ -154,17 +155,23 @@ describe('Tripwire client', () => {
     expect(await client.fingerprints.get('vid_456789abcdefghjkmnpqrstvwx')).toEqual(detailFixture.data);
   });
 
-  it('supports teams and api key management endpoints', async () => {
-    const teamFixture = loadFixture<ResourceEnvelope<Team>>('api/teams/team.json');
-    const createKeyFixture = loadFixture<ResourceEnvelope<IssuedApiKey>>('api/teams/api-key-create.json');
-    const listKeyFixture = loadFixture<ResourceListEnvelope<ApiKey>>('api/teams/api-key-list.json');
-    const revokeKeyFixture = loadFixture<ResourceEnvelope<ApiKey>>('api/teams/api-key-revoke.json');
-    const rotateKeyFixture = loadFixture<ResourceEnvelope<IssuedApiKey>>('api/teams/api-key-rotate.json');
+  it('supports organizations and api key management endpoints', async () => {
+    const organizationFixture = loadFixture<ResourceEnvelope<Organization>>('api/organizations/organization.json');
+    const organizationCreateFixture = loadFixture<ResourceEnvelope<Organization>>('api/organizations/organization-create.json');
+    const organizationUpdateFixture = loadFixture<ResourceEnvelope<Organization>>('api/organizations/organization-update.json');
+    const createKeyFixture = loadFixture<ResourceEnvelope<IssuedApiKey>>('api/organizations/api-key-create.json');
+    const listKeyFixture = loadFixture<ResourceListEnvelope<ApiKey>>('api/organizations/api-key-list.json');
+    const updateKeyFixture = loadFixture<ResourceEnvelope<ApiKey>>('api/organizations/api-key-update.json');
+    const revokeKeyFixture = loadFixture<ResourceEnvelope<ApiKey>>('api/organizations/api-key-revoke.json');
+    const rotateKeyFixture = loadFixture<ResourceEnvelope<IssuedApiKey>>('api/organizations/api-key-rotate.json');
 
     const fetch = createFetchMock((input, init) => {
       const url = String(input);
       if (url.endsWith('/api-keys/key_6789abcdefghjkmnpqrstvwxyz/rotations')) {
         return jsonResponse(rotateKeyFixture, { status: 201 });
+      }
+      if (url.endsWith('/api-keys/key_6789abcdefghjkmnpqrstvwxyz') && init?.method === 'PATCH') {
+        return jsonResponse(updateKeyFixture);
       }
       if (url.endsWith('/api-keys/key_6789abcdefghjkmnpqrstvwxyz')) {
         return jsonResponse(revokeKeyFixture);
@@ -175,21 +182,95 @@ describe('Tripwire client', () => {
       if (url.endsWith('/api-keys')) {
         return jsonResponse(listKeyFixture);
       }
-      return jsonResponse(teamFixture);
+      if (url.endsWith('/v1/organizations') && init?.method === 'POST') {
+        return jsonResponse(organizationCreateFixture, { status: 201 });
+      }
+      if (url.endsWith('/v1/organizations/org_56789abcdefghjkmnpqrstvwxy') && init?.method === 'PATCH') {
+        return jsonResponse(organizationUpdateFixture);
+      }
+      return jsonResponse(organizationFixture);
     });
 
     const client = new Tripwire({ secretKey: 'sk_live_test', fetch });
-    expect(await client.teams.get('team_56789abcdefghjkmnpqrstvwxy')).toEqual(teamFixture.data);
-    expect(await client.teams.create({ name: 'Example Team', slug: 'example-team' })).toEqual(teamFixture.data);
-    expect(await client.teams.update('team_56789abcdefghjkmnpqrstvwxy', { name: 'Example Team' })).toEqual(teamFixture.data);
-    expect(await client.teams.apiKeys.create('team_56789abcdefghjkmnpqrstvwxy', { name: 'Production' })).toEqual(createKeyFixture.data);
-    expect(await client.teams.apiKeys.list('team_56789abcdefghjkmnpqrstvwxy')).toEqual({
+    expect(await client.organizations.get('org_56789abcdefghjkmnpqrstvwxy')).toEqual(organizationFixture.data);
+    expect(await client.organizations.create({ name: 'Example Organization', slug: 'example-organization' })).toEqual(organizationCreateFixture.data);
+    expect(await client.organizations.update('org_56789abcdefghjkmnpqrstvwxy', { name: 'Example Organization' })).toEqual(organizationUpdateFixture.data);
+    expect(await client.organizations.apiKeys.create('org_56789abcdefghjkmnpqrstvwxy', { name: 'Production Backend' })).toEqual(createKeyFixture.data);
+    expect(await client.organizations.apiKeys.list('org_56789abcdefghjkmnpqrstvwxy')).toEqual({
       items: listKeyFixture.data,
       limit: 50,
       has_more: false,
     });
-    await expect(client.teams.apiKeys.revoke('team_56789abcdefghjkmnpqrstvwxy', 'key_6789abcdefghjkmnpqrstvwxyz')).resolves.toEqual(revokeKeyFixture.data);
-    expect(await client.teams.apiKeys.rotate('team_56789abcdefghjkmnpqrstvwxy', 'key_6789abcdefghjkmnpqrstvwxyz')).toEqual(rotateKeyFixture.data);
+    expect(
+      await client.organizations.apiKeys.update('org_56789abcdefghjkmnpqrstvwxy', 'key_6789abcdefghjkmnpqrstvwxyz', {
+        name: 'Updated Web App',
+      }),
+    ).toEqual(updateKeyFixture.data);
+    await expect(client.organizations.apiKeys.revoke('org_56789abcdefghjkmnpqrstvwxy', 'key_6789abcdefghjkmnpqrstvwxyz')).resolves.toEqual(revokeKeyFixture.data);
+    expect(await client.organizations.apiKeys.rotate('org_56789abcdefghjkmnpqrstvwxy', 'key_6789abcdefghjkmnpqrstvwxyz')).toEqual(rotateKeyFixture.data);
+  });
+
+  it('uses organization event history for webhook deliveries', async () => {
+    const delivery = {
+      object: 'webhook_delivery',
+      id: 'wdlv_0123456789abcdef0123456789abcdef',
+      event_id: 'wevt_0123456789abcdef0123456789abcdef',
+      endpoint_id: 'we_0123456789abcdef0123456789abcdef',
+      event_type: 'session.fingerprint.calculated',
+      status: 'succeeded',
+      attempts: 1,
+      response_status: 200,
+      response_body: '{}',
+      error: null,
+      created_at: '2026-03-24T20:00:00.000Z',
+      updated_at: '2026-03-24T20:00:05.000Z',
+    } as const;
+    const event: Event = {
+      object: 'event',
+      id: 'wevt_0123456789abcdef0123456789abcdef',
+      type: 'session.fingerprint.calculated',
+      subject: { type: 'session', id: 'sid_0123456789abcdefghjkmnpqrs' },
+      data: { source: 'waitForFingerprint' },
+      webhook_deliveries: [delivery],
+      created_at: '2026-03-24T20:00:00.000Z',
+    };
+    const listResponse: ResourceListEnvelope<Event> = {
+      data: [event],
+      pagination: { limit: 25, has_more: false },
+      meta: { request_id: 'req_0123456789abcdef0123456789abcdef' },
+    };
+    const detailResponse: ResourceEnvelope<Event> = {
+      data: event,
+      meta: { request_id: 'req_0123456789abcdef0123456789abcdef' },
+    };
+
+    const fetch = createFetchMock((input, init) => {
+      const url = new URL(String(input));
+      expect(init?.headers).toMatchObject({ Authorization: 'Bearer sk_live_test' });
+      if (url.pathname === '/v1/organizations/org_56789abcdefghjkmnpqrstvwxy/events') {
+        expect(url.searchParams.get('endpoint_id')).toBe('we_0123456789abcdef0123456789abcdef');
+        expect(url.searchParams.get('type')).toBe('session.fingerprint.calculated');
+        return jsonResponse(listResponse);
+      }
+      if (url.pathname === '/v1/organizations/org_56789abcdefghjkmnpqrstvwxy/events/wevt_0123456789abcdef0123456789abcdef') {
+        return jsonResponse(detailResponse);
+      }
+      throw new Error(`Unexpected request ${init?.method ?? 'GET'} ${url.pathname}`);
+    });
+
+    const client = new Tripwire({ secretKey: 'sk_live_test', fetch });
+    await expect(
+      client.webhooks.listEvents('org_56789abcdefghjkmnpqrstvwxy', {
+        endpoint_id: 'we_0123456789abcdef0123456789abcdef',
+        type: 'session.fingerprint.calculated',
+        limit: 25,
+      }),
+    ).resolves.toEqual({
+      items: [event],
+      limit: 25,
+      has_more: false,
+    });
+    await expect(client.webhooks.retrieveEvent('org_56789abcdefghjkmnpqrstvwxy', 'wevt_0123456789abcdef0123456789abcdef')).resolves.toEqual(event);
   });
 
   it('supports the gate namespace across public, bearer, and secret-auth routes', async () => {
@@ -291,7 +372,7 @@ describe('Tripwire client', () => {
       name: 'Acme Production',
       description: 'Acme production signup flow',
       website: 'https://acme.example.com',
-      webhook_url: 'https://api.acme.example.com/v1/gate/webhook',
+      webhook_endpoint_id: 'we_0123456789abcdef0123456789abcdef',
     })).toEqual(serviceCreateFixture.data);
     expect(await client.gate.services.update('acme_prod', { discoverable: true })).toEqual(serviceUpdateFixture.data);
     expect(await client.gate.services.disable('acme_prod')).toEqual(serviceDisableFixture.data);

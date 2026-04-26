@@ -15,8 +15,8 @@ Server SDKs include only customer-facing APIs:
 
 - `/v1/sessions`
 - `/v1/fingerprints`
-- `/v1/teams`
-- `/v1/teams/:teamId/api-keys`
+- `/v1/organizations`
+- `/v1/organizations/:organizationId/api-keys`
 - `/v1/gate/registry`
 - `/v1/gate/services`
 - `/v1/gate/sessions`
@@ -44,11 +44,11 @@ Every server SDK should expose these top-level capabilities:
   - list
   - get
   - iterator / auto-pagination helper
-- Teams
+- Organizations
   - create
   - get
   - update
-- Team API keys
+- Organization API keys
   - create
   - list
   - revoke

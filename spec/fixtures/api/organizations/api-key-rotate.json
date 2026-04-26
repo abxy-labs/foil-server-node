@@ -1,0 +1,27 @@
+{
+  "data": {
+    "object": "api_key",
+    "id": "key_789abcdefghjkmnpqrstvwxyz0",
+    "type": "secret",
+    "name": "Production Backend",
+    "environment": "live",
+    "status": "active",
+    "allowed_origins": null,
+    "scopes": [
+      "sessions:list",
+      "sessions:read",
+      "api_keys:manage"
+    ],
+    "rate_limit": null,
+    "key_preview": "sk_live_[rotated_example]...",
+    "revealed_key": "sk_live_[rotated_example_secret_key]",
+    "last_used_at": null,
+    "created_at": "2026-03-24T19:00:00.000Z",
+    "rotated_at": null,
+    "revoked_at": null,
+    "grace_expires_at": null
+  },
+  "meta": {
+    "request_id": "req_0123456789abcdef0123456789abcdef"
+  }
+}

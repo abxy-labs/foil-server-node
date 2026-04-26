@@ -182,6 +182,12 @@
       "virtualization_suspected": true,
       "privacy_hardening_suspected": true
     },
+    "native_runtime_integrity": null,
+    "native_app": null,
+    "native_carrier": null,
+    "native_motion_print": null,
+    "device_identity": null,
+    "install_id": null,
     "visitor_fingerprint": {
       "object": "visitor_fingerprint",
       "id": "vid_456789abcdefghjkmnpqrstvwx",

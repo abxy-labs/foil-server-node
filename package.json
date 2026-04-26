@@ -35,7 +35,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "test": "vitest run tests/client.test.ts tests/contract.test.ts tests/sealed-token.test.ts tests/gate-delivery.test.ts",
     "test:live": "vitest run tests/live.test.ts",
@@ -46,7 +46,7 @@
   "devDependencies": {
     "@types/node": "^24.6.1",
     "tsup": "^8.5.0",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.3",
     "vitest": "^4.1.0"
   }
 }

@@ -7,8 +7,10 @@ import {
   importDeliveryPrivateKeyPkcs8,
   isBlockedGateEnvVarKey,
   isGateManagedEnvVarKey,
+  parseWebhookEvent,
   validateGateApprovedWebhookPayload,
   validateGateDeliveryRequest,
+  verifyAndParseWebhookEvent,
   verifyGateWebhookSignature,
 } from '../src/gate-delivery';
 import { loadFixture } from './helpers';
@@ -66,6 +68,23 @@ describe('gate delivery helpers', () => {
     }>('gate-delivery/webhook-signature.json');
 
     expect(validateGateApprovedWebhookPayload(payloadFixture)).toEqual(payloadFixture);
+    expect(parseWebhookEvent(signatureFixture.raw_body)).toMatchObject({
+      object: 'webhook_event',
+      type: 'gate.session.approved',
+      data: {
+        service_id: payloadFixture.service_id,
+        gate_session_id: payloadFixture.gate_session_id,
+      },
+    });
+    expect(verifyAndParseWebhookEvent({
+      secret: signatureFixture.secret,
+      timestamp: signatureFixture.timestamp,
+      rawBody: signatureFixture.raw_body,
+      signature: signatureFixture.signature,
+      nowSeconds: signatureFixture.now_seconds,
+    })).toMatchObject({
+      type: 'gate.session.approved',
+    });
     expect(verifyGateWebhookSignature({
       secret: signatureFixture.secret,
       timestamp: signatureFixture.timestamp,

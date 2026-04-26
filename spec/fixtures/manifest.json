@@ -49,45 +49,51 @@
       "status": "200"
     },
     {
-      "file": "api/teams/team.json",
-      "path": "/v1/teams/{teamId}",
+      "file": "api/organizations/organization.json",
+      "path": "/v1/organizations/{organizationId}",
       "method": "get",
       "status": "200"
     },
     {
-      "file": "api/teams/team-create.json",
-      "path": "/v1/teams",
+      "file": "api/organizations/organization-create.json",
+      "path": "/v1/organizations",
       "method": "post",
       "status": "201"
     },
     {
-      "file": "api/teams/team-update.json",
-      "path": "/v1/teams/{teamId}",
+      "file": "api/organizations/organization-update.json",
+      "path": "/v1/organizations/{organizationId}",
       "method": "patch",
       "status": "200"
     },
     {
-      "file": "api/teams/api-key-create.json",
-      "path": "/v1/teams/{teamId}/api-keys",
+      "file": "api/organizations/api-key-create.json",
+      "path": "/v1/organizations/{organizationId}/api-keys",
       "method": "post",
       "status": "201"
     },
     {
-      "file": "api/teams/api-key-list.json",
-      "path": "/v1/teams/{teamId}/api-keys",
+      "file": "api/organizations/api-key-list.json",
+      "path": "/v1/organizations/{organizationId}/api-keys",
       "method": "get",
       "status": "200"
     },
     {
-      "file": "api/teams/api-key-rotate.json",
-      "path": "/v1/teams/{teamId}/api-keys/{keyId}/rotations",
+      "file": "api/organizations/api-key-rotate.json",
+      "path": "/v1/organizations/{organizationId}/api-keys/{keyId}/rotations",
       "method": "post",
       "status": "201"
     },
     {
-      "file": "api/teams/api-key-revoke.json",
-      "path": "/v1/teams/{teamId}/api-keys/{keyId}",
+      "file": "api/organizations/api-key-revoke.json",
+      "path": "/v1/organizations/{organizationId}/api-keys/{keyId}",
       "method": "delete",
+      "status": "200"
+    },
+    {
+      "file": "api/organizations/api-key-update.json",
+      "path": "/v1/organizations/{organizationId}/api-keys/{keyId}",
+      "method": "patch",
       "status": "200"
     },
     {

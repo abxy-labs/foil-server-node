@@ -1,9 +1,9 @@
 {
   "data": {
-    "object": "team",
-    "id": "team_56789abcdefghjkmnpqrstvwxy",
-    "name": "Example Team",
-    "slug": "example-team",
+    "object": "organization",
+    "id": "org_56789abcdefghjkmnpqrstvwxy",
+    "name": "Example Organization",
+    "slug": "example-organization",
     "status": "suspended",
     "created_at": "2026-03-24T19:00:00.000Z",
     "updated_at": "2026-03-24T19:12:00.000Z"

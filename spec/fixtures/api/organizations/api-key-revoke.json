@@ -1,0 +1,25 @@
+{
+  "data": {
+    "object": "api_key",
+    "id": "key_6789abcdefghjkmnpqrstvwxyz",
+    "type": "publishable",
+    "name": "Acme Web App",
+    "environment": "live",
+    "status": "revoked",
+    "allowed_origins": [
+      "https://example.com"
+    ],
+    "scopes": null,
+    "rate_limit": null,
+    "key_preview": "pk_live_[example]...",
+    "display_key": "pk_live_[example_publishable_key]",
+    "last_used_at": "2026-03-24T19:30:00.000Z",
+    "created_at": "2026-03-24T19:00:00.000Z",
+    "rotated_at": null,
+    "revoked_at": "2026-03-24T20:05:00.000Z",
+    "grace_expires_at": null
+  },
+  "meta": {
+    "request_id": "req_0123456789abcdef0123456789abcdef"
+  }
+}
