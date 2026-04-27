@@ -2076,20 +2076,18 @@
           }
         ],
         "requestBody": {
-          "required": false,
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateApiKeyRequest",
                 "example": {
-                  "name": "Acme Growth Workspace",
-                  "type": "publishable",
+                  "name": "Production backend",
+                  "type": "secret",
                   "environment": "live",
-                  "allowed_origins": [
-                    "https://app.acme.co/signup"
-                  ],
                   "scopes": [
-                    "sessions:list"
+                    "sessions:read",
+                    "fingerprints:read"
                   ]
                 }
               }
@@ -2107,20 +2105,18 @@
                     "data": {
                       "object": "api_key",
                       "id": "key_6cw04zdmetw8t5rsdppadhper0",
-                      "type": "publishable",
+                      "type": "secret",
                       "environment": "live",
-                      "name": "Acme Growth Workspace",
+                      "name": "Production backend",
                       "status": "active",
-                      "allowed_origins": [
-                        "https://app.acme.co/signup"
-                      ],
+                      "allowed_origins": null,
                       "scopes": [
-                        "sessions:list"
+                        "sessions:read",
+                        "fingerprints:read"
                       ],
                       "rate_limit": 1,
-                      "key_preview": "TRIPWIRE_SAMPLE_KEY",
-                      "display_key": "TRIPWIRE_SAMPLE_KEY",
-                      "revealed_key": "TRIPWIRE_SAMPLE_KEY",
+                      "key_preview": "sk_live_51sm5h8x...",
+                      "revealed_key": "sk_live_51sm5h8x72cp9g8az9t",
                       "last_used_at": "2026-03-24T20:00:05.000Z",
                       "created_at": "2026-03-24T20:00:00.000Z",
                       "rotated_at": "2026-03-24T20:00:05.000Z",
@@ -2494,12 +2490,9 @@
               "schema": {
                 "$ref": "#/components/schemas/UpdateApiKeyRequest",
                 "example": {
-                  "name": "Acme Growth Workspace",
-                  "allowed_origins": [
-                    "https://app.acme.co/signup"
-                  ],
                   "scopes": [
-                    "sessions:list"
+                    "sessions:read",
+                    "fingerprints:read"
                   ]
                 }
               }
@@ -7642,20 +7635,56 @@
             },
             "example": [
               "sessions:list"
-            ]
+            ],
+            "minItems": 1,
+            "description": "Required for secret keys. Provide at least one supported secret-key scope, or [\"*\"] for all current and future scopes. Omit for publishable keys."
           }
         },
         "example": {
-          "name": "Acme Growth Workspace",
-          "type": "publishable",
+          "name": "Production backend",
+          "type": "secret",
           "environment": "live",
-          "allowed_origins": [
-            "https://app.acme.co/signup"
-          ],
           "scopes": [
-            "sessions:list"
+            "sessions:read",
+            "fingerprints:read"
           ]
-        }
+        },
+        "allOf": [
+          {
+            "if": {
+              "required": [
+                "scopes"
+              ]
+            },
+            "then": {
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "const": "secret"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "const": "secret"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "scopes"
+              ]
+            }
+          }
+        ]
       },
       "CreateGateLoginSessionRequest": {
         "type": "object",
@@ -17597,16 +17626,15 @@
             },
             "example": [
               "sessions:list"
-            ]
+            ],
+            "minItems": 1,
+            "description": "When updating a secret key, provide at least one supported secret-key scope, or [\"*\"] for all current and future scopes."
           }
         },
         "example": {
-          "name": "Acme Growth Workspace",
-          "allowed_origins": [
-            "https://app.acme.co/signup"
-          ],
           "scopes": [
-            "sessions:list"
+            "sessions:read",
+            "fingerprints:read"
           ]
         }
       },
