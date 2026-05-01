@@ -180,7 +180,11 @@
       "developer_tools_detected": true,
       "emulation_suspected": false,
       "virtualization_suspected": true,
-      "privacy_hardening_suspected": true
+      "privacy_hardening_suspected": true,
+      "identity_spoofing_suspected": false,
+      "replay_suspected": false,
+      "outdated_environment": false,
+      "verified_bot_identity": false
     },
     "native_runtime_integrity": null,
     "native_app": null,

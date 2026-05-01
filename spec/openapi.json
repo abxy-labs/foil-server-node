@@ -292,7 +292,7 @@
                           "key": "browser_automation",
                           "effect": "increases_risk",
                           "importance": "high",
-                          "summary": "Browser automation markers were detected.",
+                          "summary": "Browser is being driven by automation",
                           "evidence": [
                             {
                               "signal": "webdriver_detected",
@@ -325,7 +325,7 @@
                         "ip_address": "203.0.113.10",
                         "ip_version": "ipv4",
                         "status": "ready",
-                        "summary": "Browser automation markers were detected.",
+                        "summary": "Browser is being driven by automation",
                         "location": {
                           "city": "San Francisco",
                           "region": "California",
@@ -377,7 +377,11 @@
                         "developer_tools_detected": true,
                         "emulation_suspected": false,
                         "virtualization_suspected": true,
-                        "privacy_hardening_suspected": true
+                        "privacy_hardening_suspected": true,
+                        "identity_spoofing_suspected": false,
+                        "replay_suspected": false,
+                        "outdated_environment": false,
+                        "verified_bot_identity": false
                       },
                       "native_runtime_integrity": {
                         "platform": "ios",
@@ -443,6 +447,24 @@
                           "ro_product_model": "chrome",
                           "simulator_env_keys": [
                             "TRIPWIRE_SAMPLE_KEY"
+                          ]
+                        },
+                        "hardware_claims_mismatch": {
+                          "detected": true,
+                          "signals": [
+                            "webdriver_detected"
+                          ]
+                        },
+                        "sim_posture": {
+                          "detected": true,
+                          "signals": [
+                            "webdriver_detected"
+                          ]
+                        },
+                        "app_provenance": {
+                          "detected": true,
+                          "signals": [
+                            "webdriver_detected"
                           ]
                         }
                       },
@@ -1885,7 +1907,7 @@
                           "https://app.acme.co/signup"
                         ],
                         "scopes": [
-                          "sessions:list"
+                          "*"
                         ],
                         "rate_limit": 1,
                         "key_preview": "TRIPWIRE_SAMPLE_KEY",
@@ -2105,18 +2127,20 @@
                     "data": {
                       "object": "api_key",
                       "id": "key_6cw04zdmetw8t5rsdppadhper0",
-                      "type": "secret",
+                      "type": "publishable",
                       "environment": "live",
-                      "name": "Production backend",
+                      "name": "Acme Growth Workspace",
                       "status": "active",
-                      "allowed_origins": null,
+                      "allowed_origins": [
+                        "https://app.acme.co/signup"
+                      ],
                       "scopes": [
-                        "sessions:read",
-                        "fingerprints:read"
+                        "*"
                       ],
                       "rate_limit": 1,
-                      "key_preview": "sk_live_51sm5h8x...",
-                      "revealed_key": "sk_live_51sm5h8x72cp9g8az9t",
+                      "key_preview": "TRIPWIRE_SAMPLE_KEY",
+                      "display_key": "TRIPWIRE_SAMPLE_KEY",
+                      "revealed_key": "TRIPWIRE_SAMPLE_KEY",
                       "last_used_at": "2026-03-24T20:00:05.000Z",
                       "created_at": "2026-03-24T20:00:00.000Z",
                       "rotated_at": "2026-03-24T20:00:05.000Z",
@@ -2325,7 +2349,7 @@
                         "https://app.acme.co/signup"
                       ],
                       "scopes": [
-                        "sessions:list"
+                        "*"
                       ],
                       "rate_limit": 1,
                       "key_preview": "TRIPWIRE_SAMPLE_KEY",
@@ -2490,9 +2514,12 @@
               "schema": {
                 "$ref": "#/components/schemas/UpdateApiKeyRequest",
                 "example": {
+                  "name": "Acme Growth Workspace",
+                  "allowed_origins": [
+                    "https://app.acme.co/signup"
+                  ],
                   "scopes": [
-                    "sessions:read",
-                    "fingerprints:read"
+                    "*"
                   ]
                 }
               }
@@ -2518,7 +2545,7 @@
                         "https://app.acme.co/signup"
                       ],
                       "scopes": [
-                        "sessions:list"
+                        "*"
                       ],
                       "rate_limit": 1,
                       "key_preview": "TRIPWIRE_SAMPLE_KEY",
@@ -2731,7 +2758,7 @@
                         "https://app.acme.co/signup"
                       ],
                       "scopes": [
-                        "sessions:list"
+                        "*"
                       ],
                       "rate_limit": 1,
                       "key_preview": "TRIPWIRE_SAMPLE_KEY",
@@ -7230,7 +7257,7 @@
                 "type": "array",
                 "items": {
                   "type": "string",
-                  "example": "sessions:list",
+                  "example": "*",
                   "enum": [
                     "*",
                     "sessions:list",
@@ -7252,7 +7279,7 @@
                   ]
                 },
                 "example": [
-                  "sessions:list"
+                  "*"
                 ]
               },
               {
@@ -7261,7 +7288,7 @@
               }
             ],
             "example": [
-              "sessions:list"
+              "*"
             ]
           },
           "rate_limit": {
@@ -7339,7 +7366,7 @@
             "https://app.acme.co/signup"
           ],
           "scopes": [
-            "sessions:list"
+            "*"
           ],
           "rate_limit": 1,
           "key_preview": "TRIPWIRE_SAMPLE_KEY",
@@ -7389,7 +7416,7 @@
                   "https://app.acme.co/signup"
                 ],
                 "scopes": [
-                  "sessions:list"
+                  "*"
                 ],
                 "rate_limit": 1,
                 "key_preview": "TRIPWIRE_SAMPLE_KEY",
@@ -7414,7 +7441,7 @@
                   "https://app.acme.co/signup"
                 ],
                 "scopes": [
-                  "sessions:list"
+                  "*"
                 ],
                 "rate_limit": 1,
                 "key_preview": "TRIPWIRE_SAMPLE_KEY",
@@ -7456,7 +7483,7 @@
                 "https://app.acme.co/signup"
               ],
               "scopes": [
-                "sessions:list"
+                "*"
               ],
               "rate_limit": 1,
               "key_preview": "TRIPWIRE_SAMPLE_KEY",
@@ -7500,7 +7527,7 @@
                 "https://app.acme.co/signup"
               ],
               "scopes": [
-                "sessions:list"
+                "*"
               ],
               "rate_limit": 1,
               "key_preview": "TRIPWIRE_SAMPLE_KEY",
@@ -7532,7 +7559,7 @@
               "https://app.acme.co/signup"
             ],
             "scopes": [
-              "sessions:list"
+              "*"
             ],
             "rate_limit": 1,
             "key_preview": "TRIPWIRE_SAMPLE_KEY",
@@ -7612,7 +7639,7 @@
             "type": "array",
             "items": {
               "type": "string",
-              "example": "sessions:list",
+              "example": "*",
               "enum": [
                 "*",
                 "sessions:list",
@@ -7634,7 +7661,7 @@
               ]
             },
             "example": [
-              "sessions:list"
+              "*"
             ],
             "minItems": 1,
             "description": "Required for secret keys. Provide at least one supported secret-key scope, or [\"*\"] for all current and future scopes. Omit for publishable keys."
@@ -10281,7 +10308,7 @@
                 "type": "array",
                 "items": {
                   "type": "string",
-                  "example": "sessions:list",
+                  "example": "*",
                   "enum": [
                     "*",
                     "sessions:list",
@@ -10303,7 +10330,7 @@
                   ]
                 },
                 "example": [
-                  "sessions:list"
+                  "*"
                 ]
               },
               {
@@ -10312,7 +10339,7 @@
               }
             ],
             "example": [
-              "sessions:list"
+              "*"
             ]
           },
           "rate_limit": {
@@ -10390,7 +10417,7 @@
             "https://app.acme.co/signup"
           ],
           "scopes": [
-            "sessions:list"
+            "*"
           ],
           "rate_limit": 1,
           "key_preview": "TRIPWIRE_SAMPLE_KEY",
@@ -10424,7 +10451,7 @@
                 "https://app.acme.co/signup"
               ],
               "scopes": [
-                "sessions:list"
+                "*"
               ],
               "rate_limit": 1,
               "key_preview": "TRIPWIRE_SAMPLE_KEY",
@@ -10456,7 +10483,7 @@
               "https://app.acme.co/signup"
             ],
             "scopes": [
-              "sessions:list"
+              "*"
             ],
             "rate_limit": 1,
             "key_preview": "TRIPWIRE_SAMPLE_KEY",
@@ -11682,7 +11709,7 @@
                 "key": "browser_automation",
                 "effect": "increases_risk",
                 "importance": "high",
-                "summary": "Browser automation markers were detected.",
+                "summary": "Browser is being driven by automation",
                 "evidence": [
                   {
                     "signal": "webdriver_detected",
@@ -11696,7 +11723,7 @@
                 "key": "browser_automation",
                 "effect": "increases_risk",
                 "importance": "high",
-                "summary": "Browser automation markers were detected.",
+                "summary": "Browser is being driven by automation",
                 "evidence": [
                   {
                     "signal": "webdriver_detected",
@@ -11774,7 +11801,7 @@
               "ip_address": "203.0.113.10",
               "ip_version": "ipv4",
               "status": "ready",
-              "summary": "Browser automation markers were detected.",
+              "summary": "Browser is being driven by automation",
               "location": {
                 "city": "San Francisco",
                 "region": "California",
@@ -11829,7 +11856,11 @@
               "developer_tools_detected": true,
               "emulation_suspected": false,
               "virtualization_suspected": true,
-              "privacy_hardening_suspected": true
+              "privacy_hardening_suspected": true,
+              "identity_spoofing_suspected": false,
+              "replay_suspected": false,
+              "outdated_environment": false,
+              "verified_bot_identity": false
             }
           },
           "native_runtime_integrity": {
@@ -11900,6 +11931,24 @@
                     "ro_product_model": "chrome",
                     "simulator_env_keys": [
                       "TRIPWIRE_SAMPLE_KEY"
+                    ]
+                  },
+                  "hardware_claims_mismatch": {
+                    "detected": true,
+                    "signals": [
+                      "webdriver_detected"
+                    ]
+                  },
+                  "sim_posture": {
+                    "detected": true,
+                    "signals": [
+                      "webdriver_detected"
+                    ]
+                  },
+                  "app_provenance": {
+                    "detected": true,
+                    "signals": [
+                      "webdriver_detected"
                     ]
                   }
                 }
@@ -11973,6 +12022,24 @@
                 "ro_product_model": "chrome",
                 "simulator_env_keys": [
                   "TRIPWIRE_SAMPLE_KEY"
+                ]
+              },
+              "hardware_claims_mismatch": {
+                "detected": true,
+                "signals": [
+                  "webdriver_detected"
+                ]
+              },
+              "sim_posture": {
+                "detected": true,
+                "signals": [
+                  "webdriver_detected"
+                ]
+              },
+              "app_provenance": {
+                "detected": true,
+                "signals": [
+                  "webdriver_detected"
                 ]
               }
             }
@@ -12478,7 +12545,7 @@
               "key": "browser_automation",
               "effect": "increases_risk",
               "importance": "high",
-              "summary": "Browser automation markers were detected.",
+              "summary": "Browser is being driven by automation",
               "evidence": [
                 {
                   "signal": "webdriver_detected",
@@ -12511,7 +12578,7 @@
             "ip_address": "203.0.113.10",
             "ip_version": "ipv4",
             "status": "ready",
-            "summary": "Browser automation markers were detected.",
+            "summary": "Browser is being driven by automation",
             "location": {
               "city": "San Francisco",
               "region": "California",
@@ -12563,7 +12630,11 @@
             "developer_tools_detected": true,
             "emulation_suspected": false,
             "virtualization_suspected": true,
-            "privacy_hardening_suspected": true
+            "privacy_hardening_suspected": true,
+            "identity_spoofing_suspected": false,
+            "replay_suspected": false,
+            "outdated_environment": false,
+            "verified_bot_identity": false
           },
           "native_runtime_integrity": {
             "platform": "ios",
@@ -12629,6 +12700,24 @@
               "ro_product_model": "chrome",
               "simulator_env_keys": [
                 "TRIPWIRE_SAMPLE_KEY"
+              ]
+            },
+            "hardware_claims_mismatch": {
+              "detected": true,
+              "signals": [
+                "webdriver_detected"
+              ]
+            },
+            "sim_posture": {
+              "detected": true,
+              "signals": [
+                "webdriver_detected"
+              ]
+            },
+            "app_provenance": {
+              "detected": true,
+              "signals": [
+                "webdriver_detected"
               ]
             }
           },
@@ -13158,7 +13247,7 @@
                   "key": "browser_automation",
                   "effect": "increases_risk",
                   "importance": "high",
-                  "summary": "Browser automation markers were detected.",
+                  "summary": "Browser is being driven by automation",
                   "evidence": [
                     {
                       "signal": "webdriver_detected",
@@ -13191,7 +13280,7 @@
                 "ip_address": "203.0.113.10",
                 "ip_version": "ipv4",
                 "status": "ready",
-                "summary": "Browser automation markers were detected.",
+                "summary": "Browser is being driven by automation",
                 "location": {
                   "city": "San Francisco",
                   "region": "California",
@@ -13243,7 +13332,11 @@
                 "developer_tools_detected": true,
                 "emulation_suspected": false,
                 "virtualization_suspected": true,
-                "privacy_hardening_suspected": true
+                "privacy_hardening_suspected": true,
+                "identity_spoofing_suspected": false,
+                "replay_suspected": false,
+                "outdated_environment": false,
+                "verified_bot_identity": false
               },
               "native_runtime_integrity": {
                 "platform": "ios",
@@ -13309,6 +13402,24 @@
                   "ro_product_model": "chrome",
                   "simulator_env_keys": [
                     "TRIPWIRE_SAMPLE_KEY"
+                  ]
+                },
+                "hardware_claims_mismatch": {
+                  "detected": true,
+                  "signals": [
+                    "webdriver_detected"
+                  ]
+                },
+                "sim_posture": {
+                  "detected": true,
+                  "signals": [
+                    "webdriver_detected"
+                  ]
+                },
+                "app_provenance": {
+                  "detected": true,
+                  "signals": [
+                    "webdriver_detected"
                   ]
                 }
               },
@@ -13630,7 +13741,7 @@
                 "key": "browser_automation",
                 "effect": "increases_risk",
                 "importance": "high",
-                "summary": "Browser automation markers were detected.",
+                "summary": "Browser is being driven by automation",
                 "evidence": [
                   {
                     "signal": "webdriver_detected",
@@ -13663,7 +13774,7 @@
               "ip_address": "203.0.113.10",
               "ip_version": "ipv4",
               "status": "ready",
-              "summary": "Browser automation markers were detected.",
+              "summary": "Browser is being driven by automation",
               "location": {
                 "city": "San Francisco",
                 "region": "California",
@@ -13715,7 +13826,11 @@
               "developer_tools_detected": true,
               "emulation_suspected": false,
               "virtualization_suspected": true,
-              "privacy_hardening_suspected": true
+              "privacy_hardening_suspected": true,
+              "identity_spoofing_suspected": false,
+              "replay_suspected": false,
+              "outdated_environment": false,
+              "verified_bot_identity": false
             },
             "native_runtime_integrity": {
               "platform": "ios",
@@ -13781,6 +13896,24 @@
                 "ro_product_model": "chrome",
                 "simulator_env_keys": [
                   "TRIPWIRE_SAMPLE_KEY"
+                ]
+              },
+              "hardware_claims_mismatch": {
+                "detected": true,
+                "signals": [
+                  "webdriver_detected"
+                ]
+              },
+              "sim_posture": {
+                "detected": true,
+                "signals": [
+                  "webdriver_detected"
+                ]
+              },
+              "app_provenance": {
+                "detected": true,
+                "signals": [
+                  "webdriver_detected"
                 ]
               }
             },
@@ -14845,7 +14978,7 @@
           },
           "summary": {
             "type": "string",
-            "example": "Browser automation markers were detected."
+            "example": "Browser is being driven by automation"
           },
           "evidence": {
             "type": "array",
@@ -14868,7 +15001,7 @@
           "key": "browser_automation",
           "effect": "increases_risk",
           "importance": "high",
-          "summary": "Browser automation markers were detected.",
+          "summary": "Browser is being driven by automation",
           "evidence": [
             {
               "signal": "webdriver_detected",
@@ -15077,6 +15210,36 @@
           "provisioning_team": "provisioning_team"
         }
       },
+      "SessionNativeAppProvenance": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "detected",
+          "signals"
+        ],
+        "properties": {
+          "detected": {
+            "type": "boolean",
+            "example": true
+          },
+          "signals": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "webdriver_detected"
+            },
+            "example": [
+              "webdriver_detected"
+            ]
+          }
+        },
+        "example": {
+          "detected": true,
+          "signals": [
+            "webdriver_detected"
+          ]
+        }
+      },
       "SessionNativeCarrier": {
         "type": "object",
         "additionalProperties": false,
@@ -15238,6 +15401,36 @@
           "tracer_pid": 1.5,
           "breakpoint_count": 3,
           "watchpoint_thread_count": 3
+        }
+      },
+      "SessionNativeHardwareClaimsMismatch": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "detected",
+          "signals"
+        ],
+        "properties": {
+          "detected": {
+            "type": "boolean",
+            "example": true
+          },
+          "signals": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "webdriver_detected"
+            },
+            "example": [
+              "webdriver_detected"
+            ]
+          }
+        },
+        "example": {
+          "detected": true,
+          "signals": [
+            "webdriver_detected"
+          ]
         }
       },
       "SessionNativeHooks": {
@@ -15599,7 +15792,10 @@
           "hooks",
           "debugger",
           "code_signing",
-          "simulator_or_emulator"
+          "simulator_or_emulator",
+          "hardware_claims_mismatch",
+          "sim_posture",
+          "app_provenance"
         ],
         "properties": {
           "platform": {
@@ -15688,6 +15884,33 @@
                 "TRIPWIRE_SAMPLE_KEY"
               ]
             }
+          },
+          "hardware_claims_mismatch": {
+            "$ref": "#/components/schemas/SessionNativeHardwareClaimsMismatch",
+            "example": {
+              "detected": true,
+              "signals": [
+                "webdriver_detected"
+              ]
+            }
+          },
+          "sim_posture": {
+            "$ref": "#/components/schemas/SessionNativeSimPosture",
+            "example": {
+              "detected": true,
+              "signals": [
+                "webdriver_detected"
+              ]
+            }
+          },
+          "app_provenance": {
+            "$ref": "#/components/schemas/SessionNativeAppProvenance",
+            "example": {
+              "detected": true,
+              "signals": [
+                "webdriver_detected"
+              ]
+            }
           }
         },
         "example": {
@@ -15755,7 +15978,55 @@
             "simulator_env_keys": [
               "TRIPWIRE_SAMPLE_KEY"
             ]
+          },
+          "hardware_claims_mismatch": {
+            "detected": true,
+            "signals": [
+              "webdriver_detected"
+            ]
+          },
+          "sim_posture": {
+            "detected": true,
+            "signals": [
+              "webdriver_detected"
+            ]
+          },
+          "app_provenance": {
+            "detected": true,
+            "signals": [
+              "webdriver_detected"
+            ]
           }
+        }
+      },
+      "SessionNativeSimPosture": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "detected",
+          "signals"
+        ],
+        "properties": {
+          "detected": {
+            "type": "boolean",
+            "example": true
+          },
+          "signals": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "webdriver_detected"
+            },
+            "example": [
+              "webdriver_detected"
+            ]
+          }
+        },
+        "example": {
+          "detected": true,
+          "signals": [
+            "webdriver_detected"
+          ]
         }
       },
       "SessionNativeSimulatorOrEmulator": {
@@ -15870,7 +16141,7 @@
               "string",
               "null"
             ],
-            "example": "Browser automation markers were detected."
+            "example": "Browser is being driven by automation"
           },
           "location": {
             "anyOf": [
@@ -16111,7 +16382,7 @@
           "ip_address": "203.0.113.10",
           "ip_version": "ipv4",
           "status": "ready",
-          "summary": "Browser automation markers were detected.",
+          "summary": "Browser is being driven by automation",
           "location": {
             "city": "San Francisco",
             "region": "California",
@@ -17378,7 +17649,11 @@
           "developer_tools_detected",
           "emulation_suspected",
           "virtualization_suspected",
-          "privacy_hardening_suspected"
+          "privacy_hardening_suspected",
+          "identity_spoofing_suspected",
+          "replay_suspected",
+          "outdated_environment",
+          "verified_bot_identity"
         ],
         "properties": {
           "tampering_detected": {
@@ -17400,6 +17675,22 @@
           "privacy_hardening_suspected": {
             "type": "boolean",
             "example": true
+          },
+          "identity_spoofing_suspected": {
+            "type": "boolean",
+            "example": false
+          },
+          "replay_suspected": {
+            "type": "boolean",
+            "example": false
+          },
+          "outdated_environment": {
+            "type": "boolean",
+            "example": false
+          },
+          "verified_bot_identity": {
+            "type": "boolean",
+            "example": false
           }
         },
         "example": {
@@ -17407,7 +17698,11 @@
           "developer_tools_detected": true,
           "emulation_suspected": false,
           "virtualization_suspected": true,
-          "privacy_hardening_suspected": true
+          "privacy_hardening_suspected": true,
+          "identity_spoofing_suspected": false,
+          "replay_suspected": false,
+          "outdated_environment": false,
+          "verified_bot_identity": false
         }
       },
       "SessionSignalFired": {
@@ -17622,19 +17917,22 @@
                 "webhooks:read",
                 "webhooks:manage"
               ],
-              "example": "sessions:list"
+              "example": "*"
             },
             "example": [
-              "sessions:list"
+              "*"
             ],
             "minItems": 1,
             "description": "When updating a secret key, provide at least one supported secret-key scope, or [\"*\"] for all current and future scopes."
           }
         },
         "example": {
+          "name": "Acme Growth Workspace",
+          "allowed_origins": [
+            "https://app.acme.co/signup"
+          ],
           "scopes": [
-            "sessions:read",
-            "fingerprints:read"
+            "*"
           ]
         }
       },
