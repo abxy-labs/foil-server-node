@@ -487,7 +487,7 @@
                           "tracer_pid": 1.5,
                           "direct_syscall_tracer_pid": 1.5,
                           "risk_signals": [
-                            "debugger_attached"
+                            "vpn"
                           ]
                         }
                       },
@@ -11994,7 +11994,7 @@
                     "tracer_pid": 1.5,
                     "direct_syscall_tracer_pid": 1.5,
                     "risk_signals": [
-                      "debugger_attached"
+                      "vpn"
                     ]
                   }
                 }
@@ -12108,7 +12108,7 @@
                 "tracer_pid": 1.5,
                 "direct_syscall_tracer_pid": 1.5,
                 "risk_signals": [
-                  "debugger_attached"
+                  "vpn"
                 ]
               }
             }
@@ -12809,7 +12809,7 @@
               "tracer_pid": 1.5,
               "direct_syscall_tracer_pid": 1.5,
               "risk_signals": [
-                "debugger_attached"
+                "vpn"
               ]
             }
           },
@@ -13534,7 +13534,7 @@
                   "tracer_pid": 1.5,
                   "direct_syscall_tracer_pid": 1.5,
                   "risk_signals": [
-                    "debugger_attached"
+                    "vpn"
                   ]
                 }
               },
@@ -14051,7 +14051,7 @@
                 "tracer_pid": 1.5,
                 "direct_syscall_tracer_pid": 1.5,
                 "risk_signals": [
-                  "debugger_attached"
+                  "vpn"
                 ]
               }
             },
@@ -15594,10 +15594,10 @@
             "type": "array",
             "items": {
               "type": "string",
-              "example": "debugger_attached"
+              "example": "vpn"
             },
             "example": [
-              "debugger_attached"
+              "vpn"
             ]
           }
         },
@@ -15621,7 +15621,7 @@
           "tracer_pid": 1.5,
           "direct_syscall_tracer_pid": 1.5,
           "risk_signals": [
-            "debugger_attached"
+            "vpn"
           ]
         }
       },
@@ -16188,7 +16188,7 @@
               "tracer_pid": 1.5,
               "direct_syscall_tracer_pid": 1.5,
               "risk_signals": [
-                "debugger_attached"
+                "vpn"
               ]
             }
           }
@@ -16297,7 +16297,7 @@
             "tracer_pid": 1.5,
             "direct_syscall_tracer_pid": 1.5,
             "risk_signals": [
-              "debugger_attached"
+              "vpn"
             ]
           }
         }
