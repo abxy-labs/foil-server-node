@@ -310,6 +310,10 @@ export interface SessionRuntimeIntegrity {
   emulation_suspected: boolean;
   virtualization_suspected: boolean;
   privacy_hardening_suspected: boolean;
+  identity_spoofing_suspected: boolean;
+  replay_suspected: boolean;
+  outdated_environment: boolean;
+  verified_bot_identity: boolean;
 }
 
 export interface VisitorFingerprintLink {
