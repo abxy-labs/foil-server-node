@@ -118,7 +118,7 @@ describe('server SDK contract', () => {
         'id',
         'decision',
         'highlights',
-        'automation',
+        'attribution',
         'web_bot_auth',
         'network',
         'runtime_integrity',
@@ -137,8 +137,8 @@ describe('server SDK contract', () => {
     expect(stripExamples(schemas.SessionDetail.properties?.client_telemetry)).toEqual({
       $ref: '#/components/schemas/SessionClientTelemetry',
     });
-    expect(stripExamples(schemas.SessionDetail.properties?.automation)).toEqual({
-      anyOf: [{ $ref: '#/components/schemas/SessionAutomation' }, { type: 'null' }],
+    expect(stripExamples(schemas.SessionDetail.properties?.attribution)).toEqual({
+      anyOf: [{ $ref: '#/components/schemas/SessionAttribution' }, { type: 'null' }],
     });
     expect(stripExamples(schemas.SessionDetail.properties?.signals_fired)).toEqual({
       type: 'array',
