@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SPEC_DIR="${ROOT_DIR}/spec"
-SPEC_REPO="abxy-labs/tripwire-server-sdk-spec"
+SPEC_REPO="abxy-labs/foil-server-sdk-spec"
 SPEC_REF="${TRIPWIRE_SDK_SPEC_REF:-${GITHUB_HEAD_REF:-${GITHUB_REF_NAME:-main}}}"
 
 if [[ ! -d "${SPEC_DIR}" ]]; then
@@ -38,7 +38,7 @@ fi
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "${TMP_DIR}"' EXIT
 
-ARCHIVE_PATH="${TMP_DIR}/tripwire-server-sdk-spec.tar.gz"
+ARCHIVE_PATH="${TMP_DIR}/foil-server-sdk-spec.tar.gz"
 SPEC_REF_URL="${SPEC_REF//\//%2F}"
 ARCHIVE_URL="https://api.github.com/repos/${SPEC_REPO}/tarball/${SPEC_REF_URL}"
 

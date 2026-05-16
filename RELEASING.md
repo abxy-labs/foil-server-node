@@ -10,7 +10,7 @@ Configure these GitHub and registry settings:
 2. Ensure the `@abxy` npm scope is owned and usable for publishing `@abxy/tripwire-server`.
 3. For the first release only, add a short-lived granular `NPM_PUBLISH_TOKEN` GitHub Actions secret with publish access to `@abxy/tripwire-server`.
 4. After the first npm release succeeds, configure npm trusted publishing for:
-   - repository: `abxy-labs/tripwire-server-node`
+   - repository: `abxy-labs/foil-server-node`
    - workflow: `.github/workflows/release.yml`
    - environment: `release`
 5. Remove `NPM_PUBLISH_TOKEN` after npm trusted publishing is configured.

@@ -5,11 +5,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abxy-labs/tripwire-server-node.git"
+    "url": "git+https://github.com/abxy-labs/foil-server-node.git"
   },
-  "homepage": "https://github.com/abxy-labs/tripwire-server-node#readme",
+  "homepage": "https://github.com/abxy-labs/foil-server-node#readme",
   "bugs": {
-    "url": "https://github.com/abxy-labs/tripwire-server-node/issues"
+    "url": "https://github.com/abxy-labs/foil-server-node/issues"
   },
   "type": "module",
   "sideEffects": false,
