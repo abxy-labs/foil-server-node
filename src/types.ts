@@ -394,6 +394,7 @@ export interface SessionSummary {
   object: 'session';
   id: string;
   created_at: string | null;
+  client_user_id: string | null;
   latest_decision: Decision;
   visitor_fingerprint: VisitorFingerprintLink | null;
 }
@@ -402,6 +403,7 @@ export interface SessionDetail {
   object: 'session';
   id: string;
   created_at: string | null;
+  client_user_id: string | null;
   decision: SessionDecision;
   highlights: SessionHighlight[];
   attribution: SessionAttribution | null;
