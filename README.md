@@ -44,6 +44,8 @@ const client = new Foil({
 
 const page = await client.sessions.list({ verdict: "bot", limit: 25 });
 const session = await client.sessions.get("sid_123");
+await client.sessions.attachClientUser("sid_123", "user_123");
+await client.sessions.clearClientUser("sid_123");
 
 console.log(page.has_more, page.next_cursor);
 console.log(session.decision.risk_score, session.highlights[0]?.summary);

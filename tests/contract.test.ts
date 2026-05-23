@@ -102,6 +102,11 @@ describe('server SDK contract', () => {
     expect(schemas.ApiKeyId.pattern).toBe('^key_[0123456789abcdefghjkmnpqrstvwxyz]{26}$');
 
     expect(stripExamples(schemas.SessionSummary.properties?.id)).toEqual({ $ref: '#/components/schemas/SessionId' });
+    expect(stripExamples(schemas.SessionSummary.properties?.client_user_id)).toEqual({
+      type: ['string', 'null'],
+      maxLength: 256,
+      description: 'Customer-supplied identifier for the end user associated with this Foil session. Set with PATCH /v1/sessions/{sessionId}.',
+    });
     expect(stripExamples(schemas.Organization.properties?.status)).toEqual({ $ref: '#/components/schemas/OrganizationStatus' });
     expect(stripExamples(schemas.ApiKey.properties?.status)).toEqual({ $ref: '#/components/schemas/ApiKeyStatus' });
     expect(schemas.PublicError.properties?.code).toMatchObject({
@@ -116,6 +121,7 @@ describe('server SDK contract', () => {
     expect(schemas.SessionDetail.required).toEqual(
       expect.arrayContaining([
         'id',
+        'client_user_id',
         'decision',
         'highlights',
         'attribution',
@@ -157,6 +163,10 @@ describe('server SDK contract', () => {
   it('records stable operation ids and tags for the public server surface', () => {
     expect(spec.paths['/v1/sessions'].get).toMatchObject({
       operationId: 'listSessions',
+      tags: ['Sessions'],
+    });
+    expect(spec.paths['/v1/sessions/{sessionId}'].patch).toMatchObject({
+      operationId: 'updateSession',
       tags: ['Sessions'],
     });
     expect(spec.paths['/v1/fingerprints/{visitorId}'].get).toMatchObject({

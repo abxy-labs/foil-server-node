@@ -134,12 +134,33 @@ describe('Foil client', () => {
     const client = new Foil({ secretKey: 'sk_live_test', fetch });
     const session = await client.sessions.get('sid_0123456789abcdefghjkmnpqrs');
     expect(session).toEqual(fixture.data);
+    expect(session.client_user_id).toBe('user_123');
     expect(session.native_runtime_integrity).toBeNull();
     expect(session.native_app).toBeNull();
     expect(session.native_carrier).toBeNull();
     expect(session.native_motion_print).toBeNull();
     expect(session.device_identity).toBeNull();
     expect(session.install_id).toBeNull();
+  });
+
+  it('attaches and clears a client user ID on a session', async () => {
+    const fixture = loadFixture<ResourceEnvelope<SessionDetail>>('api/sessions/detail.json');
+    const fetch = createFetchMock((input, init) => {
+      expect(String(input)).toContain('/v1/sessions/sid_0123456789abcdefghjkmnpqrs');
+      expect(init?.method).toBe('PATCH');
+      expect(init?.headers).toMatchObject({
+        Authorization: 'Bearer sk_live_test',
+        'Content-Type': 'application/json',
+      });
+      const body = JSON.parse(String(init?.body));
+      expect(['user_123', null]).toContain(body.client_user_id);
+      return jsonResponse(fixture);
+    });
+
+    const client = new Foil({ secretKey: 'sk_live_test', fetch });
+    await expect(client.sessions.attachClientUser('sid_0123456789abcdefghjkmnpqrs', 'user_123')).resolves.toEqual(fixture.data);
+    await expect(client.sessions.clearClientUser('sid_0123456789abcdefghjkmnpqrs')).resolves.toEqual(fixture.data);
+    expect(fetch).toHaveBeenCalledTimes(2);
   });
 
   it('lists and fetches fingerprints', async () => {

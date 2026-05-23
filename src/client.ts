@@ -260,6 +260,8 @@ export class Foil {
   readonly sessions: {
     list: (params?: SessionListParams) => Promise<ListResult<SessionSummary>>;
     get: (sessionId: string, options?: RequestOptions) => Promise<SessionDetail>;
+    attachClientUser: (sessionId: string, clientUserId: string, options?: RequestOptions) => Promise<SessionDetail>;
+    clearClientUser: (sessionId: string, options?: RequestOptions) => Promise<SessionDetail>;
     iter: (params?: Omit<SessionListParams, 'cursor'>) => AsyncGenerator<SessionSummary, void, void>;
   };
 
@@ -339,6 +341,24 @@ export class Foil {
       get: async (sessionId, options = {}) => {
         const response = await this.http.request<ResourceEnvelope<SessionDetail>>({
           path: `/v1/sessions/${encodeURIComponent(sessionId)}`,
+          signal: options.signal,
+        });
+        return response.data;
+      },
+      attachClientUser: async (sessionId, clientUserId, options = {}) => {
+        const response = await this.http.request<ResourceEnvelope<SessionDetail>>({
+          path: `/v1/sessions/${encodeURIComponent(sessionId)}`,
+          method: 'PATCH',
+          body: { client_user_id: clientUserId },
+          signal: options.signal,
+        });
+        return response.data;
+      },
+      clearClientUser: async (sessionId, options = {}) => {
+        const response = await this.http.request<ResourceEnvelope<SessionDetail>>({
+          path: `/v1/sessions/${encodeURIComponent(sessionId)}`,
+          method: 'PATCH',
+          body: { client_user_id: null },
           signal: options.signal,
         });
         return response.data;
