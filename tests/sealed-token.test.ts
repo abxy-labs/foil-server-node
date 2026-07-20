@@ -25,6 +25,19 @@ describe('sealed token verification', () => {
     expect(verifyFoilToken(fixture.token, fixture.secretHash)).toEqual(fixture.payload);
   });
 
+  it('verifies the multi-recipient vector with every active secret key', () => {
+    const fixture = loadFixture<{
+      secretKeys: string[];
+      secretHashes: string[];
+      token: string;
+      payload: VerifiedFoilToken;
+    }>('sealed-token/vector.v2.json');
+
+    for (const secret of [...fixture.secretKeys, ...fixture.secretHashes]) {
+      expect(verifyFoilToken(fixture.token, secret)).toEqual(fixture.payload);
+    }
+  });
+
   it('returns a typed failure result for invalid tokens', () => {
     const fixture = loadFixture<{ token: string }>('sealed-token/invalid.json');
     const result = safeVerifyFoilToken(fixture.token, 'sk_live_fixture_secret');
