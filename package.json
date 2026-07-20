@@ -1,6 +1,6 @@
 {
   "name": "@abxy/foil-server",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Official Foil Node server SDK",
   "license": "MIT",
   "repository": {
