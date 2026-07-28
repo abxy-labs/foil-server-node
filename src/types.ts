@@ -138,48 +138,95 @@ export interface SessionDevice {
   };
 }
 
+export interface SessionNetworkProviderEvidence {
+  provider: string;
+  type: string;
+  first_seen_at: string;
+  last_seen_at: string;
+  days_seen: number;
+  country_code: string | null;
+  asn: number | null;
+  sources: Array<'firehose' | 'hourly' | 'daily'>;
+}
+
+export interface SessionNetworkDataset {
+  generation: string | null;
+  source_through: string | null;
+  stale: boolean;
+}
+
 export interface SessionNetwork {
   ip_address: string | null;
   ip_version: 'ipv4' | 'ipv6' | null;
-  status: 'pending' | 'ready' | 'skipped' | 'error';
+  status: 'ready' | 'partial' | 'unavailable' | 'skipped';
   summary: string | null;
+  matched_network: string | null;
   location: {
     city: string | null;
     region: string | null;
+    region_code: string | null;
     country: string | null;
     country_code: string | null;
+    continent: string | null;
+    continent_code: string | null;
     latitude: number | null;
     longitude: number | null;
     timezone: string | null;
     postal_code: string | null;
+    dma_code: string | null;
+    geoname_id: string | null;
     accuracy_radius_km: number | null;
+    last_changed: string | null;
   } | null;
-  routing: {
-    asn: string | null;
-    organization: string | null;
+  autonomous_system: {
+    number: number | null;
+    name: string | null;
+    domain: string | null;
+    type: string | null;
+    last_changed: string | null;
+  } | null;
+  carrier: {
+    name: string | null;
+    mcc: string | null;
+    mnc: string | null;
+  } | null;
+  traits: {
+    anycast: boolean | null;
+    hosting: boolean | null;
+    mobile: boolean | null;
+    satellite: boolean | null;
+  } | null;
+  privacy: {
+    status: 'detected' | 'not_detected' | 'unknown';
+    classifications: string[];
+    service: { id: string; name: string; type: string } | null;
+    location_obscured: boolean;
+    location_precision: 'city' | 'region' | 'country' | 'unknown';
   };
-  anonymity: {
-    vpn: boolean;
-    proxy: boolean;
-    tor: boolean;
-    relay: boolean;
-    hosting: boolean;
-    residential_proxy: boolean;
-    callback_proxy: boolean;
-    provider: string | null;
+  proxy_activity: {
+    current_status: 'match' | 'no_match' | 'unknown';
+    history_status: 'match' | 'no_match' | 'unknown';
+    activity: 'active' | 'recently_seen' | 'historical' | 'not_detected' | 'unknown';
+    confidence: 'strong' | 'decaying' | 'recent_history' | 'historical' | null;
+    most_recent_last_seen_at: string | null;
+    providers: SessionNetworkProviderEvidence[];
   };
-  reputation: {
-    listed: boolean;
-    categories: string[];
-    suspicious_network: boolean;
+  anonymizer: {
+    status: 'match' | 'no_match' | 'unknown';
+    matched_ranges: Array<{ range_start: string; range_end: string }>;
+    providers: SessionNetworkProviderEvidence[];
   };
-  evidence: {
-    risk_signals: string[];
-    operator_tags: string[];
-    client_types: string[];
-    client_count: number | null;
+  provenance: {
+    evaluated_at: string | null;
+    lookup_source: 'service' | 'last_known' | 'legacy';
+    proxy_realtime_coverage: string;
+    datasets: {
+      proxy_history: SessionNetworkDataset;
+      anonymizer: SessionNetworkDataset;
+      ipinfo: SessionNetworkDataset;
+      apple_private_relay: SessionNetworkDataset | null;
+    };
   };
-  evaluated_at: string | null;
 }
 
 export type ObservationHash = string | number | null;
