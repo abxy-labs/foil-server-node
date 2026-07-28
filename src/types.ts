@@ -158,7 +158,7 @@ export interface SessionNetworkDataset {
 export interface SessionNetwork {
   ip_address: string | null;
   ip_version: 'ipv4' | 'ipv6' | null;
-  status: 'ready' | 'partial' | 'unavailable' | 'skipped';
+  status: 'ready' | 'partial' | 'pending' | 'unavailable' | 'skipped';
   summary: string | null;
   matched_network: string | null;
   location: {
