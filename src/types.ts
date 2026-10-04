@@ -506,133 +506,6 @@ export interface IssuedApiKey extends ApiKey {
   revealed_key: string;
 }
 
-export type GateServiceStatus = 'active' | 'disabled';
-
-export interface GateServiceEnvVar {
-  name: string;
-  key: string;
-  secret: boolean;
-}
-
-export interface GateServiceSdkInstall {
-  label: string;
-  install: string;
-  url: string;
-}
-
-export interface GateServiceBranding {
-  logo_url?: string;
-  primary_color?: string;
-  secondary_color?: string;
-  ascii_art?: string;
-  verified: boolean;
-}
-
-export interface GateServiceBrandingInput {
-  logo_url?: string;
-  primary_color?: string;
-  secondary_color?: string;
-  ascii_art?: string;
-}
-
-export interface GateServiceConsent {
-  terms_url?: string;
-  privacy_url?: string;
-}
-
-export interface GateRegistryEntry {
-  id: string;
-  status: GateServiceStatus;
-  discoverable: boolean;
-  name: string;
-  description: string;
-  website: string;
-  dashboard_login_url?: string;
-  env_vars: GateServiceEnvVar[];
-  docs_url: string;
-  sdks: GateServiceSdkInstall[];
-  branding: GateServiceBranding;
-  consent: GateServiceConsent;
-}
-
-export interface GateManagedService extends GateRegistryEntry {
-  object: 'gate_service';
-  webhook_endpoint_id: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface GateDeliveryRequest {
-  version: 1;
-  algorithm: 'x25519-hkdf-sha256/aes-256-gcm';
-  key_id: string;
-  public_key: string;
-}
-
-export interface GateDeliveryEnvelope {
-  version: 1;
-  algorithm: 'x25519-hkdf-sha256/aes-256-gcm';
-  key_id: string;
-  ephemeral_public_key: string;
-  salt: string;
-  iv: string;
-  ciphertext: string;
-  tag: string;
-}
-
-export interface GateDeliveryBundle {
-  integrator: GateDeliveryEnvelope;
-  gate: GateDeliveryEnvelope;
-}
-
-export interface GateSessionCreate {
-  object: 'gate_session';
-  id: string;
-  status: 'pending';
-  poll_token: string;
-  consent_url: string;
-  expires_at: string;
-}
-
-export interface GateSessionPollData {
-  object: 'gate_session';
-  id: string;
-  status: 'pending' | 'approved' | 'rejected' | 'expired';
-  expires_at?: string;
-  gate_account_id?: string;
-  account_name?: string;
-  delivery_bundle?: GateDeliveryBundle;
-  docs_url?: string;
-}
-
-export interface GateSessionDeliveryAcknowledgement {
-  object: 'gate_session_delivery';
-  gate_session_id: string;
-  status: 'acknowledged';
-}
-
-export interface GateLoginSession {
-  object: 'gate_login_session';
-  id: string;
-  status: 'pending';
-  consent_url: string;
-  expires_at: string;
-}
-
-export interface GateDashboardLogin {
-  object: 'gate_dashboard_login';
-  gate_account_id: string;
-  account_name: string;
-}
-
-export interface AgentTokenVerification {
-  valid: boolean;
-  gate_account_id?: string;
-  status?: 'active' | 'revoked';
-  created_at?: string;
-  expires_at?: string;
-}
-
 export interface SessionListParams extends RequestOptions {
   limit?: number;
   cursor?: string;
@@ -676,39 +549,9 @@ export interface UpdateApiKeyRequest extends RequestOptions {
   scopes?: string[];
 }
 
-export interface CreateGateServiceRequest extends RequestOptions {
-  id: string;
-  discoverable?: boolean;
-  name: string;
-  description: string;
-  website: string;
-  dashboard_login_url?: string;
-  webhook_endpoint_id: string;
-  env_vars?: GateServiceEnvVar[];
-  docs_url?: string;
-  sdks?: GateServiceSdkInstall[];
-  branding?: GateServiceBrandingInput;
-  consent?: GateServiceConsent;
-}
-
-export interface UpdateGateServiceRequest extends RequestOptions {
-  discoverable?: boolean;
-  name?: string;
-  description?: string;
-  website?: string;
-  dashboard_login_url?: string | null;
-  webhook_endpoint_id?: string;
-  env_vars?: GateServiceEnvVar[];
-  docs_url?: string;
-  sdks?: GateServiceSdkInstall[];
-  branding?: GateServiceBrandingInput;
-  consent?: GateServiceConsent;
-}
-
 export type WebhookEventType =
   | 'session.fingerprint.calculated'
-  | 'session.result.persisted'
-  | 'gate.session.approved';
+  | 'session.result.persisted';
 
 export type WebhookDeliveryEventType = WebhookEventType | 'webhook.test';
 export type WebhookEndpointStatus = 'active' | 'disabled';
@@ -802,20 +645,9 @@ export interface SessionResultPersistedPayload {
   attribution: Record<string, unknown>;
 }
 
-export interface GateSessionApprovedPayload {
-  service_id: string;
-  gate_session_id: string;
-  gate_account_id: string;
-  account_name: string;
-  metadata: Record<string, unknown> | null;
-  foil: { verdict: 'bot' | 'human' | 'inconclusive'; score: number | null };
-  delivery: GateDeliveryRequest;
-}
-
 export type WebhookEventPayload =
   | SessionFingerprintCalculatedPayload
   | SessionResultPersistedPayload
-  | GateSessionApprovedPayload
   | Record<string, unknown>;
 
 export interface WebhookEventEnvelope<TData = WebhookEventPayload> {
@@ -824,39 +656,6 @@ export interface WebhookEventEnvelope<TData = WebhookEventPayload> {
   type: WebhookDeliveryEventType;
   created: string;
   data: TData;
-}
-
-export interface CreateGateSessionRequest extends RequestOptions {
-  service_id: string;
-  account_name: string;
-  metadata?: Record<string, unknown>;
-  delivery: GateDeliveryRequest;
-}
-
-export interface PollGateSessionOptions extends RequestOptions {
-  pollToken: string;
-}
-
-export interface AcknowledgeGateSessionDeliveryRequest extends RequestOptions {
-  pollToken: string;
-  ack_token: string;
-}
-
-export interface CreateGateLoginSessionRequest extends RequestOptions {
-  service_id: string;
-  agentToken: string;
-}
-
-export interface ConsumeGateLoginSessionRequest extends RequestOptions {
-  code: string;
-}
-
-export interface VerifyGateAgentTokenRequest extends RequestOptions {
-  agent_token: string;
-}
-
-export interface RevokeGateAgentTokenRequest extends RequestOptions {
-  agent_token: string;
 }
 
 export interface VerifiedFoilSignal {
