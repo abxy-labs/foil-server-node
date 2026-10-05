@@ -2,7 +2,6 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 import type { WebhookEventEnvelope } from './types';
 
 const WEBHOOK_EVENT_TYPES = new Set<WebhookEventEnvelope['type']>([
-  'session.fingerprint.calculated',
   'session.result.persisted',
   'webhook.test',
 ]);
@@ -10,7 +9,7 @@ const WEBHOOK_EVENT_TYPES = new Set<WebhookEventEnvelope['type']>([
 export interface VerifyWebhookSignatureInput {
   secret: string;
   timestamp: string;
-  rawBody: string;
+  rawBody: string | Uint8Array;
   signature: string;
   maxAgeSeconds?: number;
   nowSeconds?: number;
@@ -23,6 +22,9 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 }
 
 export function verifyWebhookSignature(input: VerifyWebhookSignatureInput): boolean {
+  if (!input.secret) {
+    return false;
+  }
   const parsedTimestamp = Number.parseInt(input.timestamp, 10);
   if (!Number.isFinite(parsedTimestamp)) {
     return false;
@@ -33,7 +35,8 @@ export function verifyWebhookSignature(input: VerifyWebhookSignatureInput): bool
     return false;
   }
   const expected = createHmac('sha256', input.secret)
-    .update(`${input.timestamp}.${input.rawBody}`)
+    .update(`${input.timestamp}.`)
+    .update(input.rawBody)
     .digest('hex');
   const expectedBuffer = Buffer.from(expected, 'utf8');
   const receivedBuffer = Buffer.from(input.signature, 'utf8');

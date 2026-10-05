@@ -549,9 +549,7 @@ export interface UpdateApiKeyRequest extends RequestOptions {
   scopes?: string[];
 }
 
-export type WebhookEventType =
-  | 'session.fingerprint.calculated'
-  | 'session.result.persisted';
+export type WebhookEventType = 'session.result.persisted';
 
 export type WebhookDeliveryEventType = WebhookEventType | 'webhook.test';
 export type WebhookEndpointStatus = 'active' | 'disabled';

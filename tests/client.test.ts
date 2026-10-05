@@ -242,7 +242,7 @@ describe('Foil client', () => {
       id: 'wdlv_0123456789abcdef0123456789abcdef',
       event_id: 'wevt_0123456789abcdef0123456789abcdef',
       endpoint_id: 'we_0123456789abcdef0123456789abcdef',
-      event_type: 'session.fingerprint.calculated',
+      event_type: 'session.result.persisted',
       status: 'succeeded',
       attempts: 1,
       response_status: 200,
@@ -254,7 +254,7 @@ describe('Foil client', () => {
     const event: Event = {
       object: 'event',
       id: 'wevt_0123456789abcdef0123456789abcdef',
-      type: 'session.fingerprint.calculated',
+      type: 'session.result.persisted',
       subject: { type: 'session', id: 'sid_0123456789abcdefghjkmnpqrs' },
       data: { source: 'waitForFingerprint' },
       webhook_deliveries: [delivery],
@@ -275,7 +275,7 @@ describe('Foil client', () => {
       expect(init?.headers).toMatchObject({ Authorization: 'Bearer sk_live_test' });
       if (url.pathname === '/v1/organizations/org_56789abcdefghjkmnpqrstvwxy/events') {
         expect(url.searchParams.get('endpoint_id')).toBe('we_0123456789abcdef0123456789abcdef');
-        expect(url.searchParams.get('type')).toBe('session.fingerprint.calculated');
+        expect(url.searchParams.get('type')).toBe('session.result.persisted');
         return jsonResponse(listResponse);
       }
       if (url.pathname === '/v1/organizations/org_56789abcdefghjkmnpqrstvwxy/events/wevt_0123456789abcdef0123456789abcdef') {
@@ -288,7 +288,7 @@ describe('Foil client', () => {
     await expect(
       client.webhooks.listEvents('org_56789abcdefghjkmnpqrstvwxy', {
         endpoint_id: 'we_0123456789abcdef0123456789abcdef',
-        type: 'session.fingerprint.calculated',
+        type: 'session.result.persisted',
         limit: 25,
       }),
     ).resolves.toEqual({

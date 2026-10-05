@@ -1,3 +1,4 @@
+import { createHmac } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import {
   parseWebhookEvent,
@@ -39,6 +40,16 @@ describe('webhook helpers', () => {
     expect(verifyWebhookSignature(verifyInput({ signature: 'short' }))).toBe(false);
     expect(verifyWebhookSignature(verifyInput({ rawBody: `${fixture.raw_body} ` }))).toBe(false);
     expect(verifyWebhookSignature(verifyInput({ secret: 'whsec_other' }))).toBe(false);
+  });
+
+  it('verifies raw byte bodies', () => {
+    expect(verifyWebhookSignature(verifyInput({ rawBody: Buffer.from(fixture.raw_body, 'utf8') }))).toBe(true);
+    expect(verifyWebhookSignature(verifyInput({ rawBody: new TextEncoder().encode(fixture.raw_body) }))).toBe(true);
+  });
+
+  it('rejects an empty signing secret', () => {
+    const signature = createHmac('sha256', '').update(`${fixture.timestamp}.${fixture.raw_body}`).digest('hex');
+    expect(verifyWebhookSignature(verifyInput({ secret: '', signature }))).toBe(false);
   });
 
   it('rejects expired and malformed timestamps', () => {
@@ -84,6 +95,7 @@ describe('webhook helpers', () => {
       data: {},
     };
     expect(() => parseWebhookEvent(JSON.stringify({ ...base, type: 'unknown.event' }))).toThrow(/unsupported webhook event type/);
+    expect(() => parseWebhookEvent(JSON.stringify({ ...base, type: 'session.fingerprint.calculated' }))).toThrow(/unsupported webhook event type/);
     expect(() => parseWebhookEvent(JSON.stringify({ ...base, object: 'event' }))).toThrow(/webhook_event/);
     expect(() => parseWebhookEvent(JSON.stringify({ ...base, data: [] }))).toThrow(/data must be an object/);
     expect(() => parseWebhookEvent(JSON.stringify([base]))).toThrow(/must be an object/);
