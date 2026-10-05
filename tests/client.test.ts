@@ -39,20 +39,18 @@ describe('Foil client', () => {
     }
   });
 
-  it('throws when no secret key is configured', () => {
+  it('defers the missing secret key error until a request is made', () => {
     const original = process.env.FOIL_SECRET_KEY;
     delete process.env.FOIL_SECRET_KEY;
     try {
       const client = new Foil({ fetch: createFetchMock(() => jsonResponse({})) });
-      expect(client.gate).toBeDefined();
-      expect(client.gate.registry).toBeDefined();
-      expect(client.gate.registry.list).toBeTypeOf('function');
+      expect(client.sessions.list).toBeTypeOf('function');
     } finally {
       if (original) process.env.FOIL_SECRET_KEY = original;
     }
   });
 
-  it('throws at request time when a secret-auth endpoint is called without a secret key', async () => {
+  it('throws at request time when called without a secret key', async () => {
     const original = process.env.FOIL_SECRET_KEY;
     delete process.env.FOIL_SECRET_KEY;
     try {
@@ -244,7 +242,7 @@ describe('Foil client', () => {
       id: 'wdlv_0123456789abcdef0123456789abcdef',
       event_id: 'wevt_0123456789abcdef0123456789abcdef',
       endpoint_id: 'we_0123456789abcdef0123456789abcdef',
-      event_type: 'session.fingerprint.calculated',
+      event_type: 'session.result.persisted',
       status: 'succeeded',
       attempts: 1,
       response_status: 200,
@@ -256,7 +254,7 @@ describe('Foil client', () => {
     const event: Event = {
       object: 'event',
       id: 'wevt_0123456789abcdef0123456789abcdef',
-      type: 'session.fingerprint.calculated',
+      type: 'session.result.persisted',
       subject: { type: 'session', id: 'sid_0123456789abcdefghjkmnpqrs' },
       data: { source: 'waitForFingerprint' },
       webhook_deliveries: [delivery],
@@ -277,7 +275,7 @@ describe('Foil client', () => {
       expect(init?.headers).toMatchObject({ Authorization: 'Bearer sk_live_test' });
       if (url.pathname === '/v1/organizations/org_56789abcdefghjkmnpqrstvwxy/events') {
         expect(url.searchParams.get('endpoint_id')).toBe('we_0123456789abcdef0123456789abcdef');
-        expect(url.searchParams.get('type')).toBe('session.fingerprint.calculated');
+        expect(url.searchParams.get('type')).toBe('session.result.persisted');
         return jsonResponse(listResponse);
       }
       if (url.pathname === '/v1/organizations/org_56789abcdefghjkmnpqrstvwxy/events/wevt_0123456789abcdef0123456789abcdef') {
@@ -290,7 +288,7 @@ describe('Foil client', () => {
     await expect(
       client.webhooks.listEvents('org_56789abcdefghjkmnpqrstvwxy', {
         endpoint_id: 'we_0123456789abcdef0123456789abcdef',
-        type: 'session.fingerprint.calculated',
+        type: 'session.result.persisted',
         limit: 25,
       }),
     ).resolves.toEqual({
@@ -299,141 +297,6 @@ describe('Foil client', () => {
       has_more: false,
     });
     await expect(client.webhooks.retrieveEvent('org_56789abcdefghjkmnpqrstvwxy', 'wevt_0123456789abcdef0123456789abcdef')).resolves.toEqual(event);
-  });
-
-  it('supports the gate namespace across public, bearer, and secret-auth routes', async () => {
-    const registryListFixture = loadFixture<ResourceEnvelope<any[]>>('api/gate/registry-list.json');
-    const registryDetailFixture = loadFixture<ResourceEnvelope<any>>('api/gate/registry-detail.json');
-    const servicesListFixture = loadFixture<ResourceEnvelope<any[]>>('api/gate/services-list.json');
-    const serviceDetailFixture = loadFixture<ResourceEnvelope<any>>('api/gate/service-detail.json');
-    const serviceCreateFixture = loadFixture<ResourceEnvelope<any>>('api/gate/service-create.json');
-    const serviceUpdateFixture = loadFixture<ResourceEnvelope<any>>('api/gate/service-update.json');
-    const serviceDisableFixture = loadFixture<ResourceEnvelope<any>>('api/gate/service-disable.json');
-    const sessionCreateFixture = loadFixture<ResourceEnvelope<any>>('api/gate/session-create.json');
-    const sessionPollFixture = loadFixture<ResourceEnvelope<any>>('api/gate/session-poll.json');
-    const sessionAckFixture = loadFixture<ResourceEnvelope<any>>('api/gate/session-ack.json');
-    const loginCreateFixture = loadFixture<ResourceEnvelope<any>>('api/gate/login-session-create.json');
-    const loginConsumeFixture = loadFixture<ResourceEnvelope<any>>('api/gate/login-session-consume.json');
-    const agentVerifyFixture = loadFixture<ResourceEnvelope<any>>('api/gate/agent-token-verify.json');
-
-    const fetch = createFetchMock(async (input, init) => {
-      const url = new URL(String(input));
-      const headers = new Headers(init?.headers);
-      const auth = headers.get('authorization');
-      const bodyText = init?.body ? String(init.body) : '';
-      const body = bodyText ? JSON.parse(bodyText) as Record<string, unknown> : null;
-
-      if (url.pathname === '/v1/gate/registry' && init?.method !== 'POST') {
-        expect(auth).toBeNull();
-        return jsonResponse(registryListFixture);
-      }
-      if (url.pathname === '/v1/gate/registry/foil') {
-        expect(auth).toBeNull();
-        return jsonResponse(registryDetailFixture);
-      }
-      if (url.pathname === '/v1/gate/services' && (!init?.method || init.method === 'GET')) {
-        expect(auth).toBe('Bearer sk_live_test');
-        return jsonResponse(servicesListFixture);
-      }
-      if (url.pathname === '/v1/gate/services/foil' && (!init?.method || init.method === 'GET')) {
-        expect(auth).toBe('Bearer sk_live_test');
-        return jsonResponse(serviceDetailFixture);
-      }
-      if (url.pathname === '/v1/gate/services' && init?.method === 'POST') {
-        expect(auth).toBe('Bearer sk_live_test');
-        expect(body?.id).toBe('acme_prod');
-        return jsonResponse(serviceCreateFixture, { status: 201 });
-      }
-      if (url.pathname === '/v1/gate/services/acme_prod' && init?.method === 'PATCH') {
-        expect(auth).toBe('Bearer sk_live_test');
-        expect(body?.discoverable).toBe(true);
-        return jsonResponse(serviceUpdateFixture);
-      }
-      if (url.pathname === '/v1/gate/services/acme_prod' && init?.method === 'DELETE') {
-        expect(auth).toBe('Bearer sk_live_test');
-        return jsonResponse(serviceDisableFixture);
-      }
-      if (url.pathname === '/v1/gate/sessions' && init?.method === 'POST') {
-        expect(auth).toBeNull();
-        expect(body?.service_id).toBe('foil');
-        return jsonResponse(sessionCreateFixture, { status: 201 });
-      }
-      if (url.pathname === '/v1/gate/sessions/gate_0123456789abcdefghjkmnpqrs' && (!init?.method || init.method === 'GET')) {
-        expect(auth).toBe('Bearer gtpoll_0123456789abcdefghjkmnpqrs');
-        return jsonResponse(sessionPollFixture);
-      }
-      if (url.pathname === '/v1/gate/sessions/gate_0123456789abcdefghjkmnpqrs/ack') {
-        expect(auth).toBe('Bearer gtpoll_0123456789abcdefghjkmnpqrs');
-        expect(body).toEqual({ ack_token: 'gtack_0123456789abcdefghjkmnpqrs' });
-        return jsonResponse(sessionAckFixture);
-      }
-      if (url.pathname === '/v1/gate/login-sessions') {
-        expect(auth).toBe('Bearer agt_0123456789abcdefghjkmnpqrs');
-        expect(body).toEqual({ service_id: 'foil' });
-        return jsonResponse(loginCreateFixture, { status: 201 });
-      }
-      if (url.pathname === '/v1/gate/login-sessions/consume') {
-        expect(auth).toBe('Bearer sk_live_test');
-        expect(body).toEqual({ code: 'gate_code_0123456789abcdefghjkm' });
-        return jsonResponse(loginConsumeFixture);
-      }
-      if (url.pathname === '/v1/gate/agent-tokens/verify') {
-        expect(auth).toBe('Bearer sk_live_test');
-        return jsonResponse(agentVerifyFixture);
-      }
-      if (url.pathname === '/v1/gate/agent-tokens/revoke') {
-        expect(auth).toBe('Bearer sk_live_test');
-        return new Response(null, { status: 204 });
-      }
-
-      throw new Error(`Unexpected request ${init?.method ?? 'GET'} ${url.pathname}`);
-    });
-
-    const client = new Foil({ secretKey: 'sk_live_test', fetch });
-
-    expect(await client.gate.registry.list()).toEqual(registryListFixture.data);
-    expect(await client.gate.registry.get('foil')).toEqual(registryDetailFixture.data);
-    expect(await client.gate.services.list()).toEqual(servicesListFixture.data);
-    expect(await client.gate.services.get('foil')).toEqual(serviceDetailFixture.data);
-    expect(await client.gate.services.create({
-      id: 'acme_prod',
-      name: 'Acme Production',
-      description: 'Acme production signup flow',
-      website: 'https://acme.example.com',
-      webhook_endpoint_id: 'we_0123456789abcdef0123456789abcdef',
-    })).toEqual(serviceCreateFixture.data);
-    expect(await client.gate.services.update('acme_prod', { discoverable: true })).toEqual(serviceUpdateFixture.data);
-    expect(await client.gate.services.disable('acme_prod')).toEqual(serviceDisableFixture.data);
-    expect(await client.gate.sessions.create({
-      service_id: 'foil',
-      account_name: 'my-project',
-      delivery: {
-        version: 1,
-        algorithm: 'x25519-hkdf-sha256/aes-256-gcm',
-        key_id: 'kid_integrator_0123456789abcdefgh',
-        public_key: 'public_key_integrator',
-      },
-    })).toEqual(sessionCreateFixture.data);
-    expect(await client.gate.sessions.poll('gate_0123456789abcdefghjkmnpqrs', {
-      pollToken: 'gtpoll_0123456789abcdefghjkmnpqrs',
-    })).toEqual(sessionPollFixture.data);
-    expect(await client.gate.sessions.acknowledge('gate_0123456789abcdefghjkmnpqrs', {
-      pollToken: 'gtpoll_0123456789abcdefghjkmnpqrs',
-      ack_token: 'gtack_0123456789abcdefghjkmnpqrs',
-    })).toEqual(sessionAckFixture.data);
-    expect(await client.gate.loginSessions.create({
-      service_id: 'foil',
-      agentToken: 'agt_0123456789abcdefghjkmnpqrs',
-    })).toEqual(loginCreateFixture.data);
-    expect(await client.gate.loginSessions.consume({
-      code: 'gate_code_0123456789abcdefghjkm',
-    })).toEqual(loginConsumeFixture.data);
-    expect(await client.gate.agentTokens.verify({
-      agent_token: 'agt_0123456789abcdefghjkmnpqrs',
-    })).toEqual(agentVerifyFixture.data);
-    await expect(client.gate.agentTokens.revoke({
-      agent_token: 'agt_0123456789abcdefghjkmnpqrs',
-    })).resolves.toBeUndefined();
   });
 
   it('parses API errors into FoilApiError', async () => {

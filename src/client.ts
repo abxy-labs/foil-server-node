@@ -1,32 +1,17 @@
 import { FoilApiError, FoilConfigurationError } from './errors';
 import type {
-  AcknowledgeGateSessionDeliveryRequest,
   ApiKey,
   ApiKeyListParams,
-  AgentTokenVerification,
-  ConsumeGateLoginSessionRequest,
   CreateApiKeyRequest,
-  CreateGateLoginSessionRequest,
-  CreateGateServiceRequest,
-  CreateGateSessionRequest,
   CreateOrganizationRequest,
   CreateWebhookEndpointRequest,
   Event,
   EventListParams,
   FingerprintListParams,
-  GateDashboardLogin,
-  GateLoginSession,
-  GateManagedService,
-  GateRegistryEntry,
-  GateSessionCreate,
-  GateSessionDeliveryAcknowledgement,
-  GateSessionPollData,
   IssuedApiKey,
   ListResult,
   ApiErrorEnvelope,
   Organization,
-  PollGateSessionOptions,
-  RevokeGateAgentTokenRequest,
   RequestOptions,
   ResourceEnvelope,
   ResourceListEnvelope,
@@ -34,11 +19,9 @@ import type {
   SessionListParams,
   SessionSummary,
   FoilOptions,
-  UpdateGateServiceRequest,
   UpdateApiKeyRequest,
   UpdateOrganizationRequest,
   UpdateWebhookEndpointRequest,
-  VerifyGateAgentTokenRequest,
   VisitorFingerprintDetail,
   VisitorFingerprintSummary,
   WebhookEndpoint,
@@ -57,7 +40,6 @@ interface RequestConfig {
   query?: Record<string, QueryValue>;
   body?: unknown;
   signal?: AbortSignal;
-  auth?: AuthConfig;
 }
 
 interface ResolvedOptions {
@@ -67,11 +49,6 @@ interface ResolvedOptions {
   fetch: typeof globalThis.fetch;
   userAgent?: string;
 }
-
-type AuthConfig =
-  | { kind?: 'secret' }
-  | { kind: 'none' }
-  | { kind: 'bearer'; token: string };
 
 function resolveOptions(options: FoilOptions = {}): ResolvedOptions {
   const fetchImpl = options.fetch ?? globalThis.fetch;
@@ -216,19 +193,6 @@ class HttpClient {
       ...(config.body !== undefined ? { 'Content-Type': 'application/json' } : {}),
     };
 
-    const auth = config.auth ?? { kind: 'secret' as const };
-    if (auth.kind === 'none') {
-      return headers;
-    }
-
-    if (auth.kind === 'bearer') {
-      if (!auth.token) {
-        throw new FoilConfigurationError('Missing bearer token for this Foil request.');
-      }
-      headers.Authorization = `Bearer ${auth.token}`;
-      return headers;
-    }
-
     if (!this.options.secretKey) {
       throw missingSecretKeyError();
     }
@@ -281,36 +245,6 @@ export class Foil {
       update: (organizationId: string, keyId: string, body: UpdateApiKeyRequest) => Promise<ApiKey>;
       revoke: (organizationId: string, keyId: string, options?: RequestOptions) => Promise<ApiKey>;
       rotate: (organizationId: string, keyId: string, options?: RequestOptions) => Promise<IssuedApiKey>;
-    };
-  };
-
-  readonly gate: {
-    registry: {
-      list: (options?: RequestOptions) => Promise<GateRegistryEntry[]>;
-      get: (serviceId: string, options?: RequestOptions) => Promise<GateRegistryEntry>;
-    };
-    services: {
-      list: (options?: RequestOptions) => Promise<GateManagedService[]>;
-      get: (serviceId: string, options?: RequestOptions) => Promise<GateManagedService>;
-      create: (body: CreateGateServiceRequest) => Promise<GateManagedService>;
-      update: (serviceId: string, body: UpdateGateServiceRequest) => Promise<GateManagedService>;
-      disable: (serviceId: string, options?: RequestOptions) => Promise<GateManagedService>;
-    };
-    sessions: {
-      create: (body: CreateGateSessionRequest) => Promise<GateSessionCreate>;
-      poll: (gateSessionId: string, options: PollGateSessionOptions) => Promise<GateSessionPollData>;
-      acknowledge: (
-        gateSessionId: string,
-        body: AcknowledgeGateSessionDeliveryRequest,
-      ) => Promise<GateSessionDeliveryAcknowledgement>;
-    };
-    loginSessions: {
-      create: (body: CreateGateLoginSessionRequest) => Promise<GateLoginSession>;
-      consume: (body: ConsumeGateLoginSessionRequest) => Promise<GateDashboardLogin>;
-    };
-    agentTokens: {
-      verify: (body: VerifyGateAgentTokenRequest) => Promise<AgentTokenVerification>;
-      revoke: (body: RevokeGateAgentTokenRequest) => Promise<void>;
     };
   };
 
@@ -465,147 +399,6 @@ export class Foil {
             signal: options.signal,
           });
           return response.data;
-        },
-      },
-    };
-
-    this.gate = {
-      registry: {
-        list: async (options = {}) => {
-          const response = await this.http.request<ResourceEnvelope<GateRegistryEntry[]>>({
-            path: '/v1/gate/registry',
-            signal: options.signal,
-            auth: { kind: 'none' },
-          });
-          return response.data;
-        },
-        get: async (serviceId, options = {}) => {
-          const response = await this.http.request<ResourceEnvelope<GateRegistryEntry>>({
-            path: `/v1/gate/registry/${encodeURIComponent(serviceId)}`,
-            signal: options.signal,
-            auth: { kind: 'none' },
-          });
-          return response.data;
-        },
-      },
-      services: {
-        list: async (options = {}) => {
-          const response = await this.http.request<ResourceEnvelope<GateManagedService[]>>({
-            path: '/v1/gate/services',
-            signal: options.signal,
-          });
-          return response.data;
-        },
-        get: async (serviceId, options = {}) => {
-          const response = await this.http.request<ResourceEnvelope<GateManagedService>>({
-            path: `/v1/gate/services/${encodeURIComponent(serviceId)}`,
-            signal: options.signal,
-          });
-          return response.data;
-        },
-        create: async (body) => {
-          const { signal, ...payload } = body;
-          const response = await this.http.request<ResourceEnvelope<GateManagedService>>({
-            path: '/v1/gate/services',
-            method: 'POST',
-            body: payload,
-            signal,
-          });
-          return response.data;
-        },
-        update: async (serviceId, body) => {
-          const { signal, ...payload } = body;
-          const response = await this.http.request<ResourceEnvelope<GateManagedService>>({
-            path: `/v1/gate/services/${encodeURIComponent(serviceId)}`,
-            method: 'PATCH',
-            body: payload,
-            signal,
-          });
-          return response.data;
-        },
-        disable: async (serviceId, options = {}) => {
-          const response = await this.http.request<ResourceEnvelope<GateManagedService>>({
-            path: `/v1/gate/services/${encodeURIComponent(serviceId)}`,
-            method: 'DELETE',
-            signal: options.signal,
-          });
-          return response.data;
-        },
-      },
-      sessions: {
-        create: async (body) => {
-          const { signal, ...payload } = body;
-          const response = await this.http.request<ResourceEnvelope<GateSessionCreate>>({
-            path: '/v1/gate/sessions',
-            method: 'POST',
-            body: payload,
-            signal,
-            auth: { kind: 'none' },
-          });
-          return response.data;
-        },
-        poll: async (gateSessionId, options) => {
-          const response = await this.http.request<ResourceEnvelope<GateSessionPollData>>({
-            path: `/v1/gate/sessions/${encodeURIComponent(gateSessionId)}`,
-            signal: options.signal,
-            auth: { kind: 'bearer', token: options.pollToken },
-          });
-          return response.data;
-        },
-        acknowledge: async (gateSessionId, body) => {
-          const { signal, pollToken, ...payload } = body;
-          const response = await this.http.request<ResourceEnvelope<GateSessionDeliveryAcknowledgement>>({
-            path: `/v1/gate/sessions/${encodeURIComponent(gateSessionId)}/ack`,
-            method: 'POST',
-            body: payload,
-            signal,
-            auth: { kind: 'bearer', token: pollToken },
-          });
-          return response.data;
-        },
-      },
-      loginSessions: {
-        create: async (body) => {
-          const { signal, agentToken, ...payload } = body;
-          const response = await this.http.request<ResourceEnvelope<GateLoginSession>>({
-            path: '/v1/gate/login-sessions',
-            method: 'POST',
-            body: payload,
-            signal,
-            auth: { kind: 'bearer', token: agentToken },
-          });
-          return response.data;
-        },
-        consume: async (body) => {
-          const { signal, ...payload } = body;
-          const response = await this.http.request<ResourceEnvelope<GateDashboardLogin>>({
-            path: '/v1/gate/login-sessions/consume',
-            method: 'POST',
-            body: payload,
-            signal,
-          });
-          return response.data;
-        },
-      },
-      agentTokens: {
-        verify: async (body) => {
-          const { signal, ...payload } = body;
-          const response = await this.http.request<ResourceEnvelope<AgentTokenVerification>>({
-            path: '/v1/gate/agent-tokens/verify',
-            method: 'POST',
-            body: payload,
-            signal,
-          });
-          return response.data;
-        },
-        revoke: async (body) => {
-          const { signal, ...payload } = body;
-          await this.http.request<void>({
-            path: '/v1/gate/agent-tokens/revoke',
-            method: 'POST',
-            body: payload,
-            signal,
-          });
         },
       },
     };

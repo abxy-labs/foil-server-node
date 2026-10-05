@@ -38,17 +38,6 @@ describe('server SDK contract', () => {
     expect(paths).toEqual([
       '/v1/fingerprints',
       '/v1/fingerprints/{visitorId}',
-      '/v1/gate/agent-tokens/revoke',
-      '/v1/gate/agent-tokens/verify',
-      '/v1/gate/login-sessions',
-      '/v1/gate/login-sessions/consume',
-      '/v1/gate/registry',
-      '/v1/gate/registry/{serviceId}',
-      '/v1/gate/services',
-      '/v1/gate/services/{serviceId}',
-      '/v1/gate/sessions',
-      '/v1/gate/sessions/{gateSessionId}',
-      '/v1/gate/sessions/{gateSessionId}/ack',
       '/v1/organizations',
       '/v1/organizations/{organizationId}',
       '/v1/organizations/{organizationId}/api-keys',
@@ -67,30 +56,6 @@ describe('server SDK contract', () => {
 
   it('excludes collect endpoints from the public SDK contract', () => {
     expect(Object.keys(spec.paths).some((key) => key.startsWith('/v1/collect/'))).toBe(false);
-  });
-
-  it('ships the expected gate fixtures', () => {
-    const fixturePaths = [
-      'api/gate/registry-list.json',
-      'api/gate/registry-detail.json',
-      'api/gate/services-list.json',
-      'api/gate/service-detail.json',
-      'api/gate/service-create.json',
-      'api/gate/service-update.json',
-      'api/gate/service-disable.json',
-      'api/gate/session-create.json',
-      'api/gate/session-poll.json',
-      'api/gate/session-ack.json',
-      'api/gate/login-session-create.json',
-      'api/gate/login-session-consume.json',
-      'api/gate/agent-token-verify.json',
-      'api/gate/agent-token-revoke.json',
-    ];
-
-    for (const relativePath of fixturePaths) {
-      const absolutePath = path.join(__dirname, '..', 'spec', 'fixtures', relativePath);
-      expect(() => readFileSync(absolutePath, 'utf8')).not.toThrow();
-    }
   });
 
   it('tightens the critical public schema constraints', () => {
@@ -154,9 +119,6 @@ describe('server SDK contract', () => {
       type: 'string',
     });
     expect(schemas.ApiKey.required).toEqual(expect.arrayContaining(['allowed_origins', 'rate_limit', 'rotated_at', 'revoked_at']));
-    expect(schemas.GateManagedService.properties?.team_id).toBeUndefined();
-    expect(schemas.GateManagedService.properties?.webhook_secret).toBeUndefined();
-    expect(schemas.GateManagedService.required).not.toEqual(expect.arrayContaining(['team_id', 'webhook_secret']));
     expect(schemas.CollectBatchResponse).toBeUndefined();
   });
 
@@ -184,18 +146,6 @@ describe('server SDK contract', () => {
     expect(spec.paths['/v1/organizations/{organizationId}/api-keys/{keyId}/rotations'].post).toMatchObject({
       operationId: 'rotateOrganizationApiKey',
       tags: ['API Keys'],
-    });
-    expect(spec.paths['/v1/gate/services'].post).toMatchObject({
-      operationId: 'createManagedGateService',
-      tags: ['Gate'],
-    });
-    expect(spec.paths['/v1/gate/sessions/{gateSessionId}'].get).toMatchObject({
-      operationId: 'pollGateSession',
-      tags: ['Gate'],
-    });
-    expect(spec.paths['/v1/gate/agent-tokens/revoke'].post).toMatchObject({
-      operationId: 'revokeGateAgentToken',
-      tags: ['Gate'],
     });
   });
 });
