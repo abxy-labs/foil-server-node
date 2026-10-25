@@ -4,8 +4,8 @@ import {
   parseWebhookEvent,
   verifyAndParseWebhookEvent,
   verifyWebhookSignature,
-} from '../src/webhooks';
-import { loadFixture } from './helpers';
+} from '../src/webhooks.js';
+import { loadFixture } from './helpers.js';
 
 interface WebhookSignatureFixture {
   secret: string;

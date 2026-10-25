@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { Foil } from '../src/client';
-import { FoilApiError, FoilConfigurationError } from '../src/errors';
+import { Foil } from '../src/client.js';
+import { FoilApiError, FoilConfigurationError } from '../src/errors.js';
 import type {
   ApiKey,
   ApiErrorEnvelope,
@@ -13,8 +13,8 @@ import type {
   SessionSummary,
   VisitorFingerprintDetail,
   VisitorFingerprintSummary,
-} from '../src/types';
-import { jsonResponse, loadFixture } from './helpers';
+} from '../src/types.js';
+import { jsonResponse, loadFixture } from './helpers.js';
 
 function createFetchMock(
   handler: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> | Response,
