@@ -1,4 +1,4 @@
-import { FoilApiError, FoilConfigurationError } from './errors';
+import { FoilApiError, FoilConfigurationError } from './errors.js';
 import type {
   ApiKey,
   ApiKeyListParams,
@@ -26,7 +26,7 @@ import type {
   VisitorFingerprintSummary,
   WebhookEndpoint,
   WebhookTest,
-} from './types';
+} from './types.js';
 
 const DEFAULT_BASE_URL = 'https://api.usefoil.com';
 const DEFAULT_TIMEOUT_MS = 30_000;

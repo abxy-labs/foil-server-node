@@ -1,10 +1,10 @@
 import { createCipheriv, createHash, randomBytes } from 'node:crypto';
 import { deflateSync } from 'node:zlib';
 import { describe, expect, it } from 'vitest';
-import { safeVerifyFoilToken, verifyFoilToken } from '../src/sealed-token';
-import type { VerifiedFoilToken } from '../src/types';
-import { FoilConfigurationError, FoilTokenVerificationError } from '../src/errors';
-import { loadFixture } from './helpers';
+import { safeVerifyFoilToken, verifyFoilToken } from '../src/sealed-token.js';
+import type { VerifiedFoilToken } from '../src/types.js';
+import { FoilConfigurationError, FoilTokenVerificationError } from '../src/errors.js';
+import { loadFixture } from './helpers.js';
 
 function sealLegacyToken(json: string, secretKey: string): string {
   const secretHash = createHash('sha256').update(secretKey).digest('hex');

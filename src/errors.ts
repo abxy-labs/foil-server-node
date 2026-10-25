@@ -1,4 +1,4 @@
-import type { ApiErrorBody, ApiErrorEnvelope, FoilFieldError } from './types';
+import type { ApiErrorBody, ApiErrorEnvelope, FoilFieldError } from './types.js';
 
 export class FoilConfigurationError extends Error {
   constructor(message: string) {

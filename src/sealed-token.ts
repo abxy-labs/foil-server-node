@@ -1,7 +1,7 @@
 import { createDecipheriv, createHash, timingSafeEqual } from 'node:crypto';
 import { inflateSync } from 'node:zlib';
-import { FoilConfigurationError, FoilTokenVerificationError } from './errors';
-import type { SafeVerifyFoilTokenResult, VerifiedFoilToken } from './types';
+import { FoilConfigurationError, FoilTokenVerificationError } from './errors.js';
+import type { SafeVerifyFoilTokenResult, VerifiedFoilToken } from './types.js';
 
 const LEGACY_VERSION = 0x01;
 const MULTI_RECIPIENT_VERSION = 0x02;
