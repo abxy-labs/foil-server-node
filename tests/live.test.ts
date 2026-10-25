@@ -93,14 +93,14 @@ describeLive('live API smoke', () => {
         environment: 'test',
       });
       createdKeyId = created.id;
-      expect(created.revealed_key.startsWith('sk_')).toBe(true);
+      expect(created.revealed_key.startsWith('pk_test_')).toBe(true);
 
       const listedCreatedKey = await findApiKey(client, organizationId, created.id);
       expect(listedCreatedKey?.id).toBe(created.id);
 
       const rotated = await client.organizations.apiKeys.rotate(organizationId, created.id);
       rotatedKeyId = rotated.id;
-      expect(rotated.revealed_key.startsWith('sk_')).toBe(true);
+      expect(rotated.revealed_key.startsWith('pk_test_')).toBe(true);
 
       const fixture = loadFixture<{
         secretKey: string;
