@@ -139,6 +139,11 @@ describe('Foil client', () => {
     expect(session.native_motion_print).toBeNull();
     expect(session.device_identity).toBeNull();
     expect(session.install_id).toBeNull();
+    expect(session.client_telemetry.graphics.webgl.webgl2_parameters_hash).toBe('webgl2_456');
+    expect(session.visitor_fingerprint?.resolution.method).toBe('continuity');
+    expect(session.visitor_fingerprint?.lifecycle.resolution_count).toBe(14);
+    expect(session.connection_fingerprint.ja4.match_source).toBe('full_ja4');
+    expect(session.connection_fingerprint.ja4.reference?.sample_size).toBe(1);
   });
 
   it('attaches and clears a client user ID on a session', async () => {
