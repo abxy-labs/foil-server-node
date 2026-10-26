@@ -1,7 +1,7 @@
 import { createDecipheriv, createHash, timingSafeEqual } from 'node:crypto';
 import { inflateSync } from 'node:zlib';
-import { FoilConfigurationError, FoilTokenVerificationError } from './errors';
-import type { SafeVerifyFoilTokenResult, VerifiedFoilToken } from './types';
+import { FoilConfigurationError, FoilTokenVerificationError } from './errors.js';
+import type { SafeVerifyFoilTokenResult, VerifiedFoilToken } from './types.js';
 
 const LEGACY_VERSION = 0x01;
 const MULTI_RECIPIENT_VERSION = 0x02;
@@ -14,6 +14,8 @@ const V2_HEADER_BYTES = 1 + 2 + NONCE_BYTES + 4;
 const V2_RECIPIENT_BYTES = RECIPIENT_ID_BYTES + NONCE_BYTES + CONTENT_KEY_BYTES + TAG_BYTES;
 const V2_PAYLOAD_AAD_PREFIX = Buffer.from('foil-sealed-results-v2\0payload\0', 'utf8');
 const V2_WRAP_AAD_PREFIX = Buffer.from('foil-sealed-results-v2\0recipient\0', 'utf8');
+// Decompressed payloads are a few kilobytes; the cap bounds memory if a token decompresses to far more.
+const MAX_PAYLOAD_BYTES = 1024 * 1024;
 
 function normalizeSecretMaterial(secretKeyOrHash: string): string {
   return /^[0-9a-f]{64}$/i.test(secretKeyOrHash)
@@ -33,6 +35,19 @@ function recipientId(secretKeyOrHash: string): Buffer {
     .digest();
 }
 
+function parsePayload(compressed: Buffer): VerifiedFoilToken {
+  let json: Buffer;
+  try {
+    json = inflateSync(compressed, { maxOutputLength: MAX_PAYLOAD_BYTES });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ERR_BUFFER_TOO_LARGE') {
+      throw new FoilTokenVerificationError('Foil token payload is too large.', { cause: error });
+    }
+    throw error;
+  }
+  return JSON.parse(json.toString('utf8')) as VerifiedFoilToken;
+}
+
 function verifyLegacyToken(buffer: Buffer, secretKey: string): VerifiedFoilToken {
   const nonce = buffer.subarray(1, 13);
   const tag = buffer.subarray(buffer.length - TAG_BYTES);
@@ -40,7 +55,7 @@ function verifyLegacyToken(buffer: Buffer, secretKey: string): VerifiedFoilToken
   const decipher = createDecipheriv('aes-256-gcm', deriveKey(secretKey), nonce);
   decipher.setAuthTag(tag);
   const compressed = Buffer.concat([decipher.update(ciphertext), decipher.final()]);
-  return JSON.parse(inflateSync(compressed).toString('utf8')) as VerifiedFoilToken;
+  return parsePayload(compressed);
 }
 
 function verifyMultiRecipientToken(buffer: Buffer, secretKey: string): VerifiedFoilToken {
@@ -103,7 +118,7 @@ function verifyMultiRecipientToken(buffer: Buffer, secretKey: string): VerifiedF
     payloadDecipher.update(buffer.subarray(payloadStart, payloadTagStart)),
     payloadDecipher.final(),
   ]);
-  return JSON.parse(inflateSync(compressed).toString('utf8')) as VerifiedFoilToken;
+  return parsePayload(compressed);
 }
 
 function resolveSecretKey(secretKey?: string): string {

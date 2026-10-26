@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { Foil } from '../src/client';
-import { FoilApiError } from '../src/errors';
-import type { ApiKey, UpdateOrganizationRequest, VerifiedFoilToken } from '../src/types';
-import { safeVerifyFoilToken } from '../src/sealed-token';
-import { loadFixture } from './helpers';
+import { Foil } from '../src/client.js';
+import { FoilApiError } from '../src/errors.js';
+import type { ApiKey, UpdateOrganizationRequest, VerifiedFoilToken } from '../src/types.js';
+import { safeVerifyFoilToken } from '../src/sealed-token.js';
+import { loadFixture } from './helpers.js';
 
 const describeLive = process.env.FOIL_LIVE_SMOKE === '1' ? describe : describe.skip;
 
@@ -93,14 +93,14 @@ describeLive('live API smoke', () => {
         environment: 'test',
       });
       createdKeyId = created.id;
-      expect(created.revealed_key.startsWith('sk_')).toBe(true);
+      expect(created.revealed_key.startsWith('pk_test_')).toBe(true);
 
       const listedCreatedKey = await findApiKey(client, organizationId, created.id);
       expect(listedCreatedKey?.id).toBe(created.id);
 
       const rotated = await client.organizations.apiKeys.rotate(organizationId, created.id);
       rotatedKeyId = rotated.id;
-      expect(rotated.revealed_key.startsWith('sk_')).toBe(true);
+      expect(rotated.revealed_key.startsWith('pk_test_')).toBe(true);
 
       const fixture = loadFixture<{
         secretKey: string;

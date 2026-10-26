@@ -1,8 +1,19 @@
+import { createCipheriv, createHash, randomBytes } from 'node:crypto';
+import { deflateSync } from 'node:zlib';
 import { describe, expect, it } from 'vitest';
-import { safeVerifyFoilToken, verifyFoilToken } from '../src/sealed-token';
-import type { VerifiedFoilToken } from '../src/types';
-import { FoilConfigurationError, FoilTokenVerificationError } from '../src/errors';
-import { loadFixture } from './helpers';
+import { safeVerifyFoilToken, verifyFoilToken } from '../src/sealed-token.js';
+import type { VerifiedFoilToken } from '../src/types.js';
+import { FoilConfigurationError, FoilTokenVerificationError } from '../src/errors.js';
+import { loadFixture } from './helpers.js';
+
+function sealLegacyToken(json: string, secretKey: string): string {
+  const secretHash = createHash('sha256').update(secretKey).digest('hex');
+  const key = createHash('sha256').update(`${secretHash}\0sealed-results`).digest();
+  const nonce = randomBytes(12);
+  const cipher = createCipheriv('aes-256-gcm', key, nonce);
+  const ciphertext = Buffer.concat([cipher.update(deflateSync(Buffer.from(json, 'utf8'))), cipher.final()]);
+  return Buffer.concat([Buffer.from([0x01]), nonce, ciphertext, cipher.getAuthTag()]).toString('base64');
+}
 
 describe('sealed token verification', () => {
   it('verifies the shared golden vector with the plaintext secret', () => {
@@ -46,6 +57,19 @@ describe('sealed token verification', () => {
     if (!result.ok) {
       expect(result.error).toBeInstanceOf(FoilTokenVerificationError);
     }
+  });
+
+  it('accepts a payload just under the decompressed size cap', () => {
+    const token = sealLegacyToken(JSON.stringify({ padding: 'a'.repeat(1024 * 1024 - 64) }), 'sk_live_cap_test');
+
+    expect(verifyFoilToken(token, 'sk_live_cap_test')).toHaveProperty('padding');
+  });
+
+  it('rejects an authentic token whose payload decompresses past the size cap', () => {
+    const token = sealLegacyToken(JSON.stringify({ padding: 'a'.repeat(2 * 1024 * 1024) }), 'sk_live_cap_test');
+
+    expect(() => verifyFoilToken(token, 'sk_live_cap_test')).toThrow(FoilTokenVerificationError);
+    expect(() => verifyFoilToken(token, 'sk_live_cap_test')).toThrow('Foil token payload is too large.');
   });
 
   it('throws a configuration error when no secret key is available', () => {
