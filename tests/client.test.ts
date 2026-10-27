@@ -133,6 +133,7 @@ describe('Foil client', () => {
     const session = await client.sessions.get('sid_0123456789abcdefghjkmnpqrs');
     expect(session).toEqual(fixture.data);
     expect(session.client_user_id).toBe('user_123');
+    expect(session.client_application_id).toBe('app_123');
     expect(session.native_runtime_integrity).toBeNull();
     expect(session.native_app).toBeNull();
     expect(session.native_carrier).toBeNull();
@@ -159,6 +160,37 @@ describe('Foil client', () => {
     await expect(client.sessions.attachClientUser('sid_0123456789abcdefghjkmnpqrs', 'user_123')).resolves.toEqual(fixture.data);
     await expect(client.sessions.clearClientUser('sid_0123456789abcdefghjkmnpqrs')).resolves.toEqual(fixture.data);
     expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('attaches and clears a client application ID on a session', async () => {
+    const fixture = loadFixture<ResourceEnvelope<SessionDetail>>('api/sessions/detail.json');
+    const bodies: unknown[] = [];
+    const fetch = createFetchMock((input, init) => {
+      expect(String(input)).toContain('/v1/sessions/sid_0123456789abcdefghjkmnpqrs');
+      expect(init?.method).toBe('PATCH');
+      bodies.push(JSON.parse(String(init?.body)));
+      return jsonResponse(fixture);
+    });
+
+    const client = new Foil({ secretKey: 'sk_live_test', fetch });
+    await expect(client.sessions.attachClientApplication('sid_0123456789abcdefghjkmnpqrs', 'app_123')).resolves.toEqual(fixture.data);
+    await expect(client.sessions.clearClientApplication('sid_0123456789abcdefghjkmnpqrs')).resolves.toEqual(fixture.data);
+    // Each sends only its own field, so the other ID keeps its value.
+    expect(bodies).toEqual([{ client_application_id: 'app_123' }, { client_application_id: null }]);
+  });
+
+  it('filters sessions by client user and application IDs', async () => {
+    const fixture = loadFixture<ResourceListEnvelope<SessionSummary>>('api/sessions/list.json');
+    const fetch = createFetchMock((input) => {
+      const url = new URL(String(input));
+      expect(url.searchParams.get('client_user_id')).toBe('user_123');
+      expect(url.searchParams.get('client_application_id')).toBe('app_123');
+      return jsonResponse(fixture);
+    });
+
+    const client = new Foil({ secretKey: 'sk_live_test', fetch });
+    const result = await client.sessions.list({ client_user_id: 'user_123', client_application_id: 'app_123' });
+    expect(result.items[0]?.client_application_id).toBe('app_123');
   });
 
   it('lists and fetches fingerprints', async () => {
