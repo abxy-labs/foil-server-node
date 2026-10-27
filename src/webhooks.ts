@@ -1,5 +1,5 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
-import type { WebhookEventEnvelope } from './types';
+import type { WebhookEventEnvelope } from './types.js';
 
 const WEBHOOK_EVENT_TYPES = new Set<WebhookEventEnvelope['type']>([
   'session.result.persisted',

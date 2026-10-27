@@ -165,18 +165,21 @@ export interface SessionNetwork {
     relay: boolean;
     hosting: boolean;
     residential_proxy: boolean;
+    /** @deprecated Always `false` for sessions evaluated since July 30, 2026. */
     callback_proxy: boolean;
     provider: string | null;
   };
   reputation: {
     listed: boolean;
     categories: string[];
+    /** @deprecated Always `false` for sessions evaluated since July 30, 2026. */
     suspicious_network: boolean;
   };
   evidence: {
     risk_signals: string[];
     operator_tags: string[];
     client_types: string[];
+    /** @deprecated Always `null` for sessions evaluated since July 30, 2026. */
     client_count: number | null;
   };
   evaluated_at: string | null;
@@ -209,8 +212,10 @@ export interface SessionClientTelemetry {
   };
   canvas: {
     hash: ObservationHash;
+    /** @deprecated Always `null`. Foil stopped measuring canvas geometry in July 2026. */
     geometry_hash: ObservationHash;
     text_hash: ObservationHash;
+    /** @deprecated Always `null`. No Foil probe measures canvas winding. */
     winding: boolean | null;
     noise_detected: boolean | null;
     offscreen_consistent: boolean | null;
@@ -223,7 +228,9 @@ export interface SessionClientTelemetry {
       shading_language_version: string | null;
       parameters_hash: ObservationHash;
       extensions_hash: ObservationHash;
+      /** @deprecated Use `webgl2_parameters_hash`, which carries the same value. */
       extension_parameters_hash: ObservationHash;
+      webgl2_parameters_hash: ObservationHash;
       shader_precision_hash: ObservationHash;
     };
     webgpu: {
@@ -320,8 +327,10 @@ export interface SessionAttribution {
   behaviors: SessionAttributionBehavior[];
 }
 
+export type SessionWebBotAuthStatus = 'verified' | 'invalid' | 'error' | 'absent';
+
 export interface SessionWebBotAuth {
-  status: string | null;
+  status: SessionWebBotAuthStatus | null;
   domain: string | null;
 }
 
@@ -345,30 +354,89 @@ export interface VisitorFingerprintLink {
   identified_at: string | null;
 }
 
+export type VisitorResolutionMethod =
+  | 'continuity'
+  | 'fingerprint'
+  | 'new'
+  | 'native_persistent'
+  | 'native_new';
+
 export interface SessionDetailVisitorFingerprint {
   object: 'visitor_fingerprint';
   id: string;
   confidence: number | null;
   identified_at: string | null;
+  resolution: {
+    method: VisitorResolutionMethod | null;
+    basis: 'deterministic' | 'probabilistic' | null;
+  };
   lifecycle: {
     first_seen_at: string | null;
     last_seen_at: string | null;
+    /**
+     * @deprecated Use `resolution_count`, which carries the same value. It does not match
+     * `seen_count` from `GET /v1/fingerprints/{visitorId}`, which counts sessions.
+     */
     seen_count: number | null;
+    resolution_count: number | null;
   };
+}
+
+export type Ja4Profile = 'chrome' | 'firefox' | 'safari' | 'nodejs' | 'python' | 'go' | 'curl' | 'unknown';
+
+export type Ja4Family =
+  | 'chromium'
+  | 'firefox'
+  | 'webkit'
+  | 'nodejs'
+  | 'python'
+  | 'go'
+  | 'curl'
+  | 'middlebox'
+  | 'unknown';
+
+export type Ja4Confidence = 'exact' | 'strong' | 'heuristic' | 'unknown';
+
+export type Ja4MatchSource = 'full_ja4' | 'bc_hash' | 'cipher_hash' | 'prefix' | 'unknown';
+
+export type Http2Profile =
+  | 'chrome'
+  | 'firefox'
+  | 'safari'
+  | 'edge'
+  | 'nodejs'
+  | 'python'
+  | 'go'
+  | 'curl'
+  | 'unknown';
+
+export interface Ja4Reference {
+  label: string;
+  source: 'master_db' | 'heuristic';
+  protocol: string;
+  tls_version: string;
+  sni: string;
+  alpn: string;
+  cipher_count: { min: number; max: number };
+  ext_count: { min: number; max: number };
+  sample_size: number | null;
+  verified: boolean | null;
 }
 
 export interface SessionConnectionFingerprint {
   ja4: {
     hash: string | null;
-    profile: string | null;
-    family: string | null;
+    profile: Ja4Profile | null;
+    family: Ja4Family | null;
     product: string | null;
-    confidence: string | null;
+    confidence: Ja4Confidence | null;
+    match_source: Ja4MatchSource | null;
+    reference: Ja4Reference | null;
     deterministic: boolean | null;
   };
   http2: {
     akamai_fingerprint: string | null;
-    profile: string | null;
+    profile: Http2Profile | null;
   };
   user_agent_alignment: 'match' | 'mismatch' | 'unknown' | null;
 }
@@ -382,11 +450,22 @@ export interface SessionAnalysisCoverage {
   visitor_identity: boolean;
 }
 
+export type SessionSignalCategory =
+  | 'environment'
+  | 'eventTrust'
+  | 'fingerprint'
+  | 'mouse'
+  | 'keyboard'
+  | 'timing'
+  | 'touch';
+
+export type SessionSignalStrength = 'definitive' | 'strong' | 'behavioral' | 'weak';
+
 export interface SessionSignalFired {
   signal: string;
-  role: string;
-  category: string;
-  strength: string;
+  role: 'risk';
+  category: SessionSignalCategory;
+  strength: SessionSignalStrength;
   signal_score: number;
 }
 
@@ -436,12 +515,17 @@ export interface VisitorFingerprintSummary {
     first_seen_at: string;
     last_seen_at: string;
     seen_count: number;
+    /** @deprecated Always `9999-12-31T00:00:00.000Z`. Visitor IDs do not expire. */
     expires_at: string;
   };
   latest_request: {
     user_agent: string;
     ip_address: string;
   };
+  /**
+   * @deprecated Always `false` from `/v1/fingerprints`. Treat the flags as unavailable, not as
+   * evidence that a store was absent.
+   */
   storage: {
     cookies: boolean;
     local_storage: boolean;
@@ -449,6 +533,7 @@ export interface VisitorFingerprintSummary {
     service_worker: boolean;
     window_name: boolean;
   };
+  /** @deprecated Always `null` from `/v1/fingerprints`. */
   anchors: {
     webgl_hash: string | null;
     parameters_hash: string | null;
@@ -467,6 +552,7 @@ export interface VisitorFingerprintActivitySession {
 
 export interface VisitorFingerprintDetail extends VisitorFingerprintSummary {
   components: {
+    /** @deprecated Always empty from `/v1/fingerprints`. */
     vector: number[] | null;
   };
   activity: {

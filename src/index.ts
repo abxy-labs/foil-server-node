@@ -1,5 +1,5 @@
-export { Foil } from './client';
-export { FoilApiError, FoilConfigurationError, FoilTokenVerificationError } from './errors';
-export { verifyFoilToken, safeVerifyFoilToken } from './sealed-token';
-export * from './webhooks';
-export type * from './types';
+export { Foil } from './client.js';
+export { FoilApiError, FoilConfigurationError, FoilTokenVerificationError } from './errors.js';
+export { verifyFoilToken, safeVerifyFoilToken } from './sealed-token.js';
+export * from './webhooks.js';
+export type * from './types.js';
