@@ -474,6 +474,7 @@ export interface SessionSummary {
   id: string;
   created_at: string | null;
   client_user_id: string | null;
+  client_application_id: string | null;
   latest_decision: Decision;
   visitor_fingerprint: VisitorFingerprintLink | null;
 }
@@ -483,6 +484,7 @@ export interface SessionDetail {
   id: string;
   created_at: string | null;
   client_user_id: string | null;
+  client_application_id: string | null;
   decision: SessionDecision;
   highlights: SessionHighlight[];
   attribution: SessionAttribution | null;
@@ -597,6 +599,10 @@ export interface SessionListParams extends RequestOptions {
   cursor?: string;
   verdict?: 'bot' | 'human' | 'inconclusive';
   search?: string;
+  /** Exact, case-sensitive match on the session's client_user_id. */
+  client_user_id?: string;
+  /** Exact, case-sensitive match on the session's client_application_id. */
+  client_application_id?: string;
 }
 
 export interface FingerprintListParams extends RequestOptions {
