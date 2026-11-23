@@ -49,6 +49,30 @@ describe('sealed token verification', () => {
     }
   });
 
+  it('reads the bot vector\'s attribution as the session detail shape, confidences 0 to 100', () => {
+    const fixture = loadFixture<{
+      secretKeys: string[];
+      token: string;
+      payload: VerifiedFoilToken;
+    }>('sealed-token/vector.v2.bot.json');
+
+    const token = verifyFoilToken(fixture.token, fixture.secretKeys[0]!);
+    expect(token).toEqual(fixture.payload);
+    expect(token.decision.verdict).toBe('bot');
+    const bot = token.attribution.bot;
+    expect(bot?.labels.find((label) => label.kind === 'actor')).toEqual({
+      kind: 'actor',
+      value: 'automation',
+      label: 'Automation',
+      confidence: 100,
+    });
+    const confidences = [...(bot?.labels ?? []), ...(bot?.behaviors ?? [])].map((entry) => entry.confidence);
+    expect(confidences.length).toBeGreaterThan(1);
+    for (const confidence of confidences) {
+      expect(Number.isInteger(confidence) && confidence >= 0 && confidence <= 100).toBe(true);
+    }
+  });
+
   it('returns a typed failure result for invalid tokens', () => {
     const fixture = loadFixture<{ token: string }>('sealed-token/invalid.json');
     const result = safeVerifyFoilToken(fixture.token, 'sk_live_fixture_secret');
