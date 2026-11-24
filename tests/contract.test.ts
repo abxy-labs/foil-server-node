@@ -77,6 +77,11 @@ describe('server SDK contract', () => {
       maxLength: 256,
       description: 'Customer-supplied identifier for the application or organization on your platform that this Foil session belongs to. Set with PATCH /v1/sessions/{sessionId}.',
     });
+    expect(stripExamples(schemas.SessionSummary.properties?.client_session_id)).toEqual({
+      type: ['string', 'null'],
+      maxLength: 256,
+      description: 'Customer-supplied identifier for the session, checkout or visit in your own system that this Foil session belongs to. Set with PATCH /v1/sessions/{sessionId}.',
+    });
     expect(stripExamples(schemas.Organization.properties?.status)).toEqual({ $ref: '#/components/schemas/OrganizationStatus' });
     expect(stripExamples(schemas.ApiKey.properties?.status)).toEqual({ $ref: '#/components/schemas/ApiKeyStatus' });
     expect(schemas.PublicError.properties?.code).toMatchObject({
@@ -93,6 +98,7 @@ describe('server SDK contract', () => {
         'id',
         'client_user_id',
         'client_application_id',
+        'client_session_id',
         'decision',
         'highlights',
         'attribution',
