@@ -475,6 +475,7 @@ export interface SessionSummary {
   created_at: string | null;
   client_user_id: string | null;
   client_application_id: string | null;
+  client_session_id: string | null;
   latest_decision: Decision;
   visitor_fingerprint: VisitorFingerprintLink | null;
 }
@@ -485,6 +486,7 @@ export interface SessionDetail {
   created_at: string | null;
   client_user_id: string | null;
   client_application_id: string | null;
+  client_session_id: string | null;
   decision: SessionDecision;
   highlights: SessionHighlight[];
   attribution: SessionAttribution | null;
@@ -603,6 +605,8 @@ export interface SessionListParams extends RequestOptions {
   client_user_id?: string;
   /** Exact, case-sensitive match on the session's client_application_id. */
   client_application_id?: string;
+  /** Exact, case-sensitive match on the session's client_session_id. */
+  client_session_id?: string;
 }
 
 export interface FingerprintListParams extends RequestOptions {
@@ -767,7 +771,12 @@ export interface VerifiedFoilToken {
     categories: Record<string, number>;
   };
   attribution: {
-    bot: Record<string, unknown> | null;
+    /**
+     * The same object as `attribution` in the session detail. Confidences
+     * are integers from 0 to 100. Tokens issued before November 2026 carried
+     * fractions from 0 to 1 and no `label` strings.
+     */
+    bot: SessionAttribution | null;
     [key: string]: unknown;
   };
   embed: Record<string, unknown> | null;

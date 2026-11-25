@@ -46,6 +46,8 @@ await client.sessions.attachClientUser("sid_123", "user_123");
 await client.sessions.clearClientUser("sid_123");
 await client.sessions.attachClientApplication("sid_123", "app_123");
 await client.sessions.clearClientApplication("sid_123");
+await client.sessions.attachClientSession("sid_123", "sess_123");
+await client.sessions.clearClientSession("sid_123");
 const userSessions = await client.sessions.list({ client_user_id: "user_123" });
 
 console.log(page.has_more, page.next_cursor);
